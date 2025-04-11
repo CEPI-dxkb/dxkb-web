@@ -1,4 +1,5 @@
-# Dependency directories
+p3-web.conf
+dxkb-web.conf
 node_modules/
 .yarn/
 .pnp/
@@ -27,6 +28,9 @@ ecosystem.config.cjs
 
 # BRC configs
 p3-web.conf
+p3-dev.conf
+p3-test.conf
+p3-*.conf
 
 # Editor & IDE settings
 .vscode/
@@ -133,5 +137,12 @@ node_repl_history
 gulpfile.js
 gulpified
 test/
-src/
+intern.js
+jest.config.json
+gulpfile.js
+.eslintrc.json
 /public/js/p3/widget/UserDetails.js
+
+chroma.log
+chroma_data/
+src/

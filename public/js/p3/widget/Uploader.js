@@ -25,10 +25,6 @@ define([
     pathLabel: 'Upload file to: ',
     buttonLabel: 'Select Files',
     typeLabel: 'Upload type: ',
-    style: {
-      height: '520px',
-      overflow: 'scroll'
-    },
     _setPathAttr: function (val) {
       this.path = val;
       this.destinationPath.innerHTML = val;

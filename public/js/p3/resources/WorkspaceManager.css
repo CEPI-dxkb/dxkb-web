@@ -1,12 +1,10 @@
 .WorkspaceController,
 .WorkspaceGlobalController {
-	padding: 4px;
+	padding: 0px;
 }
 
 .WorkspaceController {
-	display: none;
-	background:#eee;
-	border-top: 1px solid #e2e2e2;
+	display: inline-block;
 }
 
 /* browser header used all over the site */
@@ -117,10 +115,19 @@ color:#fff;font-weight:600;background:var(--cepi-sapphire);
 
 .patric .BrowserHeader A,
 .patric .wsBreadCrumb A {
-	color: #123d75;
+	color: var(--cepi-big-stone);
 	font-size:1.0em;
 	font-weight: 600;
 	vertical-align: bottom;
+}
+
+.patric .BrowserHeader A:hover,
+.patric .wsBreadCrumb A:hover {
+	color: var(--cepi-malibu);
+	font-size:1.0em;
+	font-weight: 600;
+	vertical-align: bottom;
+	transition: color 0.2s ease;
 }
 
 .TypeContainer {
@@ -232,26 +239,36 @@ th.dgrid-cell.wsItemMembers {
 	position: relative;
 	padding:1px;
 	margin:2px;
-	border-radius:3px;
-	background: #333;
+	border-radius:5px;
+	background: #FFFFFF;
 	color:#333;
 	font-size: 1.1em;
+	border: 1px solid var(--cepi-big-stone);
 }
 
 .JobStatusButton {
 	cursor: pointer;
 }
 
-.JobStatusButton > a:first-child,
-.JobStatusButton > span:first-child {
+.JobStatusButton > a:first-child {
 	color:#fff;
 	margin:2px;
 	padding:2px;
 }
 
-.UploadStatusArea > span {
-	color:#fff;
+
+.JobStatusButton > span:first-child {
+	color:var(--cepi-big-stone);
 	margin: 2px 2px 2px 0;
+}
+
+.UploadStatusArea > span {
+	color:var(--cepi-big-stone);
+	margin: 2px 2px 2px 0;
+}
+
+.UploadStatusArea > span:hover {
+	color:var(--cepi-malibu);
 }
 
 .UploadStatusArea{
@@ -262,12 +279,12 @@ th.dgrid-cell.wsItemMembers {
 
 .UploadStatusUpload{
 	display:inline-block;
-	margin: 2px 0 2px 2px;
-    padding: 2px 0 2px 2px;
+	margin: 2px 2px 2px 0;
+    padding: 2px 2px 2px 0;
 }
 
 .UploadStatusUpload .fa {
-	color: #ddd;
+	color: var(--cepi-big-stone);
 }
 .UploadingProgress  {
 	border-left: 1px solid #ccc;
@@ -329,6 +346,10 @@ th.dgrid-cell.wsItemMembers {
 
 .JobFilters .JobFilter.active {
 	border-bottom: 3px solid #c0d3a2;
+}
+
+.JobManager {
+	background-color: var(--cepi-bone);
 }
 
 .ActionButtonWrapper {

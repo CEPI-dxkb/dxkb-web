@@ -5,7 +5,8 @@ define([
   'dojo/topic', 'dojo/query', 'dijit/layout/ContentPane', 'dojo/text!./templates/IDMapping.html',
   'dijit/Dialog', 'dijit/popup', 'dijit/TooltipDialog', './DownloadTooltipDialog', './PerspectiveToolTip',
   './CopyTooltipDialog', './PermissionEditor', '../WorkspaceManager', '../DataAPI', 'dojo/_base/Deferred', '../util/PathJoin',
-  './FeatureDetailsTooltipDialog', './ServicesTooltipDialog', './RerunUtility', 'dojox/widget/Standby'
+  './FeatureDetailsTooltipDialog', './ServicesTooltipDialog', './RerunUtility', 'dojox/widget/Standby',
+  './copilot/ChatSessionSidePanel', './copilot/CopilotApi', './copilot/ChatSessionOptionsBar'
 ], function (
   declare, BorderContainer, on, domConstruct,
   request, when, domClass,
@@ -13,7 +14,8 @@ define([
   Topic, query, ContentPane, IDMappingTemplate,
   Dialog, popup, TooltipDialog, DownloadTooltipDialog, PerspectiveToolTipDialog,
   CopyTooltipDialog, PermissionEditor, WorkspaceManager, DataAPI, Deferred, PathJoin,
-  FeatureDetailsTooltipDialog, ServicesTooltipDialog, RerunUtility, Standby
+  FeatureDetailsTooltipDialog, ServicesTooltipDialog, RerunUtility, Standby,
+  ChatSessionSidePanel, CopilotAPI, ChatSessionOptionsBar
 ) {
 
   var mmc = '<div class="wsActionTooltip" rel="dna">Nucleotide</div><div class="wsActionTooltip" rel="protein">Amino Acid</div>';
@@ -362,7 +364,105 @@ define([
           window.open(PathJoin(this.docsServiceURL, this.tutorialLink));
         },
         true
-      ], [
+      ],
+      [
+        'CopilotChat',
+        'fa icon-comment fa-2x',
+        {
+          label: 'Chat',
+          tooltip: 'Chat with Copilot',
+          persistent: true,
+          validTypes: ['*'],
+        },
+        function (selection, container, button) {
+          console.log('CopilotChat');
+          // Check if chat panel already exists
+          if (this.chatPanel) {
+            // If chat panel exists, toggle between chat and details panel
+            if (this.getChildren().indexOf(this.chatPanel) > -1) {
+              // Chat panel is currently shown, switch to details panel
+              this.removeChild(this.chatPanel);
+              if (this.itemDetailPanel) {
+                this.addChild(this.itemDetailPanel);
+              }
+            } else {
+              // Details panel is shown, switch to chat panel
+              if (this.itemDetailPanel) {
+                this.removeChild(this.itemDetailPanel);
+              }
+              this.addChild(this.chatPanel);
+            }
+            return;
+          }
+
+          // Create new CopilotAPI
+          this.copilotAPI = new CopilotAPI({
+            user_id: window.App.user.l_id
+          });
+
+          this.copilotAPI.getModelList().then(lang.hitch(this, function(modelsAndRag) {
+
+            var modelList = JSON.parse(modelsAndRag.models);
+            var ragList = JSON.parse(modelsAndRag.vdb_list);
+
+            // Add options bar to top of sidebar
+            var chatOptionsBar = new ChatSessionOptionsBar({
+              region: 'bottom',
+              style: 'height: 30px; background-color: #666666; ',
+              copilotApi: this.copilotAPI,
+              modelList: modelList,
+              ragList: ragList,
+              id: 'chat-options-bar',
+            });
+
+            // Create new chat panel
+            this.chatPanel = new ChatSessionSidePanel({
+              region: 'right',
+              splitter: true,
+              style: 'width: 32%',
+              copilotApi: this.copilotAPI,
+              containerSelection: this.selectionActionBar.get('selection'),
+              optionsBar: chatOptionsBar
+            });
+            this.chatPanel._setupContainerWatch();
+
+            // Add to container in same location as itemDetailPanel
+            // TODO: this is a hack to get the chat panel to appear in the same location as the itemDetailPanel
+            if (this.itemDetailPanel && this.itemDetailPanel.domNode) {
+              // Get the position of itemDetailPanel
+              var pos = this.itemDetailPanel.domNode.style;
+              this.chatPanel.domNode.style.position = pos.position;
+              this.chatPanel.domNode.style.right = pos.right;
+              this.chatPanel.domNode.style.top = pos.top;
+            }
+
+            // Remove itemDetailPanel if it exists
+            if (this.itemDetailPanel && this.getChildren().indexOf(this.itemDetailPanel) > -1) {
+              this.removeChild(this.itemDetailPanel);
+            }
+
+            // Add chat panel
+            this.addChild(this.chatPanel);
+
+            // Wait for input widget to be created before setting initial selection
+            setTimeout(lang.hitch(this, function() {
+              if (this.chatPanel.inputWidget && this.selectionActionBar.get('selection').length > 0) {
+                this.chatPanel.set('containerSelection', this.selectionActionBar.get('selection'));
+                this.chatPanel.inputWidget.setSystemPromptWithData(this.selectionActionBar.get('selection'));
+              }
+            }), 100);
+          })).catch(lang.hitch(this, function(err) {
+            new Dialog({
+              title: "Service Unavailable",
+              content: "The BV-BRC Copilot service is currently disabled. Please try again later.",
+              style: "width: 300px"
+            }).show();
+            console.error('Error setting up chat panel:', err);
+          }));
+        },
+        true
+      ],
+      [
         'DownloadSelection',
         'fa icon-download fa-2x',
         {
@@ -1898,6 +1998,10 @@ define([
         }), this);
         this.selectionActionBar.set('selection', sel);
         this.itemDetailPanel.set('selection', sel);
+
+        if (this.chatPanel) {
+          this.chatPanel.set('containerSelection', sel);
+        }
       }));
 
       this.grid.on('deselect', lang.hitch(this, function (evt) {
@@ -1921,6 +2025,10 @@ define([
         }
         this.selectionActionBar.set('selection', sel);
         this.itemDetailPanel.set('selection', sel);
+
+        if (this.chatPanel) {
+          this.chatPanel.set('containerSelection', sel);
+        }
       }));
 
       on(this.domNode, 'ToggleFilters', lang.hitch(this, function (evt) {

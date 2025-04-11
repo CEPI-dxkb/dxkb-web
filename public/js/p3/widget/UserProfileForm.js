@@ -18,7 +18,7 @@ define([
     fieldChanged: function (evt) {
       this.submitButton.set('disabled', true);
       this.udProfButton.set('disabled', true);
-      console.log(this.emailField.state);
+      // console.log(this.emailField.state);
       var userNameValue = 'none';
       if (document.getElementsByClassName('useridField')[0] !== undefined) {
         userNameValue = this.UNF.get('value');
@@ -29,10 +29,10 @@ define([
       }
     },
     onEmailChanged: function(evt){
-      console.log('onEmailChanged"')
+      // console.log('onEmailChanged"')
       this.fieldChanged(evt);
-      console.log('this.emailField.value: ', this.emailField.value, this.emailField)
-      console.log("this.userprofileStored: ", this.userprofileStored);
+      // console.log('this.emailField.value: ', this.emailField.value, this.emailField)
+      // console.log("this.userprofileStored: ", this.userprofileStored);
       if ((this.emailField.value === this.userprofileStored.email) && this.userprofileStored.email_verified){
         domClass.remove(this.email_verified_domnode,"dijitHidden")
         domClass.add(this.email_wait_domnode,"dijitHidden")
@@ -75,14 +75,13 @@ define([
     },
     onResendEmail: function (evt) {
       // console.log('I clicked the change password button');
-      console.log("onResendEmail")
       evt.preventDefault();
       evt.stopPropagation();
       domClass.add( this.resend_email_domnode,"dijitHidden")
       domClass.remove(this.email_wait_domnode,"dijitHidden")
       var _self=this
       var data = {id: window.localStorage.userid}
-      console.log("onResendEmail Data: ", data)
+      // console.log("onResendEmail Data: ", data)
       var def = xhr(this.userServiceURL + '/verify/', {
         data: JSON.stringify(data),
         method: 'post',
@@ -135,7 +134,7 @@ define([
         document.getElementsByClassName('pwError')[0].style.display = 'block';
         this.cPWbutton.set('disabled', false);
       } else {
-        console.log('they match, yeah');
+        // console.log('they match, yeah');
         var _self = this
         var vals = {
           'id': 1, 'jsonrpc': '2.0', 'method': 'setPassword', 'params': [window.localStorage.userid, this.pw0.get('value'), this.pw1.get('value')]
@@ -362,14 +361,12 @@ define([
           w.destroy()
         })
         domConstruct.destroy(this.setPasswordForm)
-        console.log("this: ", this)
         domConstruct.destroy(this.brcAds)
 
         this.notificationsContainer.innerHTML = 'Click <a href="https://lists.bv-brc.org/mailman/listinfo/all-users" target="_blank">HERE</a> to manage your BV-BRC mailing list subscription.'
         this.notificationsContainer.innerHTML = 'Click <a href="https://lists.bv-brc.org/mailman/listinfo/all-users" target="_blank">HERE</a> to manage your DXKB mailing list subscription. (PlaceHolder)'
 
         domClass.add(this.registrationHeading, 'dijitHidden')
-        console.log("this.mainForm: ", this.mainForm)
         this.registrationHeading.style.marginTop = '0px'
         this.mainForm.style.marginTop = '0px'
         document.getElementById("page-content-margin-id").style.marginTop = '0px'

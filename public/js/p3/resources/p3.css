@@ -458,12 +458,20 @@ table tr.even td {
     margin: auto;
 }
 
-/* Putting in some gibberish */
+/* This is for when the form is brought in as the "account settings" in a popup */
+.UserProfileForm .UserProfileForm {
+    width: 500px !important;
+}
 
 @media (max-width: 768px){
     .UserProfileForm {
-        width: 350px;
+        width: 475px;
         margin: auto;
+    }
+
+    /* This is for when the form is brought in as the "account settings" in a popup */
+    .UserProfileForm .UserProfileForm {
+        width: 340px !important;
     }
 }
 

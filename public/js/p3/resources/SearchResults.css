@@ -1,5 +1,6 @@
 .AdvancedSearch {
 	overflow: auto;
+	background-color: var(--cepi-bone);
 }
 .resultTypeHeader {
 	font-size:1.5em;

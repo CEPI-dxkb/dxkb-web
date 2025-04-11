@@ -197,6 +197,7 @@ define([
     },
 
     resubmit: function () {
+      query('.genomedistance_result .GridContainer').style('visibility', 'hidden');
       domClass.remove(query('.service_form')[0], 'hidden');
       domClass.remove(query('.appSubmissionArea')[0], 'hidden');
       query('.reSubmitBtn').style('visibility', 'hidden');

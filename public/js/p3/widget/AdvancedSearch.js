@@ -561,7 +561,8 @@ define([
 
       var keys = Object.keys(resultCounts);
 
-      var out = ['<div style="width:850px;margin:auto;font-size:1.5em;border:1px solid #333;background:#efefef;border-radius:3px;padding:4px;"><table>'];
+//      var out = ['<div style="width:850px;margin:auto;font-size:1.5em;border:1px solid #333;background:#efefef;border-radius:3px;padding:4px;"><table>'];
+      var out = ['<div id="bv-brc-page"><div id="bv-brc-page-container"><div class="page-content"><table class="results-table" >'];
       out.push('<tr>');
       out.push('<td><a class="navigationLink"  href="' + this.generateLink(keys[0], resultCounts[keys[0]].docs, resultCounts[keys[0]].total) + '">' + this.labelsByType[keys[0]] + ': ' + resultCounts[keys[0]].total + '</a></td>');
       out.push('<td><a class="navigationLink"  href="' + this.generateLink(keys[4], resultCounts[keys[4]].docs, resultCounts[keys[4]].total) + '">' + this.labelsByType[keys[4]] + ': ' + resultCounts[keys[4]].total + '</a></td>');
@@ -584,11 +585,13 @@ define([
       out.push('<td><a class="navigationLink"  href="' + this.generateLink(keys[3], resultCounts[keys[3]].docs, resultCounts[keys[3]].total) + '">' + this.labelsByType[keys[3]] + ': ' + resultCounts[keys[3]].total + '</a></td>');
       out.push('</tr>');
 
-      out.push('</table></div>');
+      out.push('</table>');
 
       if (content.length > 0) {
-        out.push('<h2>Top Matches</h2>' + content.join(''));
+        out.push('<br clear="all"/><hr width="80%"><br clear="all"/><h2>Top Matches</h2>' + content.join(''));
       }
+
+      out.push('</div></div></div>');
 
       if (this.viewer) {
         // if (foundContent){
@@ -652,6 +655,11 @@ define([
           this.viewer.set('content', '');
         }
 
+        timeoutId = setTimeout(function() {
+          location.reload();
+    //      adjustHeight();
+          }, 1000); //
+
         Topic.publish('/navigate', { href: '/search/?' + searchToQuery(query) });
       }
     },
@@ -659,6 +667,7 @@ define([
       if (this._started) {
         return;
       }
+
       this.inherited(arguments);
       this.onSetState('state', '', this.state);
     }

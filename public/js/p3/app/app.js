@@ -343,7 +343,7 @@ define([
         // console.log(evt);
         var dlg = new Dialog({
           title: 'User Profile',
-          content: "<div class=\"UserProfileForm\" data-dojo-id=\"userProfile\" data-dojo-type=\"p3/widget/UserProfileForm\" style=\"width:700px; margin-left:auto;margin-right:auto;font-size:1.1em;padding:10px;overflow-y:auto;\" data-dojo-props='callbackURL: \"<%- callbackURL %>\"'></div>",
+          content: "<div class=\"UserProfileForm\" data-dojo-id=\"userProfile\" data-dojo-type=\"p3/widget/UserProfileForm\" style=\"margin-left:auto;margin-right:auto;font-size:1.1em;padding:10px;overflow-y:auto;\" data-dojo-props='callbackURL: \"<%- callbackURL %>\"'></div>",
           onHide: function(){
             console.log("Destroy User Dialog")
             var up = registry.byId('userProfile')

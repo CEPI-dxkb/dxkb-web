@@ -51,7 +51,6 @@
         ]
 
         var virus_condensed = [
-            {name: "Adenoviridae", href: "/view/Taxonomy/10508#view_tab=overview"},
             {name: "Bunyavirales", href: "/view/Taxonomy/1980410#view_tab=overview"},
             {name: "Coronaviridae", href: "/view/Taxonomy/11118#view_tab=overview"},
             {name: "Filoviridae", href: "/view/Taxonomy/11266#view_tab=overview"},
@@ -90,11 +89,12 @@
                 <a class="nav-logo-link" href="/">
                     <img class="bv-brc-logo" src="/patric/images/cepi/dxkb-light-blue-yellow.svg" alt="BV-BRC Logo" style="height: 36px;"/>
                     <span style="display: flex; flex-direction: column; gap: 1px;">
-                        <i class="logo-subtext">hacked</i>
                         <i class="logo-subtext">v<%- request.package.version %></i>
                     </span>
                 </a>
             </div>
+
+            <!-- <div data-dojo-attach-point="dropdownHeader" style="vertical-align: top; min-width: 435px; flex: 1"> -->
 
             <div id="header-menu" style="display: flex; flex: 0 0 auto; align-items: left; min-width: fit-content;">
                 <div class="topMenuButton showOnLoad dijitHidden" data-dojo-type="dijit/form/DropDownButton">
@@ -112,12 +112,6 @@
                                             </span>
                                         </div>
                                     <% } %>
-                                    <div>
-                                        <span class="menuItem">
-                                            <a class="navigationLink" href="/view/Host/?eq(taxon_lineage_ids,2759)#view_tab=genomes"
-                                            title="Overview page for all Eukaryotic host genomes">Eukaryotic Hosts</a>
-                                        </span>
-                                    </div>
                                     <div>
                                         <span class="menuItem">
                                             <a class="navigationLink" href="/view/Taxonomy/10239" title="Overview page for all Viruses" style="text-decoration: underline;">All Viruses</a>
@@ -212,13 +206,14 @@
                                 <!-- <div><a class="navigationLink" href="/app/SequenceSubmission">Influenza Sequence Submission</a></div> -->
                                 <div><a class="navigationLink" href="/app/HASubtypeNumberingConversion">Influenza HA Subtype Conversion</a></div>
                                 <div><a class="navigationLink" href="/app/SubspeciesClassification">Subspecies Classification</a></div>
+                                <div><a class="navigationLink" href="/app/ViralAssembly">Viral Assembly</a></div>
                               </div>
                               <p></p>
                               <div class="navbarMenuHeader">BV-BRC Outbreak Tracker</div>
                               <div class="menuItems">
-                                <div><b><a class="navigationLink" href="/outbreaks/Mpox/#view_tab=overview">Mpox 2024</a></b></div>
-                                <div><b><a class="navigationLink" href="/outbreaks/H5N1/#view_tab=overview">Influenza H5N1 2024</a></b></div>
-                                <div><b><a class="navigationLink" href="/outbreaks/SARSCoV2/#view_tab=overview">SARS-CoV-2</a></b></div>
+                                <div><b><a class="navigationLinkOut" href="https://bv-brc.org/outbreaks/Mpox/#view_tab=overview" target="_blank">Mpox 2024</a></b></div>
+                                <div><b><a class="navigationLinkOut" href="https://bv-brc.org/outbreaks/H5N1/#view_tab=overview" target="_blank">Influenza H5N1 2024</a></b></div>
+                                <div><b><a class="navigationLinkOut" href="https://bv-brc.org/outbreaks/SARSCoV2/#view_tab=overview" target="_blank">SARS-CoV-2</a></b></div>
                               </div>
                             </div>
                         </div>
@@ -263,10 +258,16 @@
                        data-dojo-type="p3/widget/GlobalSearch"/>
             </div>
 
-            <!-- <div class="navbar-flex-space" style="flex-grow: 0.85;"></div> -->
+           <!-- <div class="navbar-flex-space" style="flex-grow: 0.85;"></div> -->
 
             <!-- USER LOGIN SECTION -->
             <div id="bv-brc-right-header">
+                <div id="chat-icon" style="width: 30px; align-self: right; justify-content: center; align-items: center; display: flex;">
+                    <a href="/view/Copilot">
+                        <img src="/patric/images/cepi/chat-lines.svg" alt="Chat Icon" style="width: 28px; height: 28px; justify-content: center; align-items: center;">
+                    </a>
+                </div>
+
                 <div class="HideWithAuth showOnLoad dijitHidden">
                     <div class="topMenuButton showOnLoad dijitHidden" data-dojo-type="dijit/form/DropDownButton" style="display: flex; align-items: right;">
                         <img class="user-profile-icon" src="/patric/images/user-circle-cut-white.svg" alt="User Profile" style="height: 28px;"/>
@@ -287,6 +288,12 @@
                     </div>
                 </div>
 
+                <div class="showOnLoad ShowWithAuth dijitHidden WorkspaceController desktop-only">
+                    <div data-dojo-type="p3/widget/UploadStatus"></div>
+
+                    <div data-dojo-type="p3/widget/JobStatus"></div>
+                </div>
+
                 <div id="mobile-search-icon">
                     <button class="search-icon" onclick="toggleSearch()">
                         <span class="icon-search fa-2x"></span>
@@ -294,7 +301,7 @@
                 </div>
 
                 <div class="showOnLoad ShowWithAuth dijitHidden topMenuButtonIcon"
-                        data-dojo-type="dijit/form/DropDownButton" data-dojo-props="iconClass:'icon-user fa-2x login-btn'">
+                        data-dojo-type="dijit/form/DropDownButton" data-dojo-props="iconClass:'icon-user fa-2x login-btn'" style="justify-content: center; align-self: center;">
                     <div class="warning_icon user_warning_icon icon-warning fa fa-1x"> </div>
                     <div data-dojo-type="p3/widget/TooltipDialog">
                         <div>Signed in as <span id="signedInAs" style="font-weight:bold;color: var(--cepi-malibu);"></span></div>
@@ -334,8 +341,6 @@
                                title="Overview page for all Bacteria genomes">All Bacteria</a>
                             <a href="/view/Taxonomy/2157"
                                title="Overview page for all Archea genomes">All Archaea</a> -->
-                            <a href="/view/Host/?eq(taxon_lineage_ids,2759)#view_tab=genomes"
-                               title="Overview page for all Eukaryotic host genomes">Eukaryotic Hosts</a>
                             <a href="/view/Taxonomy/10239" title="Overview page for all Viruses">All Viruses</a>
                         </div>
 
@@ -464,12 +469,13 @@
                                 <!-- <div><a href="/app/SequenceSubmission">Influenza Sequence Submission</a></div> -->
                                 <div><a href="/app/HASubtypeNumberingConversion">Influenza HA Subtype Conversion</a></div>
                                 <div><a href="/app/SubspeciesClassification">Subspecies Classification</a></div>
+                                <div><a href="/app/ViralAssembly">Viral Assembly</a></div>
                             </div>
                             <div class="navbarMenuHeader">BV-BRC Outbreak Tracker</div>
                             <div class="sub-menu">
-                                <div><a href="/outbreaks/Mpox/#view_tab=overview">Mpox 2024</a></div>
-                                <div><a href="/outbreaks/H5N1/#view_tab=overview">Influenza H5N1 2024</a></div>
-                                <div><a href="/outbreaks/SARSCoV2/#view_tab=overview">SARS-CoV-2</a></div>
+                                <div><a class="navigationLinkOut" href="https://bv-brc.org/outbreaks/Mpox/#view_tab=overview" target="_blank">Mpox 2024</a></div>
+                                <div><a class="navigationLinkOut" href="https://bv-brc.org/outbreaks/H5N1/#view_tab=overview" target="_blank">Influenza H5N1 2024</a></div>
+                                <div><a class="navigationLinkOut" href="https://bv-brc.org/outbreaks/SARSCoV2/#view_tab=overview" target="_blank">SARS-CoV-2</a></div>
                             </div>
                         </div>
                     </div>
@@ -489,6 +495,14 @@
                             <div><a href="/job/">My Jobs</a></div>
                             <div><a href="/view/GenomeList/?eq(public,false)">My Genomes</a></div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="jobs-status-container mobile-only" style="background-color: var(--cepi-white);">
+                    <div class="showOnLoad ShowWithAuth dijitHidden WorkspaceController" style="display: flex; flex-direction: row;">
+                        <div data-dojo-type="p3/widget/UploadStatus"></div>
+
+                        <div data-dojo-type="p3/widget/JobStatus"></div>
                     </div>
                 </div>
 
@@ -573,3 +587,38 @@
     <!-- <div class="msg-box-below-topnav"><strong>Welcome to the BV-BRC Alpha website. This site is used for active development and testing of the BV-BRC resource. Hence, the data and functionality may change frequently and without notice.</strong></div> -->
     <!-- <div class="msg-box-below-topnav"><strong>Welcome to the BV-BRC Beta website. This site is used to seek early community feedback for the BV-BRC resource, which is still under development. Please note that the data and functionality on this site may change frequently and without notice.</strong></div> -->
 </div>
+<!-- <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var user_data = JSON.parse(localStorage.getItem('userProfile'));
+        // if (user_data.roles && user_data.roles.includes('admin')) {
+        var dropdownButton = document.createElement('div');
+        dropdownButton.className = 'topMenuButton showOnLoad dijitHidden';
+        dropdownButton.setAttribute('data-dojo-type', 'dijit/form/DropDownButton');
+
+        var span = document.createElement('span');
+        span.textContent = 'COPILOT';
+        dropdownButton.appendChild(span);
+
+        var tooltipDialog = document.createElement('div');
+        tooltipDialog.setAttribute('data-dojo-type', 'p3/widget/TooltipDialog');
+
+        var menuHeader = document.createElement('div');
+        menuHeader.className = 'menuHeader';
+        menuHeader.textContent = 'AI Assistant';
+        menuHeader.style.width = '100px';
+        tooltipDialog.appendChild(menuHeader);
+
+        var link = document.createElement('a');
+        link.className = 'TopMenuLink';
+        link.href = '/view/Copilot';
+        link.textContent = 'Chat';
+
+        var innerDiv = document.createElement('div');
+        innerDiv.appendChild(link);
+        tooltipDialog.appendChild(innerDiv);
+        dropdownButton.appendChild(tooltipDialog);
+
+        var dropdownHeader = document.querySelector('[data-dojo-attach-point="dropdownHeader"]');
+        dropdownHeader.appendChild(dropdownButton);
+    });
+</script> -->

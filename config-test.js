@@ -20,7 +20,7 @@ const defaults = {
   dataServiceURL: 'https://p3.theseed.org/services/data_api',
   accountURL: 'http://user.patric.local:3002/',
   docsServiceURL: 'https://bv-brc.org/docs/',
-  userServiceURL: 'https://user.patricbrc.org',
+  userServiceURL: '',
   localStorageCheckInterval: 86400,
   enableDevTools: false,
   reportProblemEmailAddress: 'help@bv-brc.org',
@@ -38,7 +38,7 @@ const defaults = {
   linkedinConfigFile: path.join(__dirname, 'linkedin.txt')
 };
 
-const config_filename = 'p3-web.conf';
+const config_filename = 'p3-test.conf';
 const config_file = path.join(__dirname, config_filename);
 
 module.exports = nconf.argv().env().file(config_file).defaults(defaults);

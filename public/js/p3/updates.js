@@ -62,6 +62,18 @@ function renderUpdates() {
     const wrapper = document.createElement('div');
     wrapper.className = 'carousel-wrapper';
 
+    // If there aren't enough articles, hide the arrows...
+    // The event listener is because otherwise, at the time of this script, the right arrow doesn't exist yet, and doesn't get deleted.
+    document.addEventListener('DOMContentLoaded', () => {
+        if(updateList.length > updatesToShow) {
+            const arrows = document.querySelectorAll('.carousel-button');
+
+            arrows.forEach(arrow => {
+                arrow.style.visibility = "visible";
+            });
+        }
+    });
+
     // Pre-load the last/previous article if there are enough articles
     if(updatesToShow > updateList.length){
         let articleIndex = (currentIndex - 1) % updateList.length;

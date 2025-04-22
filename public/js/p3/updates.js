@@ -75,7 +75,7 @@ function renderUpdates() {
     });
 
     // Pre-load the last/previous article if there are enough articles
-    if(updatesToShow > updateList.length){
+    if(updatesToShow < updateList.length){
         let articleIndex = (currentIndex - 1) % updateList.length;
         articleIndex < 0 ? articleIndex = updateList.length - 1 : articleIndex;
         let article = updateList[articleIndex];
@@ -119,7 +119,7 @@ function renderUpdates() {
     }
 
     // Pre-load the next article if there's more than the carousel can show...
-    if(updatesToShow > updateList.length){
+    if(updatesToShow < updateList.length){
         articleIndex = (currentIndex + updatesToShow) % updateList.length;
         article = updateList[articleIndex];
 

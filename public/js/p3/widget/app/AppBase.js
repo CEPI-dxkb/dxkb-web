@@ -97,6 +97,7 @@ define([
             help_text = help_text || dom.byId(item.attributes.name.value, this.help_doc) || domConstruct.toDom('<div>Help text missing</div>');
             help_text.style.overflowY = 'auto';
             help_text.style.maxHeight = '400px';
+
             if (domClass.contains(item, 'dialoginfo')) {
               item.info_dialog = new Dialog({
                 content: help_text,

@@ -4,14 +4,14 @@ const updateList = [
         link: "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10793126&tag=1",
         image: "http://localhost:3000/patric/images/cepi/exaflops.png",
         description: "A presentation for a scalable, end-to-end workflow for protein design. By augmenting protein sequences with natural language descriptions of their biochemical properties, the presenters train generative models that can be preferentially aligned with protein fitness landscapes."
-    }
-/*
-    {
-        title: "Influenza H5N1 2024",
-        link: "https://www.bv-brc.org/outbreaks/H5N1/#view_tab=overview",
-        image: "https://www.bv-brc.org/api/content/images/outbreaks/H5N1/influenza_virion_image.png",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
     },
+    {
+        title: "High-resolution in situ structures of hantavirus glycoprotein tetramers",
+        link: "https://www.biorxiv.org/content/10.1101/2025.06.17.660152v1",
+        image: "https://www.biorxiv.org/content/biorxiv/early/2025/06/18/2025.06.17.660152/F1.medium.gif",
+        description: "New World hantaviruses cause severe infections in humans, with case fatality rates approaching 40%. Previous structural studies have advanced our understanding of hantavirus glycoprotein architecture and function, however, the lack of high-resolution in situ structures of the glycoprotein tetramer and its lattice organization has limited mechanistic insights into viral assembly, entry, and antigenicity"
+    },
+    /*
     {
         title: "Temp Title 1",
         link: "https://unsplash.com/photos/purple-cells-L7en7Lb-Ovc",

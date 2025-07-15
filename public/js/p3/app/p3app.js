@@ -53,6 +53,9 @@ define([
             backgroundColor: '#007bff',
             borderRadius: '50%'
           }).placeAt(document.body);
+        }).catch(function(err) {
+          console.error("Failed to refresh user data during startup:", err);
+          // Continue with startup even if refresh fails
         })
       }
 
@@ -777,7 +780,16 @@ define([
       }
     },
     refreshUser: function () {
-      return xhr.get(this.userServiceURL + '/user/' + window.localStorage.userid, {
+      // Check if userServiceURL is configured
+      if (!this.userServiceURL) {
+        console.error('refreshUser: userServiceURL is not configured');
+        return Promise.reject(new Error('User service URL is not configured'));
+      }
+
+      var url = this.userServiceURL + '/user/' + window.localStorage.userid;
+      console.log('refreshUser: Making request to:', url);
+
+      return xhr.get(url, {
         headers: {
           'Accept': 'application/json',
           'Authorization': window.App.authorizationToken
@@ -785,6 +797,21 @@ define([
       })
         .then(
           function (user) {
+            // Defensive check: is the response valid JSON?
+            function isJsonString(str) {
+              try {
+                JSON.parse(str);
+                return true;
+              } catch (e) {
+                return false;
+              }
+            }
+            if (typeof user !== 'string' || !isJsonString(user)) {
+              console.error('refreshUser: Response is not valid JSON', user);
+              console.error('refreshUser: This usually means the user service is not available or returning an error page');
+              // Optionally, handle logout or show an error to the user here
+              return;
+            }
             var userObj = JSON.parse(user);
             // console.log(userObj);
             userObj.id += '@' + localStorage.getItem('realm');
@@ -798,7 +825,8 @@ define([
           },
           /* istanbul ignore next */
           function (err) {
-            console.log(err);
+            console.error('refreshUser: Request failed:', err);
+            console.error('refreshUser: This could be due to network issues or the user service being unavailable');
           }
         );
     },

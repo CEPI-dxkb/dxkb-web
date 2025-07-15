@@ -9,6 +9,7 @@
  * - Handles keyboard events for save/cancel during editing
  * - Publishes title change events for other widgets to subscribe to
  * - Provides API for enabling/disabling title editing
+ * - Includes a plus icon button for creating new chat sessions
  */
 define([
   'dojo/_base/declare', // Base class for creating Dojo classes
@@ -17,7 +18,8 @@ define([
   'dojo/on', // Event handling
   'dojo/topic', // Pub/sub messaging
   'dojo/_base/lang', // Language utilities like hitch
-  'dijit/form/TextBox' // Text input widget
+  'dijit/form/TextBox', // Text input widget
+  'dijit/form/Button' // Button widget for new chat
 ], function (
   declare,
   ContentPane,
@@ -25,7 +27,8 @@ define([
   on,
   topic,
   lang,
-  TextBox
+  TextBox,
+  Button
 ) {
   /**
    * @class ChatSessionTitle
@@ -74,11 +77,12 @@ define([
       // Create container for title elements
       this.titleContainer = domConstruct.create('div', {
         class: 'chat-session-title',
-        style: 'display: flex; align-items: center; padding: 5px;'
+        style: 'display: flex; align-items: center; padding: 5px; gap: 8px;'
       }, this.containerNode);
 
       this.createTitleDisplay();
       this.createTitleEditor();
+      this.createNewChatButton();
 
       // Subscribe to relevant topics
       topic.subscribe('ChatSessionSelected', lang.hitch(this, 'onSessionSelected'));
@@ -95,7 +99,8 @@ define([
     createTitleDisplay: function() {
       this.titleDisplay = domConstruct.create('div', {
         innerHTML: this.truncateTitle(this.title),
-        class: 'chatTitleDisplay'
+        class: 'chatTitleDisplay',
+        style: 'flex: 1; cursor: pointer;'
       }, this.titleContainer);
 
       on(this.titleDisplay, 'click', lang.hitch(this, 'startEditing'));
@@ -111,7 +116,8 @@ define([
     createTitleEditor: function() {
       this.titleEditor = new TextBox({
         class: 'chatTitleEditor',
-        maxLength: this.maxLength
+        maxLength: this.maxLength,
+        style: 'flex: 1; display: none;'
       });
       this.titleEditor.placeAt(this.titleContainer);
 
@@ -126,6 +132,23 @@ define([
 
       // Handle blur event
       on(this.titleEditor, 'blur', lang.hitch(this, 'saveTitleEditor'));
+    },
+
+    /**
+     * Creates the new chat button with plus icon
+     * - Uses Button widget with plus icon
+     * - Publishes createNewChatSession topic when clicked
+     */
+    createNewChatButton: function() {
+      this.newChatButton = new Button({
+        label: '<img src="/public/js/p3/resources/images/message-square-plus.svg" alt="New Chat" style="width: 16px; height: 16px;">',
+        style: 'width: 24px; height: 24px; padding: 0; border-radius: 50%; background-color: #007bff; color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;',
+        onClick: lang.hitch(this, function() {
+          // Publish the createNewChatSession topic
+          topic.publish('createNewChatSession');
+        })
+      });
+      this.newChatButton.placeAt(this.titleContainer);
     },
 
     /**

@@ -97,7 +97,7 @@ define([
             this.inputWidget = new CopilotInputSidePanel({
                 region: 'bottom',
                 splitter: true,
-                style: 'padding: 0 5px 5px 5px; border: 0; height: 20%; background-color: #555555;',
+                style: 'padding: 0 5px 5px 5px; border: 0; height: 10%; background-color: var(--cepi-bone);',
                 copilotApi: this.copilotApi,
                 chatStore: this.chatStore,
                 displayWidget: this.displayWidget,

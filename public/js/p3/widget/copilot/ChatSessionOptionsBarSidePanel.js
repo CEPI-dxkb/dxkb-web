@@ -54,19 +54,19 @@ define([
                 class: 'sidePanelButtonContainer'
             }, this.containerNode);
 
-            // Add New Chat button with hover effects
-            this.newChatButton = new Button({
-                label: 'New Chat',
-                style: 'margin-left: 3px; margin-top: 2px; ',
-                onClick: lang.hitch(this, function() {
-                    // Create a new chat session immediately
-                    if (this.copilotApi) {
-                        // Publish the createNewChatSession topic
-                        topic.publish('createNewChatSession');
-                    }
-                })
-            });
-            this.newChatButton.placeAt(buttonsContainer);
+            // New Chat button moved to title area - hide this one to avoid duplication
+            // this.newChatButton = new Button({
+            //     label: 'New Chat',
+            //     style: 'margin-left: 3px; margin-top: 2px; ',
+            //     onClick: lang.hitch(this, function() {
+            //         // Create a new chat session immediately
+            //         if (this.copilotApi) {
+            //             // Publish the createNewChatSession topic
+            //             topic.publish('createNewChatSession');
+            //         }
+            //     })
+            // });
+            // this.newChatButton.placeAt(buttonsContainer);
         }
     });
 });

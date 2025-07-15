@@ -349,8 +349,7 @@ define([
                 copilotApi: this.copilotApi,
                 chatStore: this.chatStore,
                 displayWidget: this.displayWidget,
-                sessionId: this.sessionId,
-                id: 'copilot-input-widget'
+                sessionId: this.sessionId
             });
             this.addChild(this.inputWidget);
         },

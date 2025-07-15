@@ -407,12 +407,11 @@ define([
 
             // Add options bar to top of sidebar
             var chatOptionsBar = new ChatSessionOptionsBar({
-              region: 'bottom',
-              style: 'height: 30px; background-color: #666666; ',
+              region: 'top',
+              style: 'height: 1px; background-color: #FFFFFF; display: none; ',
               copilotApi: this.copilotAPI,
               modelList: modelList,
-              ragList: ragList,
-              id: 'chat-options-bar',
+              ragList: ragList
             });
 
             // Create new chat panel wrapped in a ContentPane to prevent layout conflicts
@@ -453,7 +452,7 @@ define([
           })).catch(lang.hitch(this, function(err) {
             new Dialog({
               title: "Service Unavailable",
-              content: "The BV-BRC Copilot service is currently disabled. Please try again later.",
+              content: "The BRC Copilot service is currently disabled. Please try again later.",
               style: "width: 300px"
             }).show();
             console.error('Error setting up chat panel:', err);

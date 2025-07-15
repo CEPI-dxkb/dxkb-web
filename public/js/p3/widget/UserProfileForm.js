@@ -304,7 +304,10 @@ define([
       def.then(function (data) {
         console.log(data);
         if (data) {
-          window.App.refreshUser();
+          window.App.refreshUser().catch(function(err) {
+            console.error("Failed to refresh user data after profile update:", err);
+            // Continue even if refresh fails - the profile was still updated successfully
+          });
         } else {
           domClass.remove(_self.regFormErrorsContainer, 'dijitHidden')
           document.getElementsByClassName('regFormErrors')[0].innerHTML = 'There was an error';

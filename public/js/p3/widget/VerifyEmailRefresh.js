@@ -21,6 +21,9 @@ define([
                     }else{
                       domClass.add(document.body,"unverified_email")
                     }
+                }).catch(function(err) {
+                    console.error("Failed to refresh user data:", err);
+                    // Continue with the verification success message even if refresh fails
                 })
             }
         }

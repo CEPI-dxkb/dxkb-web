@@ -125,7 +125,7 @@ define([
                 })).catch(lang.hitch(this, function(err) {
                     new Dialog({
                         title: "Service Unavailable",
-                        content: "The BV-BRC Copilot service is currently unavailable. Please try again later.",
+                        content: "The BRC Copilot service is currently unavailable. Please try again later.",
                         style: "width: 300px"
                     }).show();
                     console.error('Error setting up chat panel:', err);

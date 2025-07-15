@@ -69,7 +69,7 @@ define([
         publicationsSelected: false,
 
         /** @property {boolean} showPublicationsButton - Flag to control publications button visibility */
-        showPublicationsButton: false,
+        showPublicationsButton: true,
 
         /** @property {boolean} showEnhancePromptButton - Flag to control enhance prompt button visibility */
         showEnhancePromptButton: true,
@@ -357,10 +357,10 @@ define([
 
             // Create container for text buttons
             var buttonsContainer = domConstruct.create('div', {
-                style: 'display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; margin-top: 10px; font-size: 0.9em; gap: 2px;'
+                style: 'display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; margin-top: 10px; margin-bottom: 10px; font-size: 0.9em; gap: 2px;'
             }, this.containerNode);
 
-            // Add New Chat button with hover effects (moved to be first)
+            // New Chat button moved to title area - hide this one to avoid duplication
             this.newChatButton = domConstruct.create('div', {
                 innerHTML: 'New Chat',
                 className: 'chat-window-options-button',

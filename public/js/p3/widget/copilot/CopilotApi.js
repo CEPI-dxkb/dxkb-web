@@ -63,13 +63,13 @@ define([
             // If either URL is missing, mark service as unavailable and notify listeners
             if (!this.apiUrlBase || !this.dbUrlBase) {
                 this.copilotAvailable = false;
-                var error = new Error('The BV-BRC Copilot service is currently unavailable. Please try again later.');
+                var error = new Error('The BRC Copilot service is currently unavailable. Please try again later.');
                 // Publish a global error so UI components can respond accordingly
                 topic.publish('CopilotApiError', { error: error });
                 // Additionally show a dialog to the user
                 new Dialog({
                     title: 'Service Unavailable',
-                    content: 'The BV-BRC Copilot service is currently unavailable. Please try again later.',
+                    content: 'The BRC Copilot service is currently unavailable. Please try again later.',
                     style: 'width: 300px'
                 }).show();
             }
@@ -571,7 +571,7 @@ define([
             if (!this._checkLoggedIn()) return Promise.reject('Not logged in');
             // If the Copilot service is unavailable, immediately reject and publish the error
             if (!this.copilotAvailable || !this.dbUrlBase) {
-                var error = new Error('The BV-BRC Copilot service is currently unavailable.');
+                var error = new Error('The BRC Copilot service is currently unavailable.');
                 topic.publish('CopilotApiError', { error: error });
                 return Promise.reject(error);
             }

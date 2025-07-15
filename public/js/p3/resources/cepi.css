@@ -1620,6 +1620,10 @@ pre.bv-brc-code-block button:active {
   background-color: var(--cepi-bone) !important;
 }
 
+.dijitBorderContainer {
+  background-color: var(--cepi-bone) !important;
+}
+
 .dijitTabPane,
 .dijitStackContainer-child,
 .dijitAccordionContainer-child {
@@ -1930,7 +1934,7 @@ pre.bv-brc-code-block button:active {
   margin-right: 11px;
 }
 
-/* Copilot Chat Container Styles */
+Copilot Chat Container Styles
 .copilot-result-container {
   width: 90%;
   height: 100%;
@@ -1983,8 +1987,8 @@ pre.bv-brc-code-block button:active {
 }
 
 .chat-session-title {
-  width: 90%;
-  font-size: 1.6em;
+  width: 95%;
+  font-size: 1.2em;
   font-weight: bold;
   color: var(--cepi-sapphire);
 }
@@ -1993,9 +1997,10 @@ pre.bv-brc-code-block button:active {
   border-top-right-radius: 15px;
   background-color: white !important;
   margin-top: 10px;
-  border-top: 1px solid grey;
-  border-right: 1px solid grey;
-
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  height: fit-content;
 }
 
 .copilot-input-wrapper {

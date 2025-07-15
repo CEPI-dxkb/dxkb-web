@@ -1,17 +1,20 @@
 <form dojoAttachPoint="containerNode" class="PanelForm App ${baseClass}"
       dojoAttachEvent="onreset:_onReset,onsubmit:_onSubmit">
-        <div class="appTemplate page-content" style="margin-top: 40px; margin-bottom: 40px;">
-            <div class="appTitle">
-                <h1 class="page-content-header">Services</h1>
-                <h2 class="page-content-subheader">${applicationLabel}
-                    <div class="infobox iconbox tutorialButton tutorialInfo">
+    <div class="appTemplate">
+        <div class="appTitle">
+            <span class="breadcrumb">Services</span>
+            <h3>${applicationLabel}
+                <!--?<div name="overview" class="infobox iconbox infobutton dialoginfo">
+                    <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+                </div>-->
+                <div class="infobox iconbox tutorialButton tutorialInfo">
                     <a href="${docsServiceURL}${tutorialLink}" target="_blank"><i class="fa icon-books fa-1x"
-                                                                                title="click to open tutorial"></i></a>
-                    </div>
-                </h2>
-                <p>${applicationDescription} For further explanation, please see the ${applicationLabel} Service <a
-                href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.</p>
-            </div>
+                                                                                  title="click to open tutorial"></i></a>
+                </div>
+            </h3>
+            <p>${applicationDescription} For further explanation, please see the ${applicationLabel} Service <a
+                    href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.</p>
+        </div>
         <div class="formFieldsContainer" style="max-width: 450px; margin: auto">
             <div id="startWithBox" class="appBox appShadow">
                 <div class="headerrow">
@@ -82,7 +85,7 @@
                     </select>
                 </div>
                 <div class="appRow">
-                    <label class="paramlabel">Virus Genome</label><br>
+                    <label class="paramlabel">Reference Database</label><br>
                     <select data-dojo-type="dijit/form/Select" name="module" data-dojo-attach-point="module"
                             style="width:400px" required="true">
                         <option value="FLU">FLU</option>

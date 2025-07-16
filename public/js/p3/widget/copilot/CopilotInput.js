@@ -12,9 +12,9 @@
  * - Provides model and RAG database selection UI
  */
 define([
-    'dojo/_base/declare', 'dojo/dom-construct', 'dojo/on', 'dijit/layout/ContentPane', 'dijit/form/Textarea', 'dijit/form/Button', 'dojo/topic', 'dojo/_base/lang'
+    'dojo/_base/declare', 'dojo/dom-construct', 'dojo/on', 'dijit/layout/ContentPane', 'dijit/form/Textarea', 'dijit/form/Button', 'dojo/topic', 'dojo/_base/lang', 'html2canvas/dist/html2canvas.min'
   ], function (
-    declare, domConstruct, on, ContentPane, Textarea, Button, topic, lang
+    declare, domConstruct, on, ContentPane, Textarea, Button, topic, lang, html2canvas
   ) {
     /**
      * @class CopilotInput
@@ -34,10 +34,27 @@ define([
       systemPrompt: null,
 
       /** Selected language model for chat completion */
-      model: 'llama3.1-70b',
+      model: null,
 
       /** Selected RAG database for enhanced responses */
-      ragDb: null,
+      ragDb: 'bvbrc_helpdesk',
+
+      statePrompt: null,
+
+      /** Number of documents to use for RAG queries */
+      numDocs: 3,
+
+      // Widget styling
+      style: 'padding: 0 5px 5px 5px; border: 0; height: 20%;',
+
+      // Size constraints for the widget
+      minSize: 40,
+      maxSize: 200,
+
+      // Flag to track page content toggle state
+      pageContentEnabled: false,
+
+      enhancedPrompt: null,
 
       /**
        * Constructor that initializes the widget with provided options
@@ -50,143 +67,147 @@ define([
       /**
        * Sets up the widget UI after DOM creation
        * Implementation:
-       * - Creates centered wrapper div for components
-       * - Adds settings panel with model/RAG selection
-       * - Creates auto-expanding textarea with max height
-       * - Adds submit button with loading state
-       * - Sets up event handlers for submission
+       * - Creates flex container layout
+       * - Adds auto-expanding textarea
+       * - Adds submit button
+       * - Creates model/RAG selection UI
+       * - Sets up event handlers
        */
       postCreate: function() {
-        this.inherited(arguments);
-
-        // Create centered wrapper div
+        // Create main wrapper with flex layout
         var wrapperDiv = domConstruct.create('div', {
-          class: 'copilot-input-wrapper',
-          id: 'copilot-input-wrapper'
+            style: 'display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; padding-top: 2px; border: 0;'
         }, this.containerNode);
 
-        // Create settings panel
-        var settingsDiv = domConstruct.create('div', {
-          class: 'copilot-input-settings',
-          id: 'copilot-input-settings'
+        // Container for input elements with flex layout
+        var inputContainer = domConstruct.create('div', {
+            style: 'display: flex; justify-content: center; align-items: flex-start; width: 100%;'
         }, wrapperDiv);
 
-        // Add model selector
-        this._createModelText(settingsDiv);
+        // Add container for the toggle switch and label on the left side
+        var toggleContainer = domConstruct.create('div', {
+            style: 'width: 35px; height: 35px; display: flex; flex-direction: column; align-items: center; margin-right: 15px;'
+        }, inputContainer);
 
-        // Add RAG database selector
-        this._createRagText(settingsDiv);
-
-        // Create expandable textarea
-        this.textArea = new Textarea({
-          class: 'copilot-input-textarea',
-          rows: 3,
-          maxLength: 10000,
-          placeholder: 'Enter your text here...',
-          id: 'copilot-input-textarea'
+        // Create screenshot div above the toggle button
+        var screenshotDiv = domConstruct.create('div', {
+            'class': 'screenshotDivAboveToggle'
         });
-        this.textArea.placeAt(wrapperDiv);
 
-        // Create submit button
-        this.submitButton = new Button({
-          label: 'Submit',
-          style: 'height: 30px; margin-right: 10px;',
-          onClick: lang.hitch(this, function() {
-            if (this.isSubmitting) return;
-
-            // Handle submission based on RAG status
-            if (this.copilotApi && this.ragDb) {
-              this._handleRagSubmit();
-            } else if (this.copilotApi) {
-              this._handleRegularSubmit();
-            } else {
-              console.error('CopilotApi widget not initialized');
+        // Create the page content toggle using the screenshot div
+        this.pageContentToggle = {
+            domNode: screenshotDiv,
+            placeAt: function(container) {
+                container.appendChild(screenshotDiv);
             }
-          })
+        };
+
+        // Add click handler and properties to screenshot div
+        screenshotDiv.title = 'Ask about page - Sends page content to help answer your question.';
+        screenshotDiv.style.cursor = 'pointer';
+        on(screenshotDiv, 'click', lang.hitch(this, function() {
+            topic.publish('pageContentToggleChanged', !this.pageContentEnabled);
+        }));
+
+        this.pageContentToggle.placeAt(toggleContainer);
+
+        // Initialize button style
+        this._updateToggleButtonStyle();
+
+        // Configure textarea with auto-expansion and styling
+        this.textArea = new Textarea({
+            style: 'width: 60%; min-height: 50px; max-height: 100%; resize: none; overflow-y: hidden; border-radius: 5px; margin-right: 10px;',
+            rows: 3, // Default visible rows
+            maxLength: 10000,
+            placeholder: 'Enter your text here...'
         });
-        this.submitButton.placeAt(wrapperDiv);
 
-        // Configure textarea auto-expansion
-        const maxHeight = 200; // Max height ~9 rows
+        // Add textarea to container
+        this.textArea.placeAt(inputContainer);
 
-        // Handle textarea resizing
+        // Configure submit button with click handler
+        this.submitButton = new Button({
+            label: 'Submit',
+            style: 'height: 30px; margin-right: 10px;',
+            onClick: lang.hitch(this, function() {
+            // Prevent multiple simultaneous submissions
+            if (this.isSubmitting) return;
+            // Handle different submission types based on configuration
+            if (this.pageContentEnabled) {
+                this._handlePageSubmit();
+            } else if (this.copilotApi && this.ragDb) {
+                this._handleRagSubmit();
+            } else if (this.copilotApi) {
+                this._handleRegularSubmit();
+            } else {
+                console.error('CopilotApi widget not initialized');
+            }
+            })
+        });
+
+        // Add button to container
+        this.submitButton.placeAt(inputContainer);
+
+        // Subscribe to page content toggle changes from ChatSessionOptionsBar
+        topic.subscribe('pageContentToggleChanged', lang.hitch(this, function(checked) {
+            this.pageContentEnabled = checked;
+            this._updateToggleButtonStyle();
+            console.log('Page content toggle changed to:', checked);
+        }));
+
+        // Maximum height for textarea before scrolling
+        const maxHeight = 200; // ~9 rows
+
+        // Handle textarea auto-expansion on input
         on(this.textArea, 'input', function() {
-          this.textArea.style.height = 'auto';
-          this.textArea.style.height = (this.textArea.scrollHeight) + 'px';
+            this.textArea.style.height = 'auto'; // Reset height
+            this.textArea.style.height = (this.textArea.scrollHeight) + 'px'; // Expand to content
 
-          if (this.textArea.scrollHeight > maxHeight) {
+            // Enable scrolling if content exceeds max height
+            if (this.textArea.scrollHeight > maxHeight) {
             this.textArea.style.height = maxHeight + 'px';
             this.textArea.style.overflowY = 'auto';
-          } else {
+            } else {
             this.textArea.style.overflowY = 'hidden';
-          }
+            }
         }.bind(this));
 
-        // Handle Enter key submission
+        // Handle Enter key for submission (except with Shift)
         on(this.textArea, 'keypress', lang.hitch(this, function(evt) {
-          if (evt.keyCode === 13 && !evt.shiftKey && !this.isSubmitting) {
+            if (evt.keyCode === 13 && !evt.shiftKey && !this.isSubmitting) {
             evt.preventDefault();
             this.submitButton.onClick();
+            }
+        }));
+
+        topic.subscribe('enhancePromptChange', lang.hitch(this, function(enhancedPrompt) {
+          this.enhancedPrompt = enhancedPrompt;
+        }));
+
+        // Subscribe to main chat suggestion selection to populate input text area
+        topic.subscribe('populateInputSuggestion', lang.hitch(this, function(suggestion) {
+          if (this.textArea) {
+            this.textArea.set('value', suggestion);
+            // Focus on the text area and place cursor at the end
+            this.textArea.focus();
+            if (this.textArea.textbox) {
+              var textbox = this.textArea.textbox;
+              textbox.selectionStart = textbox.selectionEnd = suggestion.length;
+            }
           }
         }));
       },
 
       /**
-       * Creates the model selection text element
+       * Handles submission of RAG queries with document retrieval
        * Implementation:
-       * - Adds hoverable/clickable div showing current model
-       * - Triggers model selection dialog on click
-       */
-      _createModelText: function(currDiv) {
-        this.modelText = domConstruct.create('div', {
-          id: 'copilot-model-text',
-          innerHTML: 'Model: None',
-          class: 'copilot-model-text',
-          onmouseover: function(evt) {
-            evt.target.style.color = '#2196F3';
-          },
-          onmouseout: function(evt) {
-            evt.target.style.color = '';
-          },
-          onclick: lang.hitch(this, function() {
-            topic.publish('ragButtonPressed');
-          })
-        }, currDiv);
-      },
-
-      /**
-       * Creates the RAG database selection text element
-       * Implementation:
-       * - Adds hoverable/clickable div showing current RAG DB
-       * - Triggers RAG selection dialog on click
-       */
-      _createRagText: function(currDiv) {
-        this.ragText = domConstruct.create('div', {
-          id: 'copilot-rag-text',
-          innerHTML: 'RAG: None',
-          class: 'copilot-rag-text',
-          onmouseover: function(evt) {
-            evt.target.style.color = '#2196F3';
-          },
-          onmouseout: function(evt) {
-            evt.target.style.color = '';
-          },
-          onclick: lang.hitch(this, function() {
-            topic.publish('ragButtonPressed');
-          })
-        }, currDiv);
-      },
-
-      /**
-       * Handles submission of RAG-enhanced queries
-       * Implementation:
+       * - Immediately shows user message and clears text area
        * - Disables input during submission
        * - Shows loading indicator
-       * - Makes RAG query to get relevant documents
-       * - Uses documents to build system prompt
-       * - Makes LLM query with enhanced prompt
-       * - Updates chat store with messages
-       * - Handles new chat initialization
+       * - Retrieves documents via RAG API
+       * - Builds system prompt with document context
+       * - Makes follow-up LLM query with enhanced context
+       * - Updates chat store with assistant/system messages only
        */
       _handleRagSubmit: function() {
         console.log('this.ragDb=', this.ragDb);
@@ -197,46 +218,53 @@ define([
           console.log('state', this.state);
         }
 
+        // Immediately show user message and clear text area
+        var userMessage = {
+          role: 'user',
+          content: inputText,
+          message_id: 'user_' + Date.now(),
+          timestamp: new Date().toISOString()
+        };
+
+        this.chatStore.addMessage(userMessage);
+        this.displayWidget.showMessages(this.chatStore.query());
+        this.textArea.set('value', '');
+
         this.isSubmitting = true;
         this.submitButton.set('disabled', true);
 
         this.displayWidget.showLoadingIndicator(this.chatStore.query());
 
-        this.copilotApi.submitRagQuery(inputText, this.ragDb, this.sessionId, this.model).then(lang.hitch(this, function(response) {
-          var system_prompt = 'Using the following documents as context, answer the user questions. Do not use any other sources of information:\n\n';
-          if (this.systemPrompt && this.systemPrompt.length > 1) {
-            system_prompt = this.systemPrompt + '\n\n' + system_prompt;
+        var systemPrompt = 'You are a helpful scientist website assistant for the website BV-BRC, the Bacterial and Viral Bioinformatics Resource Center.\n\n';
+        if (this.systemPrompt) {
+            systemPrompt += this.systemPrompt;
+        }
+        if (this.statePrompt) {
+            systemPrompt += this.statePrompt;
+        }
+
+        this.copilotApi.submitCopilotQuery(inputText, this.sessionId, systemPrompt, this.model, true, this.ragDb, this.numDocs, null, this.enhancedPrompt).then(lang.hitch(this, function(response) {
+          // Only add assistant message and system message (if present) - user message was already added
+          var messagesToAdd = [];
+          if (response.systemMessage) {
+            messagesToAdd.push(response.systemMessage);
           }
-          response['documents'][0].forEach(function(doc) {
-            system_prompt += doc + '\n';
-          });
+          if (response.assistantMessage) {
+            messagesToAdd.push(response.assistantMessage);
+          }
 
-          this.copilotApi.submitQuery(inputText, this.sessionId, system_prompt, this.model).then(lang.hitch(this, function(llm_response) {
+          if (messagesToAdd.length > 0) {
+            this.chatStore.addMessages(messagesToAdd);
+          }
 
-            this.chatStore.addMessages([
-              {
-                role: 'user',
-                content: inputText
-              },
-              {
-                role: 'system',
-                content: system_prompt
-              },
-              {
-                role: 'assistant',
-                content: llm_response.response
-              }
-            ]);
-            _self.textArea.set('value', '');
-            this.displayWidget.showMessages(this.chatStore.query());
+          this.displayWidget.showMessages(this.chatStore.query());
 
-            if (_self.new_chat) {
-              _self.new_chat = false;
-              topic.publish('reloadUserSessions');
-              topic.publish('generateSessionTitle');
-            }
-          }));
-        })).finally(lang.hitch(this, function() {
+          if (_self.new_chat) {
+            _self._finishNewChat();
+          }
+        })).catch(function(error) {
+          topic.publish('CopilotApiError', { error: error });
+        }).finally(lang.hitch(this, function() {
           this.displayWidget.hideLoadingIndicator();
           this.isSubmitting = false;
           this.submitButton.set('disabled', false);
@@ -246,45 +274,67 @@ define([
       /**
        * Handles submission of regular (non-RAG) queries
        * Implementation:
+       * - Immediately shows user message and clears text area
        * - Disables input during submission
        * - Shows loading indicator
        * - Makes LLM query with basic system prompt
-       * - Updates chat store with messages
+       * - Updates chat store with assistant/system messages only
        * - Handles new chat initialization
        */
       _handleRegularSubmit: function() {
         var inputText = this.textArea.get('value');
         var _self = this;
-
         if (this.state) {
           console.log('state', this.state);
         }
+
+        // Immediately show user message and clear text area
+        var userMessage = {
+          role: 'user',
+          content: inputText,
+          message_id: 'user_' + Date.now(),
+          timestamp: new Date().toISOString()
+        };
+
+        this.chatStore.addMessage(userMessage);
+        this.displayWidget.showMessages(this.chatStore.query());
+        this.textArea.set('value', '');
 
         this.isSubmitting = true;
         this.submitButton.set('disabled', true);
 
         this.displayWidget.showLoadingIndicator(this.chatStore.query());
 
-        this.copilotApi.submitQuery(inputText, this.sessionId, this.systemPrompt, this.model).then(lang.hitch(this, function(response) {
-          this.chatStore.addMessages([
-            {
-              role: 'user',
-              content: inputText
-            },
-            {
-              role: 'assistant',
-              content: response.response
-            }
-          ]);
-          _self.textArea.set('value', '');
+        var systemPrompt = 'You are a helpful scientist website assistant for the website BV-BRC, the Bacterial and Viral Bioinformatics Resource Center.\n\n';
+        if (this.systemPrompt) {
+            systemPrompt += this.systemPrompt;
+        }
+        if (this.statePrompt) {
+            systemPrompt += this.statePrompt;
+        }
+
+        this.copilotApi.submitCopilotQuery(inputText, this.sessionId, systemPrompt, this.model, true, null, null).then(lang.hitch(this, function(response) {
+          // Only add assistant message and system message (if present) - user message was already added
+          var messagesToAdd = [];
+          if (response.systemMessage) {
+            messagesToAdd.push(response.systemMessage);
+          }
+          if (response.assistantMessage) {
+            messagesToAdd.push(response.assistantMessage);
+          }
+
+          if (messagesToAdd.length > 0) {
+            this.chatStore.addMessages(messagesToAdd);
+          }
+
           this.displayWidget.showMessages(this.chatStore.query());
 
           if (_self.new_chat) {
-            _self.new_chat = false;
-            topic.publish('reloadUserSessions');
-            topic.publish('generateSessionTitle');
+            _self._finishNewChat();
           }
-        })).finally(lang.hitch(this, function() {
+        })).catch(function(error) {
+          topic.publish('CopilotApiError', { error: error });
+        }).finally(lang.hitch(this, function() {
           this.displayWidget.hideLoadingIndicator();
           this.isSubmitting = false;
           this.submitButton.set('disabled', false);
@@ -337,15 +387,6 @@ define([
       },
 
       /**
-       * Updates selected model and UI
-       */
-      setModel: function(model) {
-        console.log('setModel=', model);
-        this.model = model;
-        this.setModelText(model);
-      },
-
-      /**
        * Returns currently selected model
        */
       getModel: function() {
@@ -353,22 +394,31 @@ define([
       },
 
       /**
+       * Updates selected model and UI
+       */
+      setModel: function(model) {
+        this.model = model;
+      },
+
+
+      /**
        * Updates selected RAG database and UI
        */
       setRagDb: function(ragDb) {
-        console.log('setRagDb=', ragDb);
         if (ragDb == 'null') {
           this.ragDb = null;
         } else {
           this.ragDb = ragDb;
         }
-        this.setRagButtonLabel(ragDb);
       },
 
       /**
        * Updates RAG selection UI text
        */
       setRagButtonLabel: function(ragDb) {
+        if (!this.ragText) {
+          return;
+        }
         if (ragDb && ragDb !== 'null') {
           this.ragText.innerHTML = 'RAG: ' + ragDb;
         } else {
@@ -380,11 +430,238 @@ define([
        * Updates model selection UI text
        */
       setModelText: function(model) {
+        if (!this.modelText) {
+          return;
+        }
         if (model) {
+          model = model.split('/').reverse()[0];
+          if (model.length > 30) {
+            model = model.substring(0, 30) + '...';
+          }
           this.modelText.innerHTML = 'Model: ' + model;
         } else {
           this.modelText.innerHTML = 'Model: None';
         }
+      },
+
+      /**
+       * Updates the number of documents to use for RAG queries
+       */
+      setNumDocs: function(numDocs) {
+        this.numDocs = numDocs;
+      },
+
+      setStatePrompt: function(statePrompt) {
+        this.statePrompt = statePrompt;
+      },
+
+      /**
+       * Finalizes creation of a brand-new chat after the first successful response.
+       * Adds the session to the global sessions memory store, publishes reload event,
+       * then triggers title generation.
+       * @param {boolean} generateTitleImmediately – if false, skip title generation (default true)
+       */
+      _finishNewChat: function(generateTitleImmediately = true) {
+        this.new_chat = false;
+
+        // Add to global sessions store
+        if (window && window.App && window.App.chatSessionsStore) {
+          window.App.chatSessionsStore.addSession({
+            session_id: this.sessionId,
+            title: 'New Chat',
+            created_at: Date.now()
+          });
+        }
+
+        // Reload scroll bar and highlight
+        topic.publish('reloadUserSessions', { highlightSessionId: this.sessionId });
+
+        if (generateTitleImmediately) {
+          setTimeout(function() {
+            topic.publish('generateSessionTitle');
+          }, 100);
+        }
+      },
+
+      /**
+       * @method _handlePageSubmit
+       * @description Handles submission about the current page (screenshot first, HTML fallback)
+       * Implementation:
+       * - Immediately shows user message and clears text area
+       * - Takes screenshot and makes API call
+       * - Updates chat store with assistant/system messages only
+       **/
+      _handlePageSubmit: function() {
+        var inputText = this.textArea.get('value');
+        var _self = this;
+
+        if (this.state) {
+            console.log('state', this.state);
+        }
+
+        // Immediately show user message and clear text area
+        var userMessage = {
+          role: 'user',
+          content: inputText,
+          message_id: 'user_' + Date.now(),
+          timestamp: new Date().toISOString()
+        };
+
+        this.chatStore.addMessage(userMessage);
+        this.displayWidget.showMessages(this.chatStore.query());
+        this.textArea.set('value', '');
+
+        this.isSubmitting = true;
+        this.submitButton.set('disabled', true);
+
+        topic.publish('hideChatPanel'); // Hide panel before taking screenshot
+
+        html2canvas(document.body).then(lang.hitch(this, function(canvas) {
+          var base64Image = canvas.toDataURL('image/png');
+
+          topic.publish('showChatPanel'); // Show panel again
+
+          this.displayWidget.showLoadingIndicator(this.chatStore.query());
+          var imageSystemPrompt = 'You are a helpful scientist website assistant for the website BV-BRC, the Bacterial and Viral Bioinformatics Resource Center. You can also answer questions about the attached screenshot.\n' +
+          'Analyze the screenshot and respond to the user\'s query.';
+
+          if (this.systemPrompt) {
+              imageSystemPrompt += '\n\n' + this.systemPrompt;
+          }
+          if (this.statePrompt) {
+              imageSystemPrompt = imageSystemPrompt + '\n\n' + this.statePrompt;
+          }
+
+          var imgtxt_model = 'RedHatAI/Llama-4-Scout-17B-16E-Instruct-quantized.w4a16';
+
+          this.copilotApi.submitCopilotQuery(inputText, this.sessionId, imageSystemPrompt, imgtxt_model, true, this.ragDb, this.numDocs, base64Image, this.enhancedPrompt)
+              .then(lang.hitch(this, function(response) {
+                  // Only add assistant message and system message (if present) - user message was already added
+                  var messagesToAdd = [];
+                  if (response.systemMessage) {
+                      messagesToAdd.push(response.systemMessage);
+                  }
+                  if (response.assistantMessage) {
+                      messagesToAdd.push(response.assistantMessage);
+                  }
+
+                  if (messagesToAdd.length > 0) {
+                      this.chatStore.addMessages(messagesToAdd);
+                  }
+
+                  this.displayWidget.showMessages(this.chatStore.query());
+
+                  if (_self.new_chat) {
+                      _self._finishNewChat();
+                  }
+              })).catch(function(error) {
+                  topic.publish('CopilotApiError', { error: error });
+              }).finally(lang.hitch(this, function() {
+                  this.displayWidget.hideLoadingIndicator();
+                  this.isSubmitting = false;
+                  this.submitButton.set('disabled', false);
+
+                  // Deselect the pageContentToggle after submission
+                  this.pageContentEnabled = false;
+                  this._updateToggleButtonStyle();
+                  topic.publish('pageContentToggleChanged', false);
+              }));
+      })).catch(lang.hitch(this, function(error) {
+          console.error('Error capturing or processing screenshot:', error);
+          topic.publish('showChatPanel'); // Ensure panel is shown even on error
+
+          // Fall back to HTML content if screenshot fails
+          console.log('Falling back to HTML content');
+          this._handlePageContentSubmit();
+      }));
+    },
+
+    /**
+     * @method _handlePageContentSubmit
+     * @description Handles submission of page content (HTML)
+     * Used as a fallback when screenshot fails
+     * Implementation:
+     * - Immediately shows user message and clears text area
+     * - Makes API call with page content
+     * - Updates chat store with assistant/system messages only
+     **/
+    _handlePageContentSubmit: function() {
+      var inputText = this.textArea.get('value');
+      var _self = this;
+
+      // Immediately show user message and clear text area
+      var userMessage = {
+        role: 'user',
+        content: inputText,
+        message_id: 'user_' + Date.now(),
+        timestamp: new Date().toISOString()
+      };
+
+      this.chatStore.addMessage(userMessage);
+      this.displayWidget.showMessages(this.chatStore.query());
+      this.textArea.set('value', '');
+
+      const pageHtml = document.documentElement.innerHTML;
+
+      var imageSystemPrompt = 'You are a helpful assistant that can answer questions about the page content.\n' +
+          'Answer questions as if you were a user viewing the page.\n' +
+          'The page content is:\n' +
+          pageHtml;
+      if (this.systemPrompt) {
+          imageSystemPrompt += '\n' + this.systemPrompt;
       }
-    });
+      if (this.statePrompt) {
+        imageSystemPrompt = this.statePrompt + '\n\n' + imageSystemPrompt;
+      }
+
+      this.displayWidget.showLoadingIndicator(this.chatStore.query());
+
+      this.copilotApi.submitCopilotQuery(inputText, this.sessionId, this.systemPrompt, this.model, true, this.ragDb, this.numDocs, null, this.enhancedPrompt).then(lang.hitch(this, function(response) {
+          // Only add assistant message and system message (if present) - user message was already added
+          var messagesToAdd = [];
+          if (response.systemMessage) {
+              messagesToAdd.push(response.systemMessage);
+          }
+          if (response.assistantMessage) {
+              messagesToAdd.push(response.assistantMessage);
+          }
+
+          if (messagesToAdd.length > 0) {
+              this.chatStore.addMessages(messagesToAdd);
+          }
+
+          this.displayWidget.showMessages(this.chatStore.query());
+
+          if (_self.new_chat) {
+              _self._finishNewChat();
+          }
+      })).catch(function(error) {
+          topic.publish('CopilotApiError', { error: error });
+      }).finally(lang.hitch(this, function() {
+          this.displayWidget.hideLoadingIndicator();
+          this.isSubmitting = false;
+          this.submitButton.set('disabled', false);
+
+          // Deselect the pageContentToggle after submission
+          this.pageContentEnabled = false;
+          this._updateToggleButtonStyle();
+          topic.publish('pageContentToggleChanged', false);
+      }));
+    },
+
+    /**
+       * @method _updateToggleButtonStyle
+       * @description Updates the toggle button's visual state based on pageContentEnabled
+       */
+    _updateToggleButtonStyle: function() {
+      var buttonNode = this.pageContentToggle.domNode;
+      if (this.pageContentEnabled) {
+          buttonNode.classList.remove('pageContentToggleInactive');
+          buttonNode.classList.add('pageContentToggleActive');
+      } else {
+          buttonNode.classList.remove('pageContentToggleActive');
+          buttonNode.classList.add('pageContentToggleInactive');
+      }
+    }
   });
+});

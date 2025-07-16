@@ -321,9 +321,12 @@ const load_scripts = [
       require(["<%= request.applicationModule %>"], function(App){
         appOpts = <%- JSON.stringify(request.applicationOptions || {}) %>;
         appOpts.workspaceAPI = "<%= request.applicationOptions.workspaceServiceURL %>";
+        appOpts.workspaceDownloadAPI = "<%= request.applicationOptions.workspaceDownloadServiceURL %>";
         appOpts.serviceAPI = "<%= request.applicationOptions.appServiceURL %>";
         appOpts.dataAPI = "<%= request.applicationOptions.dataServiceURL %>";
         appOpts.userServiceURL = "<%= request.applicationOptions.userServiceURL %>";
+        appOpts.copilotApiURL = "<%= request.applicationOptions.copilotApiURL %>";
+        appOpts.copilotDbURL = "<%= request.applicationOptions.copilotDbURL %>";
         appOpts.mailinglistURL = "<%= request.applicationOptions.mailinglistURL %>";
         appOpts.localStorageCheckInterval = "<%= request.applicationOptions.localStorageCheckInterval %>";
         window.App = new App(appOpts);
@@ -346,18 +349,3 @@ const load_scripts = [
         });
         </script>
         <% } %>
-
-      <!-- Google UA (EOL) -->
-      <% if (request && request.applicationOptions.uaID) { %>
-          <!-- Global site tag (gtag.js) - Google Analytics -->
-          <script async src="https://www.googletagmanager.com/gtag/js?id=<%- request.applicationOptions.uaID %>"></script>
-          <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', '<%- request.applicationOptions.uaID %>', {
-            'link_attribution': true
-          });
-          </script>
-          <% } %>

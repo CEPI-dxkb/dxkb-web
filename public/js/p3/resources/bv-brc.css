@@ -56,6 +56,13 @@
   align-items: center;
 }
 
+#bv-brc-right-header {
+  display: flex;
+  gap: 0.5rem;
+  align-items: right;
+  margin-left: auto;
+}
+
 .nav-logo-link {
   display: flex;
   width: 200px;
@@ -359,6 +366,7 @@
 
 #bv-brc-home .content-image img {
   max-height: 120px;
+  margin-top: -50px;
 }
 
 #bv-brc-home .bv-brc-info,
@@ -636,7 +644,7 @@
 
 #bv-brc-home .announcements,
 #bv-brc-home .linkedin-feed {
-  flex-basis: 50%;
+  flex-basis: 53%;
 }
 
 #bv-brc-home .home-banner,
@@ -683,6 +691,11 @@
   #bv-brc-home .home-main-right {
     flex-direction: row;
   }
+
+  #bv-brc-home .bv-brc-bottom-left .content-image img,
+  #bv-brc-home .bv-brc-bottom-right .content-image img {
+    margin-top: 0;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -723,15 +736,15 @@
     flex: 1 1 100%; /* Full width for top sections */
   }
 
-  #bv-brc-home .announcements{
-     flex-basis: 40%; /* Sidebar sections */
-   }
+  #bv-brc-home .announcements {
+    flex-basis: 40%; /* Sidebar sections */
+  }
 
-  #announcements-slides{
+  #announcements-slides {
     height: 80%; /* Keep height lower as header is two lines */
   }
 
-  #linkedin-slides{
+  #linkedin-slides {
     height: 85%;
   }
 }
@@ -1031,112 +1044,6 @@ pre.bv-brc-code-block button:active {
   padding: 0 5px;
 }
 
-/* Start Message Styles for Copilot Chat */
-.message {
-  max-width: 100%;
-  overflow-wrap: break-word;
-}
-.message * {
-  max-width: 100%;
-}
-.message img {
-  height: auto;
-}
-.message pre {
-  background-color: #f8f8f8;
-  padding: 10px;
-  border-radius: 4px;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-.message code {
-  background-color: #f8f8f8;
-  padding: 2px 4px;
-  border-radius: 3px;
-  word-wrap: break-word;
-}
-.message table {
-  width: 100%;
-  display: block;
-  overflow-x: auto;
-}
-.message p {
-  margin: 0 0 10px 0;
-}
-.message p:last-child {
-  margin-bottom: 0;
-}
-
-.message.user {
-  background-color: #e6f3ff;
-  margin-left: auto;
-  float: right;
-  clear: both;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  max-width: 60%;
-  display: inline-block;
-  margin-top: 10px;
-}
-
-.message.assistant {
-  background-color: #f5f5f5;
-  margin-right: auto;
-  float: left;
-  clear: both;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  max-width: 60%;
-  display: inline-block;
-  margin-top: 10px;
-}
-
-.message.system {
-  background-color: #eaf3f8;
-  margin-right: auto;
-  float: right;
-  clear: both;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  max-width: 60%;
-  display: inline-block;
-  margin-top: 10px;
-  margin-right: 11px;
-}
-
-/* Copilot Chat Container Styles */
-.copilot-result-container {
-  width: 90%;
-  height: 100%;
-  overflow-y: auto;
-  padding: 10px;
-  border: 0;
-  margin: 0 auto;
-  padding-right: 100px;
-}
-
-.copilot-empty-state {
-  color: #666;
-  padding: 10px;
-  text-align: center;
-}
-
-.copilot-error {
-  color: red;
-  padding: 10px;
-}
-
-/* Loading Animation */
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-/* End Message Styles for Copilot Chat */
-
 #mobile-search-div {
   position: absolute;
   top: 45px;
@@ -1168,12 +1075,12 @@ pre.bv-brc-code-block button:active {
   top: 50px;
   right: 0.5rem;
   left: 0.5rem;
-  -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-  -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
 }
 
-.mobile-menu  .menu-section {
+.mobile-menu .menu-section {
   margin-bottom: 10px;
 }
 
@@ -1210,8 +1117,8 @@ pre.bv-brc-code-block button:active {
 }
 
 #searches-services.menu-section .menu-items,
-#tools-services.menu-section .sub-menu ,
-#help-menu.menu-section .sub-menu ,
+#tools-services.menu-section .sub-menu,
+#help-menu.menu-section .sub-menu,
 #about-menu.menu-section .menu-items {
   column-count: 2;
 }

@@ -19,7 +19,9 @@ define([
     'dijit/popup',
     'dijit/Dialog',
     'dojo/dom-construct',
-    'dojo/Deferred'
+    'dojo/Deferred',
+    'dojo/dom-style',
+    'dojo/dom-class'
 ], function (
     declare,
     ContentPane,
@@ -30,24 +32,47 @@ define([
     popup,
     Dialog,
     domConstruct,
-    Deferred
+    Deferred,
+    domStyle,
+    domClass
 ) {
     /**
      * @class ChatSessionOptionsBar
-     * @extends {dijit/layout/ContentPane}
+     * @extends {dijit/layout/ContentPane}d
      *
      * Main widget class that provides the options bar interface.
-     * Handles model selection, RAG database selection, and system prompts.
+     * Handles model selection, RAG database selection
      */
     return declare([ContentPane], {
-        /** @property {string} style - CSS styling for the options bar */
-        style: 'padding: 10px;',
+        /** @property {string} title - Widget title */
+        title: 'Basic Chat Options',
 
-        /** @property {Array} modelList - List of available AI models */
+        /** @property {Object} copilotApi - Reference to CopilotAPI instance */
+        copilotApi: null,
+
+        /** @property {Array} modelList - Available models list */
         modelList: null,
 
-        /** @property {Array} ragList - List of available RAG databases */
+        /** @property {Array} ragList - Available RAG databases list */
         ragList: null,
+
+        /** @property {Object} pageContentToggle - CheckBox for page content functionality */
+        pageContentToggle: null,
+
+        /** @property {boolean} helpdeskSelected - Tracks if helpdesk button is selected */
+        helpdeskSelected: true,
+
+        /** @property {boolean} cepiSelected - Tracks if CEPI button is selected */
+        cepiSelected: false,
+
+        /** @property {boolean} publicationsSelected - Tracks if Publications button is selected */
+        publicationsSelected: false,
+
+        /** @property {boolean} showPublicationsButton - Flag to control publications button visibility */
+        showPublicationsButton: true,
+
+        /** @property {boolean} showEnhancePromptButton - Flag to control enhance prompt button visibility */
+        showEnhancePromptButton: true,
 
         /**
          * @constructor
@@ -55,8 +80,9 @@ define([
          * @param {Object} opts - Configuration options to mix into the widget
          */
         constructor: function(opts) {
-            this.inherited(arguments);
-            lang.mixin(this, opts);
+            if (opts) {
+                lang.mixin(this, opts);
+            }
         },
 
         /**
@@ -69,30 +95,22 @@ define([
          */
         createModelDropdown: function() {
             var selectElement = document.createElement('select');
-            selectElement.style.marginRight = '10px';
-            selectElement.style.display = 'block';
-            selectElement.style.marginBottom = '10px';
-
+            selectElement.className = 'copilotSelectElement';
             // Add models from provided list or use defaults
             if (this.modelList) {
                 this.modelList.forEach(lang.hitch(this, function(model) {
                     var option = document.createElement('option');
                     option.value = model.model;
-                    option.text = model.model.split('/').reverse()[0];
+                    var modelName = model.model.split('/').reverse()[0];
+                    option.text = modelName.substring(0, 30);
                     selectElement.add(option);
                 }));
             } else {
-                // Add default LLAMA model option
-                var optionLLAMA31 = document.createElement('option');
-                optionLLAMA31.value = 'meta-llama/Llama-3.3-70B-Instruct';
-                optionLLAMA31.text = 'LLAMA3.3-70B';
-                selectElement.add(optionLLAMA31);
-
-                // Add default GPT4 option
-                var optionGPT4O = document.createElement('option');
-                optionGPT4O.value = 'gpt4o';
-                optionGPT4O.text = 'GPT-4o';
-                selectElement.add(optionGPT4O);
+                // Add 'No Models Available' option
+                var optionNoModels = document.createElement('option');
+                optionNoModels.value = null;
+                optionNoModels.text = 'No Models Available';
+                selectElement.add(optionNoModels);
             }
 
             // Publish selected model when changed
@@ -115,9 +133,7 @@ define([
          */
         createRagDropdown: function() {
             var selectElement = document.createElement('select');
-            selectElement.style.marginRight = '10px';
-            selectElement.style.display = 'block';
-            selectElement.style.marginBottom = '10px';
+            selectElement.className = 'copilotSelectElement';
 
             // Add None option
             var optionNone = document.createElement('option');
@@ -127,11 +143,15 @@ define([
 
             // Add RAG DBs from provided list or use defaults
             if (this.ragList) {
+                var check_names = [];
                 this.ragList.forEach(lang.hitch(this, function(ragdb) {
                     var option = document.createElement('option');
                     option.value = ragdb.name;
                     option.text = ragdb.name.split('/').reverse()[0];
-                    selectElement.add(option);
+                    if (!check_names.includes(option.text)) {
+                        check_names.push(option.text);
+                        selectElement.add(option);
+                    }
                 }));
             } else {
                 // Add default None option
@@ -151,175 +171,96 @@ define([
             selectElement.addEventListener('change', lang.hitch(this, function(evt) {
                 var ragDb = evt.target.value;
                 topic.publish('ChatRagDb', ragDb);
-                if (ragDb != 'null') {
-                    topic.publish('changeRagButtonLabel', ragDb);
-                } else {
-                    topic.publish('changeRagButtonLabel', 'None');
-                }
             }));
 
             return selectElement;
         },
 
         /**
-         * Creates dialog for managing system prompts
-         * - Includes prompt type selection dropdown
-         * - Text area for editing prompt content
-         * - Save button to store custom prompts
+         * Creates dialog for managing RAG selection
+         * - Includes RAG selection dropdown
+         * - Publishes selected RAG DB on change
          *
-         * @returns {TooltipDialog} Configured dialog for prompt management
+         * @returns {TooltipDialog} Configured dialog for RAG selection
          */
-        createPromptsDialog: function() {
-            var promptsDialog = new TooltipDialog({
+        createRagDialog: function() {
+            var ragDialog = new TooltipDialog({
                 style: "width: 250px;",
                 content: document.createElement('div')
             });
 
-            // Add prompt type selection UI
-            var promptTypeWrapper = document.createElement('div');
-            promptTypeWrapper.style.display = 'flex';
-            promptTypeWrapper.style.alignItems = 'center';
-            promptTypeWrapper.style.marginBottom = '10px';
+            // Add RAG selection
+            var ragLabel = document.createElement('div');
+            ragLabel.textContent = 'Database:';
+            ragLabel.style.marginBottom = '5px';
+            ragLabel.title = 'Select the database to use for the RAG query';
+            ragDialog.containerNode.appendChild(ragLabel);
+            this.ragDropdown = this.createRagDropdown();
+            ragDialog.containerNode.appendChild(this.ragDropdown);
 
-            var promptTypeLabel = document.createElement('span');
-            promptTypeLabel.textContent = 'Select Prompt:';
-            promptTypeLabel.style.marginRight = '5px';
-            promptTypeWrapper.appendChild(promptTypeLabel);
+            // Add Number of Documents section
+            var numDocsContainer = document.createElement('div');
+            numDocsContainer.style.display = 'flex';
+            numDocsContainer.style.alignItems = 'center';
+            numDocsContainer.style.marginTop = '10px';
+            numDocsContainer.style.marginBottom = '10px';
+            numDocsContainer.style.gap = '10px';
+            ragDialog.containerNode.appendChild(numDocsContainer);
 
-            // Configure prompt type dropdown
-            var promptTypeSelect = document.createElement('select');
-            promptTypeSelect.style.width = '40%';
-            promptTypeWrapper.appendChild(promptTypeSelect);
-            this.promptTypeSelect = promptTypeSelect;
-            this.promptTypeSelect.addEventListener('change', lang.hitch(this, function(evt) {
-                var prompt = evt.target.value;
-                var promptName = this.promptTypeSelect.options[this.promptTypeSelect.selectedIndex].text;
-                this.updatePromptText(promptName, prompt);
-                topic.publish('ChatSystemPrompt', prompt);
+            var numDocsLabel = document.createElement('div');
+            numDocsLabel.textContent = 'Number of Documents:';
+            numDocsLabel.title = 'Number of documents to retrieve from the database';
+            numDocsContainer.appendChild(numDocsLabel);
+
+            var numDocsInput = document.createElement('input');
+            numDocsInput.type = 'number';
+            numDocsInput.min = '1';
+            numDocsInput.max = '10';
+            numDocsInput.value = '3';
+            numDocsInput.style.width = '60px';
+            numDocsInput.addEventListener('change', lang.hitch(this, function(evt) {
+                var numDocs = evt.target.value;
+                topic.publish('ChatNumDocs', numDocs);
             }));
-            promptsDialog.containerNode.appendChild(promptTypeWrapper);
+            this.numDocsInput = numDocsInput;
+            numDocsContainer.appendChild(numDocsInput);
 
-            // Add system prompt editing area
-            var promptLabel = document.createElement('div');
-            promptLabel.textContent = 'System Prompt:';
-            promptLabel.style.marginBottom = '5px';
-            promptsDialog.containerNode.appendChild(promptLabel);
-            var promptTextArea = document.createElement('textarea');
-            promptTextArea.style.width = '100%';
-            promptTextArea.style.height = '100px';
-            promptTextArea.style.marginBottom = '10px';
-            promptTextArea.addEventListener('change', lang.hitch(this, function(evt) {
-                var systemPrompt = evt.target.value;
-                topic.publish('ChatSystemPrompt', systemPrompt);
+            // Add Summarize Documents checkbox
+            var summarizeContainer = document.createElement('div');
+            summarizeContainer.style.display = 'flex';
+            summarizeContainer.style.alignItems = 'center';
+            summarizeContainer.style.marginTop = '10px';
+            summarizeContainer.style.marginBottom = '10px';
+            summarizeContainer.style.gap = '10px';
+            ragDialog.containerNode.appendChild(summarizeContainer);
+
+            var summarizeLabel = document.createElement('div');
+            summarizeLabel.textContent = 'Summarize Documents';
+            summarizeLabel.title = 'Summarize each matched document; takes longer but may improve generated response';
+            summarizeContainer.appendChild(summarizeLabel);
+
+            var summarizeCheckbox = document.createElement('input');
+            summarizeCheckbox.type = 'checkbox';
+            summarizeCheckbox.checked = false;
+            summarizeCheckbox.addEventListener('change', lang.hitch(this, function(evt) {
+                var shouldSummarize = evt.target.checked;
+                topic.publish('ChatSummarizeDocs', shouldSummarize);
             }));
-            this.promptTextArea = promptTextArea;
-            promptsDialog.containerNode.appendChild(promptTextArea);
+            summarizeContainer.appendChild(summarizeCheckbox);
 
-            // Add button container
-            var buttonWrapper = document.createElement('div');
-            buttonWrapper.style.display = 'flex';
-            buttonWrapper.style.gap = '10px';
-
-            // Add save prompt button
-            var saveButton = document.createElement('button');
-            saveButton.textContent = 'Save Prompt';
-            saveButton.style.flex = '1';
-            saveButton.addEventListener('click', lang.hitch(this, function() {
-                var promptNameDialog = this.createPromptNameDialog();
-                promptNameDialog.show();
-            }));
-            buttonWrapper.appendChild(saveButton);
-
-            promptsDialog.containerNode.appendChild(buttonWrapper);
-
-            return promptsDialog;
+            return ragDialog;
         },
 
         /**
-         * Creates dialog for naming and saving a new prompt
-         * - Input field for prompt name
-         * - Save/Cancel buttons
-         * - Handles saving prompt and updating prompt list
+         * Creates dialog for managing model selection
+         * - Includes model selection dropdown
+         * - Publishes selected model on change
          *
-         * @returns {Dialog} Configured dialog for prompt naming
+         * @returns {TooltipDialog} Configured dialog for model selection
          */
-        createPromptNameDialog: function() {
-            var contentDiv = domConstruct.create('div', {});
-
-            var labelDiv = domConstruct.create('div', {
-                innerHTML: 'Enter a name for this prompt:',
-                style: {
-                    marginBottom: '10px'
-                }
-            }, contentDiv);
-
-            var input = domConstruct.create('input', {
-                type: 'text',
-                style: {
-                    width: '100%'
-                },
-                'data-dojo-attach-point': 'promptNameInput'
-            }, contentDiv);
-
-            var promptNameDialog = new Dialog({
-                title: "Save Prompt",
-                content: contentDiv,
-                style: "width: 300px"
-            });
-
-            // Add button container
-            var buttonContainer = document.createElement('div');
-            buttonContainer.style.display = 'flex';
-            buttonContainer.style.justifyContent = 'flex-end';
-            buttonContainer.style.marginTop = '20px';
-            buttonContainer.style.gap = '10px';
-
-            // Configure save button
-            var saveButton = document.createElement('button');
-            saveButton.innerHTML = "Save";
-            saveButton.onclick = lang.hitch(this, function() {
-                promptNameDialog.hide();
-                this.copilotApi.savePrompt(input.value, this.promptTextArea.value).then(lang.hitch(this, function(response) {
-                    this.resetPromptList().then(lang.hitch(this, function() {
-                        this.updatePromptText(input.value, this.promptTextArea.value);
-                        // Select the new prompt in dropdown
-                        for (var i = 0; i < this.promptTypeSelect.options.length; i++) {
-                            if (this.promptTypeSelect.options[i].text === input.value) {
-                                this.promptTypeSelect.selectedIndex = i;
-                                break;
-                            }
-                        }
-                    }));
-                }));
-            });
-
-            // Configure cancel button
-            var cancelButton = document.createElement('button');
-            cancelButton.innerHTML = "Cancel";
-            cancelButton.onclick = function() {
-                promptNameDialog.hide();
-            };
-
-            buttonContainer.appendChild(cancelButton);
-            buttonContainer.appendChild(saveButton);
-            promptNameDialog.containerNode.appendChild(buttonContainer);
-
-            return promptNameDialog;
-        },
-
-        /**
-         * Sets up the widget after creation
-         * - Creates options dialog with model and RAG selection
-         * - Creates prompts dialog for system prompt management
-         * - Adds buttons for prompts, model selection and new chat
-         * - Sets up event handlers for dialogs
-         */
-        postCreate: function() {
-            this.inherited(arguments);
-
-            // Create options dialog
-            var optionsDialog = new TooltipDialog({
-                style: "width: 250px;",
+        createModelDialog: function() {
+            var modelDialog = new TooltipDialog({
+                style: "width: 275px;",
                 content: document.createElement('div')
             });
 
@@ -327,150 +268,403 @@ define([
             var modelLabel = document.createElement('div');
             modelLabel.textContent = 'Model:';
             modelLabel.style.marginBottom = '5px';
-            optionsDialog.containerNode.appendChild(modelLabel);
+            modelDialog.containerNode.appendChild(modelLabel);
             this.modelDropdown = this.createModelDropdown();
-            optionsDialog.containerNode.appendChild(this.modelDropdown);
+            modelDialog.containerNode.appendChild(this.modelDropdown);
 
-            // Add RAG selection
-            var ragLabel = document.createElement('div');
-            ragLabel.textContent = 'RAG:';
-            ragLabel.style.marginBottom = '5px';
-            optionsDialog.containerNode.appendChild(ragLabel);
-            this.ragDropdown = this.createRagDropdown();
-            optionsDialog.containerNode.appendChild(this.ragDropdown);
-
-            // Create and add prompts dialog
-            var promptsDialog = this.createPromptsDialog();
-
-            // Add Prompts button
-            var promptsButton = new Button({
-                label: 'Prompts',
-                onClick: lang.hitch(this, function() {
-                    popup.open({
-                        popup: promptsDialog,
-                        around: promptsButton.domNode
-                    });
-                })
-            });
-            this.addChild(promptsButton);
-
-            // Add Model button
-            var modelButton = new Button({
-                label: 'Model',
-                onClick: lang.hitch(this, function() {
-                    popup.open({
-                        popup: optionsDialog,
-                        around: modelButton.domNode
-                    });
-                    modelButton.visible = true;
-                }),
-                visible: false
-            });
-            this.addChild(modelButton);
-
-            // Handle clicks outside dialogs
-            document.addEventListener('click', lang.hitch(this, function(event) {
-                if (optionsDialog._rendered && !optionsDialog.domNode.contains(event.target) && !modelButton.domNode.contains(event.target)) {
-                    popup.close(optionsDialog);
-                    modelButton.visible = false;
-                }
-                if (promptsDialog._rendered && !promptsDialog.domNode.contains(event.target) && !promptsButton.domNode.contains(event.target)) {
-                    popup.close(promptsDialog);
-                }
-            }));
-
-            // Handle RAG button clicks
-            topic.subscribe('ragButtonPressed', lang.hitch(this, function() {
-                console.log('rag pressed');
-                if (optionsDialog.visible) {
-                    popup.close(optionsDialog);
-                    modelButton.visible = false;
-                } else {
-                    setTimeout(function() {
-                        popup.open({
-                            popup: optionsDialog,
-                            around: modelButton.domNode
-                        });
-                    }, 100);
-                    modelButton.visible = true;
-                }
-            }));
-
-            // Add New Chat button
-            this.createNewButton = new Button({
-                label: 'New Chat',
-                onClick: lang.hitch(this, function() {
-                    topic.publish('createNewChatSession');
-                })
-            });
-            this.addChild(this.createNewButton);
-
-            // Initialize prompts
-            this.resetPromptList();
-
-            // Set initial model
-            topic.subscribe('SetInitialChatModel', lang.hitch(this, function() {
-                topic.publish('ChatModel', this.modelDropdown.options[0].value);
-            }));
+            return modelDialog;
         },
 
         /**
-         * Resets the prompt list by fetching latest prompts from API
-         * @returns {Promise} Resolves when prompt list is updated
+         * Creates dialog for managing enhance prompt
+         * - Includes text area for prompt enhancement
+         * - Publishes prompt changes
+         *
+         * @returns {TooltipDialog} Configured dialog for enhance prompt
          */
-        resetPromptList: function() {
-            var deferred = new Deferred();
-            if (this.copilotApi) {
-                this.copilotApi.getUserPrompts().then(lang.hitch(this, function(response) {
-                    var prompt_list = response.saved_prompts;
-                    this.updatePromptList(prompt_list);
-                    deferred.resolve(prompt_list);
-                })).otherwise(function(err) {
-                    deferred.reject(err);
+        createEnhancePromptDialog: function() {
+            var enhancePromptDialog = new TooltipDialog({
+                style: "width: 350px;",
+                content: document.createElement('div')
+            });
+
+            // Add enhance prompt text area
+            var promptLabel = document.createElement('div');
+            promptLabel.textContent = 'Enhance Prompt:';
+            promptLabel.style.marginBottom = '5px';
+            promptLabel.title = 'Add additional instructions to enhance the AI prompt';
+            enhancePromptDialog.containerNode.appendChild(promptLabel);
+
+            var promptTextArea = document.createElement('textarea');
+            promptTextArea.style.width = '100%';
+            promptTextArea.style.height = '80px';
+            promptTextArea.style.resize = 'vertical';
+            promptTextArea.style.padding = '5px';
+            promptTextArea.placeholder = 'Enter additional prompt instructions...';
+
+            // Publish prompt changes when text changes
+            promptTextArea.addEventListener('input', lang.hitch(this, function(evt) {
+                var promptText = evt.target.value;
+                topic.publish('enhancePromptChange', promptText);
+            }));
+
+            this.enhancePromptTextArea = promptTextArea;
+            enhancePromptDialog.containerNode.appendChild(promptTextArea);
+
+            return enhancePromptDialog;
+        },
+
+        /**
+         * Called after widget creation
+         * Override to add custom functionality
+         */
+        postCreate: function() {
+            // Initialize CopilotAPI if not provided
+            if (!this.copilotApi) {
+                this.copilotApi = new CopilotAPI({
+                    user_id: window.App.user ? window.App.user.l_id : null
                 });
-            } else {
-                deferred.resolve(true);
-            }
-            return deferred.promise;
-        },
-
-        /**
-         * Updates the prompt type dropdown with provided prompt list
-         * @param {Array} prompt_list List of prompts to add to dropdown
-         */
-        updatePromptList: function(prompt_list) {
-            // Clear existing options
-            while (this.promptTypeSelect.options.length >= 1) {
-                this.promptTypeSelect.remove(0);
             }
 
-            // Add None option
-            var noneOption = document.createElement('option');
-            noneOption.text = 'None';
-            noneOption.value = 'None';
-            this.promptTypeSelect.add(noneOption);
+            this.name_map = {
+                "Llama-4-Scout-17B-16E-Instruct-quantized.w4a16": "Llama-4-Scout",
+                "Llama-3.3-70B-Instruct": "Llama-3.3-70B"
+            };
 
-            // Add prompts from list
-            if (prompt_list && prompt_list.length) {
-                prompt_list.forEach(lang.hitch(this, function(prompt) {
-                    var option = document.createElement('option');
-                    option.text = prompt.title;
-                    option.value = prompt.text;
-                    this.promptTypeSelect.add(option);
+            // Set CSS height based on number of additional features enabled
+            var additionalFeatures = 0;
+            if (this.showPublicationsButton) {
+                additionalFeatures++;
+            }
+            if (this.showEnhancePromptButton) {
+                additionalFeatures++;
+            }
+
+            // Apply appropriate CSS class based on number of additional features
+            if (additionalFeatures === 1) {
+                domClass.add(this.containerNode, 'ChatSessionOptionsBar-extended-one');
+            } else if (additionalFeatures === 2 || additionalFeatures === 3) {
+                domClass.add(this.containerNode, 'ChatSessionOptionsBar-extended-two');
+            }
+
+            // Create model, RAG, and enhance prompt dialogs
+            var modelDialog = this.createModelDialog();
+            var ragDialog = this.createRagDialog();
+            var enhancePromptDialog = null;
+            if (this.showEnhancePromptButton) {
+                enhancePromptDialog = this.createEnhancePromptDialog();
+            }
+
+            // Create container for text buttons
+            var buttonsContainer = domConstruct.create('div', {
+                style: 'display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; margin-top: 10px; margin-bottom: 10px; font-size: 0.9em; gap: 2px;'
+            }, this.containerNode);
+
+            // New Chat button moved to title area - hide this one to avoid duplication
+            this.newChatButton = domConstruct.create('div', {
+                innerHTML: 'New Chat',
+                className: 'chat-window-options-button',
+                onclick: lang.hitch(this, function() {
+                    // Create a new chat session immediately
+                    if (this.copilotApi) {
+                        // Publish the createNewChatSession topic
+                        topic.publish('createNewChatSession');
+                    }
+                })
+            }, buttonsContainer);
+
+            // Conditionally add Publications button between New Chat and advanced options
+            if (this.showPublicationsButton) {
+                this.publicationsButton = domConstruct.create('div', {
+                    innerHTML: 'Publications',
+                    className: 'chat-window-options-button',
+                    onclick: lang.hitch(this, function() {
+                        this.publicationsSelected = !this.publicationsSelected;
+                        domClass.toggle(this.publicationsButton, 'selected', this.publicationsSelected);
+
+                        // Publish the RAG database change
+                        topic.publish('ChatRagDb', this.publicationsSelected ? 'cepi_journals' : 'null');
+                    })
+                }, buttonsContainer);
+            }
+
+            // Create container for model and RAG text elements
+            this.advancedOptionsContainer = domConstruct.create('div', {
+                style: 'display: block; width: 100%;'
+            }, buttonsContainer);
+
+            // Conditionally add Enhance Prompt button with hover effects (at the top)
+            if (this.showEnhancePromptButton) {
+                this.enhancePromptText = domConstruct.create('div', {
+                    innerHTML: 'Enhance Prompt',
+                    className: 'chat-window-options-button',
+                    onclick: lang.hitch(this, function() {
+                        topic.publish('enhancePromptButtonPressed', this.enhancePromptText, ['below']);
+                    })
+                }, this.advancedOptionsContainer);
+            }
+
+            // COMMENTED OUT: Add Model text display with hover effects
+            // this.modelText = domConstruct.create('div', {
+            //     innerHTML: 'Model: Loading...',
+            //     className: 'chat-window-options-button',
+            //     onclick: lang.hitch(this, function() {
+            //         topic.publish('modelButtonPressed', this.modelText, ['below']);
+            //     })
+            // }, this.advancedOptionsContainer);
+
+            // COMMENTED OUT: Add RAG text display with hover effects
+            // this.ragText = domConstruct.create('div', {
+            //     innerHTML: 'RAG: Loading...',
+            //     className: 'chat-window-options-button',
+            //     onclick: lang.hitch(this, function() {
+            //         topic.publish('ragButtonPressed', this.ragText, ['below']);
+            //     })
+            // }, this.advancedOptionsContainer);
+
+            // MOVED: Text size functionality moved to Advanced Options popup in CopilotFloatingWindow.js
+
+            // COMMENTED OUT: Add CEPI journal rag button
+            // this.cepiText = domConstruct.create('div', {
+            //     innerHTML: 'Publications',
+            //     className: 'chat-window-options-button',
+            //     onclick: lang.hitch(this, function() {
+            //         this.cepiSelected = !this.cepiSelected;
+            //         domClass.toggle(this.cepiText, 'selected', this.cepiSelected);
+
+            //         if (this.cepiSelected && this.helpdeskSelected) {
+            //             this.helpdeskSelected = false;
+            //             domClass.remove(this.helpdeskButton, 'selected');
+            //         }
+
+            //         topic.publish(
+            //             'ChatRagDb',
+            //             this.cepiSelected ? 'cepi_journals' : 'null'
+            //         );
+            //     })
+            // }, this.advancedOptionsContainer);
+
+            // COMMENTED OUT: Add Helpdesk button with hover effects
+            // this.helpdeskButton = domConstruct.create('div', {
+            //     innerHTML: 'Help Center',
+            //     className: 'chat-window-options-button selected',
+            //     onclick: lang.hitch(this, function() {
+            //         this.helpdeskSelected = !this.helpdeskSelected;
+            //         domClass.toggle(this.helpdeskButton, 'selected', this.helpdeskSelected);
+
+            //         if (this.helpdeskSelected && this.cepiSelected) {
+            //             this.cepiSelected = false;
+            //             domClass.remove(this.cepiText, 'selected');
+            //         }
+
+            //         topic.publish('ChatRagDb', this.helpdeskSelected ? 'bvbrc_helpdesk' : 'null');
+            //     })
+            // }, this.advancedOptionsContainer);
+
+            // COMMENTED OUT: Publish initial helpdesk selection since it's on by default
+            // topic.publish('ChatRagDb', 'bvbrc_helpdesk');
+
+            // Handle clicks outside dialogs to close them
+            document.addEventListener('click', lang.hitch(this, function(event) {
+                // COMMENTED OUT: Model dialog click handling
+                // if (modelDialog._rendered && !modelDialog.domNode.contains(event.target) && !this.modelText.contains(event.target)) {
+                //     popup.close(modelDialog);
+                //     modelDialog.visible = false;
+                // }
+                // COMMENTED OUT: RAG dialog click handling
+                // if (ragDialog._rendered && !ragDialog.domNode.contains(event.target) && !this.ragText.contains(event.target)) {
+                //     popup.close(ragDialog);
+                //     ragDialog.visible = false;
+                // }
+                if (this.showEnhancePromptButton && enhancePromptDialog && enhancePromptDialog._rendered && !enhancePromptDialog.domNode.contains(event.target) && !this.enhancePromptText.contains(event.target)) {
+                    popup.close(enhancePromptDialog);
+                    enhancePromptDialog.visible = false;
+                }
+            }));
+
+            // COMMENTED OUT: Handle RAG button clicks
+            // topic.subscribe('ragButtonPressed', lang.hitch(this, function(buttonNode, orient) {
+            //     console.log('rag pressed');
+            //     if (ragDialog.visible) {
+            //         popup.close(ragDialog);
+            //         ragDialog.visible = false;
+            //     } else {
+            //         if (!buttonNode) {
+            //             buttonNode = this.ragText;
+            //         }
+            //         setTimeout(function() {
+            //             popup.open({
+            //                 popup: ragDialog,
+            //                 around: buttonNode,
+            //                 orient: orient
+            //             });
+            //             ragDialog.visible = true;
+            //         }, 100);
+            //     }
+            // }));
+
+            // COMMENTED OUT: Handle model button clicks
+            // topic.subscribe('modelButtonPressed', lang.hitch(this, function(buttonNode, orient) {
+            //     console.log('model pressed');
+            //     if (modelDialog.visible) {
+            //         popup.close(modelDialog);
+            //         modelDialog.visible = false;
+            //     } else {
+            //         if (!buttonNode) {
+            //             buttonNode = this.modelText;
+            //         }
+            //         setTimeout(function() {
+            //             popup.open({
+            //                 popup: modelDialog,
+            //                 around: buttonNode,
+            //                 orient: orient
+            //             });
+            //             modelDialog.visible = true;
+            //         }, 100);
+            //     }
+            // }));
+
+            // Handle enhance prompt button clicks
+            if (this.showEnhancePromptButton) {
+                topic.subscribe('enhancePromptButtonPressed', lang.hitch(this, function(buttonNode, orient) {
+                    console.log('enhance prompt pressed');
+                    if (enhancePromptDialog.visible) {
+                        popup.close(enhancePromptDialog);
+                        enhancePromptDialog.visible = false;
+                    } else {
+                        if (!buttonNode) {
+                            buttonNode = this.enhancePromptText;
+                        }
+                        setTimeout(function() {
+                            popup.open({
+                                popup: enhancePromptDialog,
+                                around: buttonNode,
+                                orient: orient
+                            });
+                            enhancePromptDialog.visible = true;
+                        }, 100);
+                    }
                 }));
             }
+
+            // COMMENTED OUT: Subscribe to topic changes to update display text
+            // topic.subscribe('ChatModel', lang.hitch(this, function(model) {
+            //     // Update model display text with just the model name (last part after /)
+            //     var modelName = model.split('/').reverse()[0];
+            //     if (this.name_map[modelName]) {
+            //         modelName = this.name_map[modelName];
+            //     }
+            //     this.modelText.innerHTML = 'Model: ' + modelName;
+            // }));
+
+            // COMMENTED OUT: Subscribe to topic changes to update RAG display text
+            // topic.subscribe('ChatRagDb', lang.hitch(this, function(ragDb) {
+            //     // Update RAG display text
+            //     this.ragText.innerHTML = 'RAG: ' + (ragDb === 'null' ? 'None' : ragDb);
+            // }));
+
+            // Subscribe to topic to control model/rag container visibility
+            topic.subscribe('toggleModelRagVisibility', lang.hitch(this, function(visible) {
+                domStyle.set(this.advancedOptionsContainer, 'display', visible ? 'block' : 'none');
+
+                // Get the actual height of the advanced options container and publish it
+                var containerHeight = 200; // Default fallback height
+                if (visible) {
+                    // Wait a moment for the container to be shown, then get its height
+                    setTimeout(lang.hitch(this, function() {
+                        var actualHeight = domStyle.get(this.advancedOptionsContainer, 'height');
+                        if (actualHeight && actualHeight > 0) {
+                            containerHeight = actualHeight;
+                        }
+                        // Publish the height info for other widgets that need it
+                        topic.publish('advancedOptionsHeightChanged', { visible: true, height: containerHeight });
+                    }), 10);
+                } else {
+                    // Publish that advanced options are hidden
+                    topic.publish('advancedOptionsHeightChanged', { visible: false, height: 0 });
+                }
+
+                // Adjust containerNode size to accommodate advanced options
+                if (visible) {
+                    // Increase height when advanced options are shown
+                    domStyle.set(this.containerNode, {
+                        'min-height': '100px', // Reduced from 250px to allow smaller sizing
+                        'transition': 'min-height 0.3s ease-in-out',
+                        'overflow': 'hidden'
+                    });
+                } else {
+                    // Reset to smaller height when advanced options are hidden
+                    domStyle.set(this.containerNode, {
+                        'min-height': '30px', // Reduced from 50px to allow smaller sizing
+                        'transition': 'min-height 0.3s ease-in-out',
+                        'overflow': 'hidden'
+                    });
+                }
+            }));
+
+            // Additional topic subscriptions from older version
+            topic.subscribe('get_model_list', lang.hitch(this, function() {
+                topic.publish('return_model_list', this.modelList);
+            }));
+
+            topic.subscribe('get_rag_list', lang.hitch(this, function() {
+                topic.publish('return_rag_list', this.ragList);
+            }));
+
+            // Set initial model after a brief delay to ensure all subscribers are in place
+            setTimeout(lang.hitch(this, function() {
+                topic.publish('ChatModel', 'RedHatAI/Llama-4-Scout-17B-16E-Instruct-quantized.w4a16');
+            }), 100);
+
+            // Fetch model and RAG lists from API
+            // this._loadModelAndRagLists();
         },
 
         /**
-         * Updates the prompt text area with selected prompt
-         * @param {string} promptName Name of selected prompt
-         * @param {string} promptText Text content of selected prompt
+         * Loads model and RAG lists from the CopilotAPI
+         * @private
          */
-        updatePromptText: function(promptName, promptText) {
-            if (promptName === 'None') {
-                this.promptTextArea.value = '';
+        _loadModelAndRagLists: function() {
+
+            if (this.copilotApi) {
+                this.copilotApi.getModelList().then(lang.hitch(this, function(modelsAndRag) {
+                    try {
+                        // Parse the response
+                        this.modelList = JSON.parse(modelsAndRag.models);
+                        this.ragList = JSON.parse(modelsAndRag.vdb_list);
+
+                        // COMMENTED OUT: Update displays with first available options or "None" if empty
+                        // var defaultModel = this.modelList && this.modelList.length > 0 ? this.modelList[0] : 'None';
+                        // var defaultRag = this.ragList && this.ragList.length > 0 ? this.ragList[0] : 'None';
+                        // var modelName = defaultModel.model.split('/').reverse()[0];
+                        // if (this.name_map[modelName]) {
+                        //     modelName = this.name_map[modelName];
+                        // }
+                        // this.modelText.innerHTML = 'Model: ' + modelName;
+                        // // this.ragText.innerHTML = 'RAG: ' + defaultRag.name;
+                        // this.ragText.innerHTML = 'RAG: None';
+
+                        console.log('Model and RAG lists loaded successfully', {
+                            models: this.modelList,
+                            rags: this.ragList
+                        });
+                    } catch (error) {
+                        console.error('Error parsing model/RAG lists:', error);
+                        // COMMENTED OUT: Update error displays
+                        // this.modelText.innerHTML = 'Model: Error';
+                        // this.ragText.innerHTML = 'RAG: Error';
+                    }
+                })).catch(lang.hitch(this, function(error) {
+                    console.error('Error fetching model/RAG lists:', error);
+                    // COMMENTED OUT: Update error displays
+                    // this.modelText.innerHTML = 'Model: Error';
+                    // this.ragText.innerHTML = 'RAG: Error';
+                }));
             } else {
-                this.promptTextArea.value = `${promptText}`;
+                console.error('CopilotAPI not available');
+                // COMMENTED OUT: Update N/A displays
+                // this.modelText.innerHTML = 'Model: N/A';
+                // this.ragText.innerHTML = 'RAG: N/A';
             }
         }
     });

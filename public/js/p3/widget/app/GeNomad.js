@@ -1,7 +1,7 @@
 define([
     'dojo/_base/declare', 'dojo/_base/array', 'dojo/topic', 'dijit/_WidgetBase', 'dojo/on',
     'dojo/dom-class', 'dijit/_TemplatedMixin', 'dijit/_WidgetsInTemplateMixin',
-    'dojo/text!./templates/GeNomad.html', './AppBase',
+    'dojo/text!./templates/Genomad.html', './AppBase',
     'dojo/_base/lang', '../../WorkspaceManager'
   ], function (
     declare, array, Topic, WidgetBase, on,
@@ -9,16 +9,16 @@ define([
     Template, AppBase, lang, WorkspaceManager
   ) {
     return declare([AppBase], {
-      baseClass: 'geNomad',
+      baseClass: 'Genomad',
       templateString: Template,
-      applicationName: 'geNomad name',
+      applicationName: 'Genomad',
       requireAuth: true,
-      applicationLabel: 'geNomad label',
-      applicationDescription: 'Currently Executes all modules of the geNomad pipeline for plasmid and virus identification from FASTA formatted contigs',
+      applicationLabel: 'Genomad',
+      applicationDescription: 'Currently Executes all modules of the Genomad pipeline for plasmid and virus identification from FASTA formatted contigs',
       applicationHelp: 'quick_references/services/genomad.html',
       tutorialLink: 'tutorial/genomad/genomad.html',
       videoLink: 'https://youtube.com/playlist?list=PLWfOyhOW_Oav3zsNKRx_4EMJQjvY7q_U3&si=pg4jREU2MFY_-PBW',
-      pageTitle: 'geNomad Service | BV-BRC',
+      pageTitle: 'Genomad Service | BV-BRC',
       defaultPath: '',
 
       constructor: function () {
@@ -57,12 +57,12 @@ define([
         }
 
         // Map form values to service parameters
-        genomad_values.input_file = values.fasta_file;
+        genomad_values.input_file = values.input_file;
         genomad_values.output_path = values.output_path;
         genomad_values.output_file = values.output_file;
 
         // Set static values for unused parameters as requested
-        genomad_values['filtering-preset'] = null; // Default to conservative
+        genomad_values['filtering-preset'] = 'conservative'; // Default to conservative
         genomad_values.cleanup = true; // Default to true
         genomad_values.restart = true; // Default to true
         genomad_values.verbose = true; // Default to true
@@ -123,7 +123,7 @@ define([
       addRerunFields: function (job_params) {
         // Set form values from job parameters
         if (job_params['input_file']) {
-          this.fasta_file.set('value', job_params['input_file']);
+          this.input_file.set('value', job_params['input_file']);
         }
         if (job_params['output_path']) {
           this.output_path.set('value', job_params['output_path']);

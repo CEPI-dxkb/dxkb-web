@@ -1,0 +1,100 @@
+<form dojoAttachPoint="containerNode" class="PanelForm App ${baseClass}"
+  dojoAttachEvent="onreset:_onReset,onsubmit:_onSubmit,onchange:validate">
+  <div class="appTemplate page-content" style="margin-top: 40px; margin-bottom: 40px;">
+    <div class="appTitle">
+      <h1 class="page-content-header">Services</h1>
+      <h2 class="page-content-subheader">${applicationLabel}
+        <div name="overview" class="infobox iconbox infobutton dialoginfo">
+          <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+        </div>
+
+        <div class="infobox iconbox tutorialButton tutorialInfo">
+          <a href="${docsServiceURL}${tutorialLink}" target="_blank"><i class="fa icon-books fa-1x"
+              title="click to open tutorial"></i></a>
+        </div>
+
+        <div class="infobox iconbox videoButton videoInfo">
+          <a href="${videoLink}" target="_blank"><i class="fa icon-play-circle fa-1x"
+              title="click to open the video tutorial"></i></a>
+        </div>
+      </h2>
+      <hr class="page-content-divider" />
+
+      <p style="font-size: 14px; font-weight: 500;">${applicationDescription} For further explanation, please see the ${applicationLabel} Service
+        <a href="${docsServiceURL}${applicationHelp}" target="_blank">Quick Reference Guide</a>
+        and
+        <a href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.
+      </p>
+    </div>
+
+    <div style="width:450px; margin:auto" class="formFieldsContainer">
+      <div id="annotationBox" style="width:400px;" class="appBox appShadow">
+        <div class="headerrow">
+          <div style="width:85%;display:inline-block;">
+            <label class="appBoxLabel">Parameters</label>
+            <div name="parameters" class="infobox iconbox infobutton dialoginfo">
+              <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="appRow">
+          <div class="appFieldLong">
+            <label>Input FASTA file</label><br>
+            <div data-dojo-type="p3/widget/WorkspaceObjectSelector" data-dojo-attach-point="input_file"
+              name="input_file" style="width:100%" required="true"
+              data-dojo-props="type:['contigs'],multi:false,promptMessage:'Select or Upload FASTA files to your workspace for processing',missingMessage:'FASTA file must be provided.'">
+            </div>
+          </div>
+        </div>
+
+        <div class="appRow">
+          <label class="paramlabel">Output File Name</label><span class="charError"
+            style="color:red; font-size:8pt; padding-left:10px; font-weight:bold">&nbsp;</span><br>
+          <div data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="output_file"
+            data-dojo-attach-event="onChange:checkOutputName" data-dojo-attach-point="output_file" style="width:300px"
+            required="true"
+            data-dojo-props="intermediateChanges:true,missingMessage:'Name must be provided for the job result',trim:true,placeHolder:'Output File Name'">
+          </div>
+        </div>
+
+        <div class="appRow">
+          <div class="appFieldLong">
+            <label>Output Folder</label><br>
+            <div data-dojo-attach-point="output_path" data-dojo-type="p3/widget/WorkspaceObjectSelector"
+              name="output_path" style="width:100%" required="true"
+              data-dojo-props="title:'Select an Output Folder',autoSelectCurrent:true,selectionText:'Destination',type:['folder'],multi:false,value:'${activeWorkspacePath}',workspace:'${activeWorkspace}',promptMessage:'The output folder for your Genomad Results',missingMessage:'Output Folder must be selected.'"
+              data-dojo-attach-event="onChange:onOutputPathChange"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="appSubmissionArea">
+      <div data-dojo-attach-point="workingMessage" class="messageContainer workingMessage"
+        style="margin-top:10px; text-align:center;">
+        Submitting Genomad Job
+      </div>
+
+      <div data-dojo-attach-point="errorMessage" class="messageContainer errorMessage"
+        style="margin-top:10px; text-align:center;">
+        Error Submitting Job
+      </div>
+
+      <div data-dojo-attach-point="submittedMessage" class="messageContainer submittedMessage"
+        style="margin-top:10px; text-align:center;">
+        Your job has been submitted successfully. Please visit your <a
+          data-dojo-attach-event="onclick:openJobsList"><u>Jobs List</u> </a>to check the status of your job
+        and access the results.
+      </div>
+
+      <div style="margin-top: 10px; text-align:center;">
+        <div data-dojo-attach-point="cancelButton" data-dojo-attach-event="onClick:onCancel"
+          data-dojo-type="dijit/form/Button">Cancel
+        </div>
+        <div data-dojo-attach-point="resetButton" type="reset" data-dojo-type="dijit/form/Button">Reset</div>
+        <div data-dojo-attach-point="submitButton" type="submit" data-dojo-type="dijit/form/Button">Submit</div>
+      </div>
+    </div>
+  </div>
+</form>

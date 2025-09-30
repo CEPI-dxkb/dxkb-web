@@ -70,7 +70,7 @@
 
         <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:40%">
           <label class="paramlabel">Output File Basename</label><span class="charError"
-              style="color:red; font-size:8pt; padding-left:10px; font-weight:bold">&nbsp;</span><br>
+            style="color:red; font-size:8pt; padding-left:10px; font-weight:bold">&nbsp;</span><br>
           <div data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="output_file_basename"
             data-dojo-attach-event="onChange:checkOutputName" data-dojo-attach-point="output_file_basename"
             style="width:300px" required="true"
@@ -138,23 +138,10 @@
               data-dojo-props="disabled:false,constraints:{min:100,max:2048,places:0},value:512"
               data-dojo-attach-point="max_sequence_length">
           </div>
-
-          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:25%">
-            <div class="headerrow">
-              <label class="paramlabel">Max Tokens per Batch</label>
-              <div name="max_tokens_per_batch" class="infobox iconbox infobutton dialoginfo">
-                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
-              </div>
-            </div>
-            <input name="max_tokens_per_batch" style="width:96%; margin-left:10px"
-              data-dojo-type="dijit/form/NumberSpinner" data-dojo-attach-event="onChange:onMaxTokensPerBatchChange"
-              data-dojo-props="disabled:true,constraints:{min:512,max:4096,places:0},value:1024"
-              data-dojo-attach-point="max_tokens_per_batch">
-          </div>
         </div>
 
         <div class="appRow">
-          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:33%">
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:20%;">
             <div class="headerrow">
               <label class="paramlabel">Batch Processing</label>
               <div name="batch_sequences" class="infobox iconbox infobutton dialoginfo">
@@ -167,6 +154,21 @@
             </div>
           </div>
 
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:25%;">
+            <div class="headerrow">
+              <label class="paramlabel">Max Tokens per Batch</label>
+              <div name="max_tokens_per_batch" class="infobox iconbox infobutton dialoginfo">
+                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+              </div>
+            </div>
+            <input name="max_tokens_per_batch" style="width:80%; margin-left:10px"
+              data-dojo-type="dijit/form/NumberSpinner" data-dojo-attach-event="onChange:onMaxTokensPerBatchChange"
+              data-dojo-props="disabled:true,constraints:{min:512,max:4096,places:0},value:1024"
+              data-dojo-attach-point="max_tokens_per_batch">
+          </div>
+        </div>
+
+        <!-- <div class="appRow">
           <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:33%">
             <div class="headerrow">
               <label class="paramlabel">Use GPU</label>
@@ -191,7 +193,8 @@
               data-dojo-attach-point="cpu_offload">
             </div>
           </div>
-        </div>
+        </div> -->
+
       </div>
     </div>
   </div>

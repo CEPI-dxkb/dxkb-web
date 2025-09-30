@@ -25,7 +25,7 @@ define([
       defaultPath: '',
 
     constructor: function () {
-      this.paramToAttachPt = ['output_path', 'input_sequences', 'model_preset', 'db_preset', 'output_file', 'num_recycles', 'chunk_size', 'max_sequence_length', 'max_tokens_per_batch', 'batch_sequences', 'use_gpu', 'cpu_offload'];
+      this.paramToAttachPt = ['output_path', 'input_sequences', 'model_preset', 'db_preset', 'output_file', 'num_recycles', 'chunk_size', 'max_sequence_length', 'max_tokens_per_batch', 'batch_sequences'];
       this.currentFoldingType = 'alphafold';
     },
 
@@ -145,15 +145,15 @@ define([
         this.validate();
       },
 
-      onUseGpuChange: function (val) {
-        // Handle GPU usage toggle
-        this.validate();
-      },
+      // onUseGpuChange: function (val) {
+      //   // Handle GPU usage toggle
+      //   this.validate();
+      // },
 
-      onCpuOffloadChange: function (val) {
-        // Handle CPU offloading toggle
-        this.validate();
-      },
+      // onCpuOffloadChange: function (val) {
+      //   // Handle CPU offloading toggle
+      //   this.validate();
+      // },
 
       onOutputPathChange: function (val) {
         this.inherited(arguments);
@@ -197,8 +197,8 @@ define([
           // Convert checkbox arrays to boolean values
           folding_values.batch_sequences = Array.isArray(values.batch_sequences) ? values.batch_sequences.length > 0 : values.batch_sequences;
           folding_values.max_tokens_per_batch = values.max_tokens_per_batch;
-          folding_values.use_gpu = Array.isArray(values.use_gpu) ? values.use_gpu.length > 0 : values.use_gpu;
-          folding_values.cpu_offload = Array.isArray(values.cpu_offload) ? values.cpu_offload.length > 0 : values.cpu_offload;
+          folding_values.use_gpu = true;
+          folding_values.cpu_offload = false;
         }
 
         return folding_values;
@@ -273,13 +273,13 @@ define([
           this.max_tokens_per_batch.set('value', job_params.max_tokens_per_batch);
         }
 
-        if (job_params.use_gpu !== undefined) {
-          this.use_gpu.set('checked', Boolean(job_params.use_gpu));
-        }
+        // if (job_params.use_gpu !== undefined) {
+        //   this.use_gpu.set('checked', Boolean(job_params.use_gpu));
+        // }
 
-        if (job_params.cpu_offload !== undefined) {
-          this.cpu_offload.set('checked', Boolean(job_params.cpu_offload));
-        }
+        // if (job_params.cpu_offload !== undefined) {
+        //   this.cpu_offload.set('checked', Boolean(job_params.cpu_offload));
+        // }
       },
 
       intakeRerunForm: function () {

@@ -25,7 +25,7 @@ define([
       defaultPath: '',
 
       constructor: function () {
-        this.paramToAttachPt = ['output_path', 'sequences', 'output_file_basename', 'num_recycles', 'chunk_size', 'max_sequence_length', 'batch_sequences', 'max_tokens_per_batch', 'use_gpu', 'cpu_offload'];
+        this.paramToAttachPt = ['output_path', 'sequences', 'output_file_basename', 'num_recycles', 'chunk_size', 'max_sequence_length', 'batch_sequences', 'max_tokens_per_batch'];
       },
 
       startup: function () {
@@ -122,15 +122,15 @@ define([
         this.validate();
       },
 
-      onUseGpuChange: function (val) {
-        // Handle GPU usage toggle
-        this.validate();
-      },
+      // onUseGpuChange: function (val) {
+      //   // Handle GPU usage toggle
+      //   this.validate();
+      // },
 
-      onCpuOffloadChange: function (val) {
-        // Handle CPU offloading toggle
-        this.validate();
-      },
+      // onCpuOffloadChange: function (val) {
+      //   // Handle CPU offloading toggle
+      //   this.validate();
+      // },
 
       onOutputPathChange: function (val) {
         this.inherited(arguments);
@@ -169,8 +169,8 @@ define([
         // Convert checkbox arrays to boolean values
         esmfold_values.batch_sequences = Array.isArray(values.batch_sequences) ? values.batch_sequences.length > 0 : values.batch_sequences;
         esmfold_values.max_tokens_per_batch = values.max_tokens_per_batch;
-        esmfold_values.use_gpu = Array.isArray(values.use_gpu) ? values.use_gpu.length > 0 : values.use_gpu;
-        esmfold_values.cpu_offload = Array.isArray(values.cpu_offload) ? values.cpu_offload.length > 0 : values.cpu_offload;
+        esmfold_values.use_gpu = true;
+        esmfold_values.cpu_offload = false;
 
         return esmfold_values;
       },
@@ -216,15 +216,15 @@ define([
           this.max_tokens_per_batch.set('value', job_params.max_tokens_per_batch);
         }
 
-        // Set use GPU
-        if (job_params.use_gpu !== undefined) {
-          this.use_gpu.set('checked', Boolean(job_params.use_gpu));
-        }
+        // // Set use GPU
+        // if (job_params.use_gpu !== undefined) {
+        //   this.use_gpu.set('checked', Boolean(job_params.use_gpu));
+        // }
 
-        // Set CPU offload
-        if (job_params.cpu_offload !== undefined) {
-          this.cpu_offload.set('checked', Boolean(job_params.cpu_offload));
-        }
+        // // Set CPU offload
+        // if (job_params.cpu_offload !== undefined) {
+        //   this.cpu_offload.set('checked', Boolean(job_params.cpu_offload));
+        // }
 
         // Set output path
         if (job_params.output_path) {

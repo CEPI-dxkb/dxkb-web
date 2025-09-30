@@ -1,0 +1,201 @@
+<form dojoAttachPoint="containerNode" class="PanelForm App ${baseClass}"
+  dojoAttachEvent="onreset:_onReset,onsubmit:_onSubmit,onchange:validate">
+  <div class="appTemplate page-content" style="margin-top: 40px; margin-bottom: 40px;">
+    <div class="appTitle">
+      <h1 class="page-content-header">Services</h1>
+      <h2 class="page-content-subheader">${applicationLabel}
+        <div name="overview" class="infobox iconbox infobutton dialoginfo">
+          <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+        </div>
+
+        <div class="infobox iconbox tutorialButton tutorialInfo">
+          <a href="${docsServiceURL}${tutorialLink}" target="_blank"><i class="fa icon-books fa-1x"
+              title="click to open tutorial"></i></a>
+        </div>
+
+        <div class="infobox iconbox videoButton videoInfo">
+          <a href="${videoLink}" target="_blank"><i class="fa icon-play-circle fa-1x"
+              title="click to open the video tutorial"></i></a>
+        </div>
+      </h2>
+      <hr class="page-content-divider" />
+
+      <p style="font-size: 14px; font-weight: 500;">${applicationDescription} For further explanation, please see the ${applicationLabel} Service
+        <a href="${docsServiceURL}${applicationHelp}" target="_blank">Quick Reference Guide</a>
+        and
+        <a href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.
+      </p>
+    </div>
+
+    <div style="width:85%; margin:auto" class="formFieldsContainer">
+      <div id="annotationBox" style="width:97%;" class="appBox appShadow">
+        <div class="headerrow">
+          <div style="width:85%;display:inline-block;">
+            <label class="appBoxLabel">Protein Selection</label>
+            <div name="pdb-selection" class="infobox iconbox infobutton dialoginfo">
+              <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="appRow">
+          <!-- Radio Buttons -->
+          <input id="${id}_protein_databank_selection" type="radio" data-dojo-type="dijit/form/RadioButton"
+                data-dojo-attach-point="protein_databank_selection" name="protein_input" value="input_pdb"
+                data-dojo-attach-event="onChange:onProteinInputChange" checked />
+                <!-- data-dojo-attach-event="onChange:onInputChange" checked /> -->
+          <!-- <label for="${id}_protein_databank_selection">Protein Databank Archive</label> -->
+          <label for="${id}_protein_databank_selection">Precomputed Structures</label>
+          <input id="${id}_user_pdb_file" type="radio" data-dojo-type="dijit/form/RadioButton"
+                data-dojo-attach-point="user_pdb_file" name="protein_input" value="user_pdb_file"
+                data-dojo-attach-event="onChange:onInputChange">
+          <label for="${id}_user_pdb_file">Upload a PDB File</label>
+        </div>
+        <!--  Protein Databank Selection Block  -->
+        <div data-dojo-attach-point="block_pdb_list" style="display: block;">
+<!---
+        <div data-dojo-type="p3/widget/StructureIdSelector" data-dojo-attach-point="pdb_list" name="pdb_id"
+          style="width:50%" data-dojo-attach-event="onChange:onPdbIdChange" required="false" data-dojo-props="">
+        </div>
+-->
+        <input id="pdbDropdown"
+          name="pdbDropdown"
+          data-dojo-type="dijit/form/TextBox"
+          required="true" />
+        <div id="pdbError" style="color:red; display:none; margin-top:4px;"></div>
+        <ul id="pdbOptions"
+            style="border:1px solid #ccc; max-height:200px; overflow:auto; list-style:none; padding:0; margin-top:4px; display:none;">
+        </ul>
+<!--
+        <input id="${id}_pdb_preview" data-dojo-type="dijit/form/Button" data-dojo-attach-point="pdb_preview"
+          name="pdb_preview" disabled label="Preview PDB" data-dojo-attach-event="onClick:onPdbPreview">
+      -->
+        </div>
+
+        <!-- PDB File Upload Block -->
+        <div data-dojo-attach-point="block_pdb_upload" style="display: block;">
+          <div style="display: flex; align-items: center;">
+            <!-- WorkspaceObjectSelector -->
+            <div data-dojo-type="p3/widget/WorkspaceObjectSelector" name="user_pdb" style="width:65%;"
+                data-dojo-attach-event="onChange:onPbdFileUpload"
+                data-dojo-attach-point="user_pdb" value="user_pdb"
+                data-dojo-props="type:['txt','unspecified', 'pdb'],multi:false,promptMessage:'Select a PDB file for the protein of interest',missingMessage:'Protein input is required',placeHolder:'PDB data file'">
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div id="annotationBox" style="width:97%;" class="appBox appShadow">
+        <div class="headerrow">
+          <div style="width:85%;display:inline-block;">
+            <label class="appBoxLabel">Parameters</label>
+            <div name="parameters" class="infobox iconbox infobutton dialoginfo">
+              <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+            </div>
+          </div>
+        </div>
+        <div class="appRow">
+          <label class="paramlabel">SSM Mode</label><br>
+          <select data-dojo-type="dijit/form/Select" name="mode" data-dojo-attach-point="modeWidget" style="width:300px" required="true">
+            <option value="">--- Select Mode ---</option>
+            <option value="single">Single</option>
+            <option value="additive">Additive</option>
+            <option value="epistatic">Epistatic</option>
+          </select>
+        </div>
+        <div class="appRow">
+          <label class="paramlabel">SS Penalty</label><br>
+          <select data-dojo-type="dijit/form/Select" name="ss_penalty" style="width:50px" data-dojo-attach-point="ss_penaltyWidget" required="false">
+            <option value="">--- Please select one ---</option>
+            <option value="true">True</option>
+            <option value="false">False</option>
+          </select>
+        </div>
+        <div class="appRow">
+          <label>Chains</label><br>
+          <div data-dojo-attach-point="chainsWidget" style="width:380px; background-color:#F0F1F3" data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="chains" required="false"></div>
+        </div>
+        <div class="appRow">
+          <label>Batch Size</label><br>
+          <div data-dojo-type="dijit/form/ValidationTextBox" data-dojo-props="trim:true,regExp:'(([0-9])+)', intermediateChanges:true" value="" name="batch_size" maxHeight="200" style="width:20%" required="false" data-dojo-attach-point="batch_sizeWidget"></div>
+        </div>
+        <div class="appRow">
+          <div class="left" style="width:50%">
+              <label class="paramlabel">Threshold: </label><br />
+              <div data-dojo-type="dijit/form/Select" data-dojo-attach-point="thresholdWidget" name="threshold" style="width:60px">
+                  <option value="-0.5">-0.5</option>
+                  <option value="0.1">0.1</option>
+                  <option value="0.25">0.25</option>
+                  <option value="0.5">0.5</option>
+                  <option value="0.75">0.75</option>
+                  <option value="1">1</option>
+                  <option value="2.5">2.5</option>
+                  <option value="5">5</option>
+                  <option value="100" selected="selected">100</option>
+              </div>
+          </div>
+          <div class="left" style="width:50%">
+              <label class="paramlabel">Distance: </label><br />
+              <div data-dojo-type="dijit/form/Select" data-dojo-attach-point="distanceWidget" name="distance" style="width:60px">
+                  <option value="-0.5">-0.5</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100" selected="selected">100</option>
+              </div>
+          </div>
+        </div>
+        <br clear="all" />
+      </div>
+      <div id="annotationBox" style="width:97%;" class="appBox appShadow">
+        <div class="appRow">
+          <div class="appFieldLong">
+            <label>Output Folder</label><br>
+            <div data-dojo-attach-point="output_path" data-dojo-type="p3/widget/WorkspaceObjectSelector"
+              name="output_path" style="width:75%" required="true"
+              data-dojo-props="title:'Select an Output Folder',autoSelectCurrent:true,selectionText:'Destination',type:['folder'],multi:false,value:'${activeWorkspacePath}',workspace:'${activeWorkspace}',promptMessage:'The output folder for your Prediction Results',missingMessage:'Output Folder must be selected.'"
+              data-dojo-attach-event="onChange:onOutputPathChange">
+            </div>
+          </div>
+        </div>
+        <div class="appRow">
+          <div class="appFieldLong" style="width:380px">
+            <label>Output Name</label><span class="charError"
+              style="color:red; font-size:8pt; padding-left:10px; font-weight:bold">&nbsp;</span><br>
+            <div data-dojo-attach-point="output_file" data-dojo-attach-event="onChange:checkOutputName"
+              style="width:100%;"
+              data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="output_file" required="true"
+              data-dojo-props="intermediateChanges:true, promptMessage:'The output name for your Prediction Results',missingMessage:'Output Name must be provided.',trim:true,placeHolder:'Output name'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="appSubmissionArea">
+      <div data-dojo-attach-point="workingMessage" class="messageContainer workingMessage"
+        style="margin-top:10px; text-align:center;">
+        Submitting Prediction Job
+      </div>
+      <div data-dojo-attach-point="errorMessage" class="messageContainer errorMessage"
+        style="margin-top:10px; text-align:center;">
+        Error Submitting Job
+      </div>
+      <div data-dojo-attach-point="submittedMessage" class="messageContainer submittedMessage"
+        style="margin-top:10px; text-align:center;">
+        Your job has been submitted successfully. Please visit your <a
+          data-dojo-attach-event="onclick:openJobsList"><u>Jobs List</u> </a>to check the status of your job and access
+        the results.
+      </div>
+      <div style="margin-top: 10px; text-align:center;">
+        <div data-dojo-attach-point="cancelButton" data-dojo-attach-event="onClick:onCancel"
+          data-dojo-type="dijit/form/Button">Cancel
+        </div>
+        <div data-dojo-attach-point="resetButton" type="reset" data-dojo-type="dijit/form/Button">Reset</div>
+        <div data-dojo-attach-point="submitButton" type="submit" data-dojo-type="dijit/form/Button">Submit</div>
+      </div>
+    </div>
+  </div>
+</form>

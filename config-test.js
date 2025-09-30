@@ -19,7 +19,7 @@ const defaults = {
   'shockServiceURL': 'https://p3.theseed.org/services/shock_api', // only for status dashboard
   dataServiceURL: 'https://p3.theseed.org/services/data_api',
   accountURL: 'http://user.patric.local:3002/',
-  docsServiceURL: 'https://bv-brc.org/docs/',
+  docsServiceURL: 'https://www.dxkb.org/docs/',
   userServiceURL: '',
   localStorageCheckInterval: 86400,
   enableDevTools: false,

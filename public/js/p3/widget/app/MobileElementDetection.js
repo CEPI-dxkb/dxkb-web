@@ -112,13 +112,13 @@ define([
       on(this.inputTypeReads, 'change', lang.hitch(this, this.onInputTypeChange));
 
       // Setup recipe change handler for right-side Assembly Parameters
-      if (this.recipe_right) {
-        on(this.recipe_right, 'change', lang.hitch(this, function () {
-          // Sync the value to the left side
-          this.recipe.set('value', this.recipe_right.get('value'));
-          this.onRecipeChange();
-        }));
-      }
+      // if (this.recipe_right) {
+      //   on(this.recipe_right, 'change', lang.hitch(this, function () {
+      //     // Sync the value to the left side
+      //     this.recipe.set('value', this.recipe_right.get('value'));
+      //     this.onRecipeChange();
+      //   }));
+      // }
 
       this.pairToAttachPt1.concat(this.singleToAttachPt).forEach(lang.hitch(this, function (attachname) {
         this[attachname].searchBox.validator = lang.hitch(this[attachname].searchBox, function (/* anything */ value, /* __Constraints */ constraints) {
@@ -144,8 +144,8 @@ define([
       this.contigs_input_section.style.display = 'block';
       this.reads_input_section.style.display = 'none';
       this.selected_libraries_cell.style.display = 'none';
-      this.assembly_parameters_left_section.style.display = 'block';
-      this.assembly_parameters_right_section.style.display = 'none';
+      // this.assembly_parameters_left_section.style.display = 'block';
+      // this.assembly_parameters_right_section.style.display = 'none';
 
       // Set initial required state and constraints (contigs mode by default)
       this.input_file.set('required', true);
@@ -195,8 +195,6 @@ define([
         this.contigs_input_section.style.display = 'block';
         this.reads_input_section.style.display = 'none';
         this.selected_libraries_cell.style.display = 'none';
-        this.assembly_parameters_left_section.style.display = 'block';
-        this.assembly_parameters_right_section.style.display = 'none';
 
         // In contigs mode: input_file required, numlibs not required
         this.input_file.set('required', true);
@@ -206,111 +204,51 @@ define([
         this.contigs_input_section.style.display = 'none';
         this.reads_input_section.style.display = 'block';
         this.selected_libraries_cell.style.display = 'table-cell';
-        this.assembly_parameters_left_section.style.display = 'none';
-        this.assembly_parameters_right_section.style.display = 'block';
 
         // In reads mode: input_file not required, numlibs required
         this.input_file.set('required', false);
         this.numlibs.set('required', true);
         this.numlibs.set('constraints', {min:1,max:1000});
-
-        // Sync values from left to right section
-        this.syncAssemblyParametersToRight();
-
-        // Ensure right-side advanced options are properly initialized
-        this.initializeRightSideAdvancedOptions();
       }
       this.checkParameterRequiredFields();
     },
 
-    initializeRightSideAdvancedOptions: function () {
-      console.log('Initializing right-side advanced options...');
-
-      // Try to find elements by attach points first, then by DOM query
-      var advrow2_right = this.advrow2_right || this.assembly_parameters_right_section.querySelector('[data-dojo-attach-point="advrow2_right"]');
-      var advanced2_right = this.advanced2_right || this.assembly_parameters_right_section.querySelector('[data-dojo-attach-point="advanced2_right"]');
-      var advicon2_right = this.advicon2_right || this.assembly_parameters_right_section.querySelector('[data-dojo-attach-point="advicon2_right"]');
-
-      console.log('advrow2_right:', advrow2_right);
-      console.log('advanced2_right:', advanced2_right);
-      console.log('advicon2_right:', advicon2_right);
-
-      if (advrow2_right && advanced2_right && advicon2_right) {
-        console.log('All right-side advanced elements found, setting up handlers...');
-
-        // Store references for later use
-        this.advrow2_right = advrow2_right;
-        this.advanced2_right = advanced2_right;
-        this.advicon2_right = advicon2_right;
-
-        // Initialize the advanced options state
-        this.advrow2_right.turnedOn = (this.advrow2_right.style.display != 'none');
-
-        // Remove any existing event handlers
-        if (this.advanced2_right._advClickHandler) {
-          this.advanced2_right._advClickHandler.remove();
-        }
-
-        // Add new event handler
-        this.advanced2_right._advClickHandler = on(this.advanced2_right, 'click', lang.hitch(this, function () {
-          console.log('Right-side advanced options clicked!');
-          this.advrow2_right.turnedOn = (this.advrow2_right.style.display != 'none');
-          if (!this.advrow2_right.turnedOn) {
-            this.advrow2_right.turnedOn = true;
-            this.advrow2_right.style.display = 'block';
-            this.advicon2_right.className = 'fa icon-caret-left fa-1';
-            console.log('Expanding right-side advanced options');
-          }
-          else {
-            this.advrow2_right.turnedOn = false;
-            this.advrow2_right.style.display = 'none';
-            this.advicon2_right.className = 'fa icon-caret-down fa-1';
-            console.log('Collapsing right-side advanced options');
-          }
-        }));
-        console.log('Right-side advanced options handler set up successfully');
-      } else {
-        console.log('Some right-side advanced elements not found');
-      }
-    },
 
     validate: function () {
       console.log('MobileElementDetection validate() called');
 
-      // Check input type to determine which fields should be required
+      // Check input type specific validation first
       var inputType = 'contigs'; // default
       if (this.inputTypeReads.get('checked')) {
         inputType = 'reads';
       }
 
-      // Temporarily modify field required states based on input type
-      var originalNumlibsRequired = this.numlibs.get('required');
-      var originalNumlibsConstraints = this.numlibs.get('constraints');
-      var originalInputFileRequired = this.input_file.get('required');
-
+      var hasRequiredInput = false;
       if (inputType === 'contigs') {
-        // In contigs mode: input_file required, numlibs not required
-        this.input_file.set('required', true);
-        this.numlibs.set('required', false);
-        this.numlibs.set('constraints', {min:0,max:1000});
-      } else {
-        // In reads mode: input_file not required, numlibs required
-        this.input_file.set('required', false);
-        this.numlibs.set('required', true);
-        this.numlibs.set('constraints', originalNumlibsConstraints);
+        // For contigs mode, input_file is required
+        hasRequiredInput = this.input_file.get('value') && this.input_file.get('value').trim() !== '';
+        console.log('Contigs mode - input_file value:', this.input_file.get('value'));
+      } else if (inputType === 'reads') {
+        // For reads mode, at least one library is required
+        hasRequiredInput = this.libraryStore.data.length > 0;
+        console.log('Reads mode - library count:', this.libraryStore.data.length);
+      }
+
+      console.log('Custom validation - hasRequiredInput:', hasRequiredInput);
+
+      // Only call parent validation if our custom validation passes
+      if (!hasRequiredInput) {
+        console.log('Custom validation failed - disabling submit button');
+        if (this.submitButton) { this.submitButton.set('disabled', true); }
+        return false;
       }
 
       var valid = this.inherited(arguments);
       console.log('Parent validation result:', valid);
       console.log('activeUploads.length:', this.activeUploads.length);
 
-      // Restore original required states and constraints
-      this.input_file.set('required', originalInputFileRequired);
-      this.numlibs.set('required', originalNumlibsRequired);
-      this.numlibs.set('constraints', originalNumlibsConstraints);
-
       if (valid && this.activeUploads.length == 0) {
-        console.log('Validation passed - enabling submit button');
+        console.log('All validation passed - enabling submit button');
         if (this.submitButton) { this.submitButton.set('disabled', false); }
         return valid;
       }
@@ -320,122 +258,6 @@ define([
       return false;
     },
 
-    syncAssemblyParametersToRight: function () {
-      // Sync recipe value
-      if (this.recipe_right) {
-        this.recipe_right.set('value', this.recipe.get('value'));
-      }
-
-      // Sync genome size block visibility
-      if (this.genome_size_block_right) {
-        this.genome_size_block_right.style.display = this.genome_size_block.style.display;
-      }
-
-      // Sync genome size value
-      if (this.genome_size_right) {
-        this.genome_size_right.set('value', this.genome_size.get('value'));
-      }
-
-      // Sync advanced options state
-      if (this.advrow2_right && this.advrow2) {
-        this.advrow2_right.style.display = this.advrow2.style.display;
-        this.advrow2_right.turnedOn = this.advrow2.turnedOn;
-        if (this.advicon2_right) {
-          this.advicon2_right.className = this.advicon2.className;
-        }
-      }
-
-      // Sync advanced options values
-      if (this.normalize_right) {
-        this.normalize_right.set('checked', this.normalize.get('checked'));
-      }
-      if (this.trim_right) {
-        this.trim_right.set('checked', this.trim.get('checked'));
-      }
-      if (this.filtlong_right) {
-        this.filtlong_right.set('checked', this.filtlong.get('checked'));
-      }
-      if (this.expected_genome_size_right) {
-        this.expected_genome_size_right.set('value', this.expected_genome_size.get('value'));
-      }
-      if (this.genome_size_units_right) {
-        this.genome_size_units_right.set('value', this.genome_size_units.get('value'));
-      }
-      if (this.target_depth_right) {
-        this.target_depth_right.set('value', this.target_depth.get('value'));
-      }
-      if (this.racon_iter_right) {
-        this.racon_iter_right.set('value', this.racon_iter.get('value'));
-      }
-      if (this.pilon_iter_right) {
-        this.pilon_iter_right.set('value', this.pilon_iter.get('value'));
-      }
-      if (this.min_contig_len_right) {
-        this.min_contig_len_right.set('value', this.min_contig_len.get('value'));
-      }
-      if (this.min_contig_cov_right) {
-        this.min_contig_cov_right.set('value', this.min_contig_cov.get('value'));
-      }
-      if (this.max_bases_right) {
-        this.max_bases_right.set('value', this.max_bases.get('value'));
-      }
-    },
-
-    syncAssemblyParametersToLeft: function () {
-      // Sync recipe value back to left
-      if (this.recipe_right) {
-        this.recipe.set('value', this.recipe_right.get('value'));
-      }
-
-      // Sync genome size value back to left
-      if (this.genome_size_right) {
-        this.genome_size.set('value', this.genome_size_right.get('value'));
-      }
-
-      // Sync advanced options state back to left
-      if (this.advrow2_right && this.advrow2) {
-        this.advrow2.style.display = this.advrow2_right.style.display;
-        this.advrow2.turnedOn = this.advrow2_right.turnedOn;
-        if (this.advicon2) {
-          this.advicon2.className = this.advicon2_right.className;
-        }
-      }
-
-      // Sync advanced options values back to left
-      if (this.normalize_right) {
-        this.normalize.set('checked', this.normalize_right.get('checked'));
-      }
-      if (this.trim_right) {
-        this.trim.set('checked', this.trim_right.get('checked'));
-      }
-      if (this.filtlong_right) {
-        this.filtlong.set('checked', this.filtlong_right.get('checked'));
-      }
-      if (this.expected_genome_size_right) {
-        this.expected_genome_size.set('value', this.expected_genome_size_right.get('value'));
-      }
-      if (this.genome_size_units_right) {
-        this.genome_size_units.set('value', this.genome_size_units_right.get('value'));
-      }
-      if (this.target_depth_right) {
-        this.target_depth.set('value', this.target_depth_right.get('value'));
-      }
-      if (this.racon_iter_right) {
-        this.racon_iter.set('value', this.racon_iter_right.get('value'));
-      }
-      if (this.pilon_iter_right) {
-        this.pilon_iter.set('value', this.pilon_iter_right.get('value'));
-      }
-      if (this.min_contig_len_right) {
-        this.min_contig_len.set('value', this.min_contig_len_right.get('value'));
-      }
-      if (this.min_contig_cov_right) {
-        this.min_contig_cov.set('value', this.min_contig_cov_right.get('value'));
-      }
-      if (this.max_bases_right) {
-        this.max_bases.set('value', this.max_bases_right.get('value'));
-      }
-    },
 
     openJobsList: function () {
       Topic.publish('/navigate', { href: '/job/' });
@@ -449,8 +271,6 @@ define([
       var inputType = 'contigs'; // default
       if (this.inputTypeReads.get('checked')) {
         inputType = 'reads';
-        // Sync values from right section back to left section for form submission
-        this.syncAssemblyParametersToLeft();
       }
       values.input_type = inputType;
 
@@ -540,11 +360,25 @@ define([
         target._id = this.makeLibraryID(target._type);
         duplicate = target._id in this.libraryStore.index;
       }
+
+      // Check if we should validate input_file based on input type
+      var inputType = 'contigs'; // default
+      if (this.inputTypeReads && this.inputTypeReads.get('checked')) {
+        inputType = 'reads';
+      }
+
       input_pts.forEach(function (attachname) {
         var cur_value = null;
         var incomplete = 0;
         var browser_select = 0;
         var alias = attachname;
+        var isRequired = req;
+
+        // For input_file, only require it in contigs mode
+        if (attachname == 'input_file' && inputType === 'reads') {
+          isRequired = false;
+        }
+
         if (attachname == 'read1' || attachname == 'read2' || attachname == 'single_end_libsWidget') {
           cur_value = this[attachname].searchBox.value;
           browser_select = 1;
@@ -569,7 +403,7 @@ define([
         else {
           target[alias] = cur_value;
         }
-        if (req && (duplicate || !target[alias] || incomplete)) {
+        if (isRequired && (duplicate || !target[alias] || incomplete)) {
           if (browser_select) {
             this[attachname].searchBox.validate();
             this[attachname].searchBox._set('state', 'Error');
@@ -814,8 +648,7 @@ define([
 
       if (hasRequiredInput && outputPathValue && outputFileValue) {
         console.log('All validation passed, enabling submit button');
-        this.validate();
-        this.submitButton.set('disabled', false);
+        if (this.submitButton) { this.submitButton.set('disabled', false); }
       }
       else {
         console.log('Validation failed, disabling submit button');
@@ -845,13 +678,13 @@ define([
       }
 
       // Update right section if it exists
-      if (this.genome_size_block_right) {
-        if (showGenomeSize) {
-          this.genome_size_block_right.style.display = 'block';
-        } else {
-          this.genome_size_block_right.style.display = 'none';
-        }
-      }
+      // if (this.genome_size_block_right) {
+      //   if (showGenomeSize) {
+      //     this.genome_size_block_right.style.display = 'block';
+      //   } else {
+      //     this.genome_size_block_right.style.display = 'none';
+      //   }
+      // }
 
       this.checkParameterRequiredFields();
     },

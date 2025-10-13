@@ -344,88 +344,86 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div class="appBox appShadow">
-              <div class="headerrow">
-                <label class="appBoxLabel">Genomad Parameters</label>
-                <div name="genomad-parameters" class="infobox iconbox infobutton dialoginfo">
-                  <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+                <div class="headerrow">
+                  <label class="appBoxLabel">Genomad Parameters</label>
+                  <div name="genomad-parameters" class="infobox iconbox infobutton dialoginfo">
+                    <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+                  </div>
                 </div>
-              </div>
 
-              <div class="appRow">
-                <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:50%">
-                  <label class="paramlabel">Filtering preset</label>
-                  <select data-dojo-type="dijit/form/Select" name="filtering_preset"
-                    data-dojo-attach-point="filtering_preset" style="width:300px" required="false">
-                    <option value="">None</option>
-                    <option value="conservative">Conservative</option>
-                    <option value="relaxed">Relaxed</option>
-                  </select>
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:50%">
+                    <label class="paramlabel">Filtering preset</label>
+                    <select data-dojo-type="dijit/form/Select" name="filtering_preset"
+                      data-dojo-attach-point="filtering_preset" style="width:300px" required="false">
+                      <option value="">None</option>
+                      <option value="conservative">Conservative</option>
+                      <option value="relaxed">Relaxed</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              <div class="appRow">
-                <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:45%">
-                  <label class="paramlabel">Sample composition</label>
-                  <select data-dojo-type="dijit/form/Select" name="composition" data-dojo-attach-point="composition"
-                    style="width:300px" required="false">
-                    <option value="auto">Auto</option>
-                    <option value="metagenome">Metagenome</option>
-                    <option value="virome">Virome</option>
-                  </select>
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:45%">
+                    <label class="paramlabel">Sample composition</label>
+                    <select data-dojo-type="dijit/form/Select" name="composition" data-dojo-attach-point="composition"
+                      style="width:300px" required="false">
+                      <option value="auto">Auto</option>
+                      <option value="metagenome">Metagenome</option>
+                      <option value="virome">Virome</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              <div class="appRow">
-                <div class="appRowSegment" style="margin:0 0 0 0">
-                  <div id="${id}_cleanup" name="cleanup" data-dojo-type="dijit/form/CheckBox"
-                    data-dojo-attach-point="cleanup" data-dojo-props="checked:true"></div>
-                  <label class="paramlabel">Cleanup intermediate files</label>
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin:0 0 0 0">
+                    <div id="${id}_cleanup" name="cleanup" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="cleanup" data-dojo-props="checked:true"></div>
+                    <label class="paramlabel">Cleanup intermediate files</label>
+                  </div>
                 </div>
-              </div>
-              <div class="appRow">
-                <div class="appRowSegment" style="margin:0 0 0 0">
-                  <div id="${id}_restart" name="restart" data-dojo-type="dijit/form/CheckBox"
-                    data-dojo-attach-point="restart" data-dojo-props="checked:true"></div>
-                  <label class="paramlabel">Restart analysis</label>
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin:0 0 0 0">
+                    <div id="${id}_restart" name="restart" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="restart" data-dojo-props="checked:true"></div>
+                    <label class="paramlabel">Restart analysis</label>
+                  </div>
                 </div>
-              </div>
-              <div class="appRow">
-                <div class="appRowSegment" style="margin:0 0 0 0">
-                  <div id="${id}_verbose" name="verbose" data-dojo-type="dijit/form/CheckBox"
-                    data-dojo-attach-point="verbose" data-dojo-props="checked:true"></div>
-                  <label class="paramlabel">Verbose output</label>
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin:0 0 0 0">
+                    <div id="${id}_verbose" name="verbose" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="verbose" data-dojo-props="checked:true"></div>
+                    <label class="paramlabel">Verbose output</label>
+                  </div>
                 </div>
-              </div>
-              <div class="appRow">
-                <div class="appRowSegment" style="margin:0 0 0 0">
-                  <div id="${id}_lenient_taxonomy" name="lenient_taxonomy" data-dojo-type="dijit/form/CheckBox"
-                    data-dojo-attach-point="lenient_taxonomy" data-dojo-props="checked:false"></div>
-                  <label class="paramlabel">Lenient taxonomy</label>
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin:0 0 0 0">
+                    <div id="${id}_lenient_taxonomy" name="lenient_taxonomy" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="lenient_taxonomy" data-dojo-props="checked:false"></div>
+                    <label class="paramlabel">Lenient taxonomy</label>
+                  </div>
                 </div>
-              </div>
-              <div class="appRow">
-                <div class="appRowSegment" style="margin:0 0 0 0">
-                  <div id="${id}_full_ictv_lineage" name="full_ictv_lineage" data-dojo-type="dijit/form/CheckBox"
-                    data-dojo-attach-point="full_ictv_lineage" data-dojo-props="checked:true"></div>
-                  <label class="paramlabel">Full ICTV lineage</label>
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin:0 0 0 0">
+                    <div id="${id}_full_ictv_lineage" name="full_ictv_lineage" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="full_ictv_lineage" data-dojo-props="checked:true"></div>
+                    <label class="paramlabel">Full ICTV lineage</label>
+                  </div>
                 </div>
-              </div>
-              <div class="appRow">
-                <div class="appRowSegment" style="margin:0 0 0 0">
-                  <div id="${id}_force_auto" name="force_auto" data-dojo-type="dijit/form/CheckBox"
-                    data-dojo-attach-point="force_auto" data-dojo-props="checked:false"></div>
-                  <label class="paramlabel">Force automatic composition</label>
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin:0 0 0 0">
+                    <div id="${id}_force_auto" name="force_auto" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="force_auto" data-dojo-props="checked:false"></div>
+                    <label class="paramlabel">Force automatic composition</label>
+                  </div>
                 </div>
-              </div>
-              <div class="appRow">
-                <label class="paramlabel">Debug level</label><br>
-                <div class="insertspinner" name="debug" data-dojo-type="dijit/form/NumberSpinner"
-                  data-dojo-attach-point="debug"
-                  data-dojo-props="value:0, smallDelta:1, constraints:{min:0,max:3,places:0}, invalidMessage:'Please provide an integer value'">
+                <div class="appRow">
+                  <label class="paramlabel">Debug level</label><br>
+                  <div class="insertspinner" name="debug" data-dojo-type="dijit/form/NumberSpinner"
+                    data-dojo-attach-point="debug"
+                    data-dojo-props="value:0, smallDelta:1, constraints:{min:0,max:3,places:0}, invalidMessage:'Please provide an integer value'">
+                  </div>
                 </div>
               </div>
             </div>

@@ -33,6 +33,7 @@ define([], function () {
         'MetaCATS': 'MetaCATS',
         'MetagenomeBinning': 'MetagenomicBinning',
         'MetagenomicReadMapping': 'MetagenomicReadMapping',
+        'MobileElementDetection': 'MobileElementDetection',
         'MSA': 'MSA',
         'CodonTree': 'PhylogeneticTree',
         'PrimerDesign': 'PrimerDesign',

@@ -105,23 +105,12 @@ define([
         }
       }));
 
-      // Right-side advanced options will be initialized when switching to reads mode
-
       // Setup input type change handlers for radio buttons
       on(this.inputTypeContigs, 'change', lang.hitch(this, this.onInputTypeChange));
       on(this.inputTypeReads, 'change', lang.hitch(this, this.onInputTypeChange));
 
-      // Setup recipe change handler for right-side Assembly Parameters
-      // if (this.recipe_right) {
-      //   on(this.recipe_right, 'change', lang.hitch(this, function () {
-      //     // Sync the value to the left side
-      //     this.recipe.set('value', this.recipe_right.get('value'));
-      //     this.onRecipeChange();
-      //   }));
-      // }
-
       this.pairToAttachPt1.concat(this.singleToAttachPt).forEach(lang.hitch(this, function (attachname) {
-        this[attachname].searchBox.validator = lang.hitch(this[attachname].searchBox, function (/* anything */ value, /* __Constraints */ constraints) {
+        this[attachname].searchBox.validator = lang.hitch(this[attachname].searchBox, function (value, constraints) {
           return (new RegExp('^(?:' + this._computeRegexp(constraints) + ')' + (this.required ? '' : '?') + '$')).test(value) &&
             (!this._isEmpty(value)) &&
             (this._isEmpty(value) || this.parse(value, constraints) !== undefined);
@@ -196,10 +185,16 @@ define([
         this.selected_libraries_cell.style.display = 'none';
         this.assembly_parameters.style.display = 'none';
 
+
         // In contigs mode: input_file required, numlibs not required
         this.input_file.set('required', true);
         this.numlibs.set('required', false);
         this.numlibs.set('constraints', {min:0,max:1000});
+
+        // Force validation of input_file field when switching to contigs mode
+        if (this.input_file && this.input_file.validate) {
+          this.input_file.validate();
+        }
       } else if (inputType === 'reads') {
         this.contigs_input_section.style.display = 'none';
         this.reads_input_section.style.display = 'block';
@@ -210,7 +205,19 @@ define([
         this.numlibs.set('required', true);
         this.numlibs.set('constraints', {min:1,max:1000});
       }
-      this.checkParameterRequiredFields();
+
+      // Use setTimeout to ensure validation completes before checking parameters
+      var _self = this;
+      setTimeout(function() {
+        // Force validation of output fields as well
+        if (_self.output_file && _self.output_file.validate) {
+          _self.output_file.validate();
+        }
+        if (_self.output_path && _self.output_path.validate) {
+          _self.output_path.validate();
+        }
+        _self.checkParameterRequiredFields();
+      }, 100);
     },
 
 
@@ -278,7 +285,14 @@ define([
       mobile_element_values = this.checkBaseParameters(values, mobile_element_values);
 
       if (!this.form_flag) {
-        this.ingestAttachPoints(this.paramToAttachPt, mobile_element_values, true);
+        // Only include input_file for contigs mode
+        var paramsToProcess = ['output_path', 'output_file'];
+        if (inputType === 'contigs') {
+          paramsToProcess.push('input_file');
+        } else if (inputType === 'reads') {
+          paramsToProcess.push('recipe', 'genome_size');
+        }
+        this.ingestAttachPoints(paramsToProcess, mobile_element_values, true);
       }
 
       // Add specific parameters from JSON spec
@@ -347,6 +361,16 @@ define([
       }
       if (Object.prototype.hasOwnProperty.call(values, 'debug') && values.debug) {
         mobile_element_values.debug = values.debug;
+      }
+
+      // Delete assembly parameters when in contigs mode
+      if (inputType === 'contigs') {
+        var assembly_inputs = ['recipe', 'genome_size', 'trim', 'normalize', 'filtlong', 'target_depth', 'racon_iter', 'pilon_iter', 'min_contig_len', 'min_contig_cov', 'max_bases', 'expected_genome_size', 'filtering_preset', 'cleanup', 'restart', 'verbose', 'lenient-taxonomy', 'full-ictv-lineage', 'composition', 'force-auto', 'debug', 'srr_ids', 'paired_end_libs', 'single_end_libs'];
+        assembly_inputs.forEach(function (key) {
+          if (Object.prototype.hasOwnProperty.call(mobile_element_values, key)) {
+            delete mobile_element_values[key];
+          }
+        });
       }
 
       return mobile_element_values;
@@ -670,7 +694,6 @@ define([
       var recipeValue = this.recipe.value;
       var showGenomeSize = (recipeValue == 'canu' || recipeValue == 'flye');
 
-      // Update left section
       if (showGenomeSize) {
         this.genome_size_block.style.display = 'block';
       } else {

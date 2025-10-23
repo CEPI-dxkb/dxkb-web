@@ -144,8 +144,7 @@ define([
       this.contigs_input_section.style.display = 'block';
       this.reads_input_section.style.display = 'none';
       this.selected_libraries_cell.style.display = 'none';
-      // this.assembly_parameters_left_section.style.display = 'block';
-      // this.assembly_parameters_right_section.style.display = 'none';
+      this.assembly_parameters.style.display = 'none';
 
       // Set initial required state and constraints (contigs mode by default)
       this.input_file.set('required', true);
@@ -195,6 +194,7 @@ define([
         this.contigs_input_section.style.display = 'block';
         this.reads_input_section.style.display = 'none';
         this.selected_libraries_cell.style.display = 'none';
+        this.assembly_parameters.style.display = 'none';
 
         // In contigs mode: input_file required, numlibs not required
         this.input_file.set('required', true);
@@ -204,7 +204,7 @@ define([
         this.contigs_input_section.style.display = 'none';
         this.reads_input_section.style.display = 'block';
         this.selected_libraries_cell.style.display = 'table-cell';
-
+        this.assembly_parameters.style.display = 'block';
         // In reads mode: input_file not required, numlibs required
         this.input_file.set('required', false);
         this.numlibs.set('required', true);
@@ -676,15 +676,6 @@ define([
       } else {
         this.genome_size_block.style.display = 'none';
       }
-
-      // Update right section if it exists
-      // if (this.genome_size_block_right) {
-      //   if (showGenomeSize) {
-      //     this.genome_size_block_right.style.display = 'block';
-      //   } else {
-      //     this.genome_size_block_right.style.display = 'none';
-      //   }
-      // }
 
       this.checkParameterRequiredFields();
     },

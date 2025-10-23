@@ -154,11 +154,6 @@ define([
       // Add click handler to submit button for debugging
       if (this.submitButton) {
         on(this.submitButton, 'click', lang.hitch(this, function() {
-          console.log('Submit button clicked!');
-          console.log('Form validation result:', this.validate());
-          console.log('activeUploads length:', this.activeUploads.length);
-          console.log('Checking individual field validation...');
-
           // Check each form field for validation errors
           var formFields = this.getChildren();
           formFields.forEach(function(field) {
@@ -234,14 +229,10 @@ define([
       if (inputType === 'contigs') {
         // For contigs mode, input_file is required
         hasRequiredInput = this.input_file.get('value') && this.input_file.get('value').trim() !== '';
-        console.log('Contigs mode - input_file value:', this.input_file.get('value'));
       } else if (inputType === 'reads') {
         // For reads mode, at least one library is required
         hasRequiredInput = this.libraryStore.data.length > 0;
-        console.log('Reads mode - library count:', this.libraryStore.data.length);
       }
-
-      console.log('Custom validation - hasRequiredInput:', hasRequiredInput);
 
       // Only call parent validation if our custom validation passes
       if (!hasRequiredInput) {
@@ -251,16 +242,12 @@ define([
       }
 
       var valid = this.inherited(arguments);
-      console.log('Parent validation result:', valid);
-      console.log('activeUploads.length:', this.activeUploads.length);
 
       if (valid && this.activeUploads.length == 0) {
-        console.log('All validation passed - enabling submit button');
         if (this.submitButton) { this.submitButton.set('disabled', false); }
         return valid;
       }
 
-      console.log('Validation failed - disabling submit button');
       if (this.submitButton) { this.submitButton.set('disabled', true); }
       return false;
     },
@@ -296,71 +283,30 @@ define([
       }
 
       // Add specific parameters from JSON spec
-      if (Object.prototype.hasOwnProperty.call(values, 'racon_iter') && values.racon_iter) {
-        mobile_element_values.racon_iter = values.racon_iter;
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'pilon_iter') && values.pilon_iter) {
-        mobile_element_values.pilon_iter = values.pilon_iter;
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'trim') && values.trim) {
-        mobile_element_values.trim = (values.trim[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'normalize') && values.normalize) {
-        mobile_element_values.normalize = (values.normalize[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'filtlong') && values.filtlong) {
-        mobile_element_values.filtlong = (values.filtlong[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'target_depth') && values.target_depth) {
-        mobile_element_values.target_depth = values.target_depth;
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'min_contig_len') && values.min_contig_len) {
-        mobile_element_values.min_contig_len = values.min_contig_len;
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'min_contig_cov') && values.min_contig_cov) {
-        mobile_element_values.min_contig_cov = values.min_contig_cov;
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'max_bases') && values.max_bases) {
-        mobile_element_values.max_bases = values.max_bases;
-      }
+      var assembly_params = ['racon_iter', 'pilon_iter', 'target_depth', 'min_contig_len', 'min_contig_cov', 'max_bases', 'filtering-preset', 'composition', 'debug'];
+
+      // Process simple parameter mappings
+      assembly_params.forEach(function(param) {
+        if (Object.prototype.hasOwnProperty.call(values, param) && values[param]) {
+          mobile_element_values[param] = values[param];
+        }
+      });
+
+      // Process checkbox parameters (convert to boolean)
+      var checkboxParams = ['trim', 'normalize', 'filtlong', 'cleanup', 'restart', 'verbose', 'lenient-taxonomy', 'full-ictv-lineage', 'force-auto'];
+      checkboxParams.forEach(function(param) {
+        if (Object.prototype.hasOwnProperty.call(values, param) && values[param]) {
+          var targetKey = param;
+          mobile_element_values[targetKey] = (values[param][0] === 'on');
+        }
+      });
+
+      // Handle special case for expected_genome_size
       if (Object.prototype.hasOwnProperty.call(values, 'expected_genome_size') && values.expected_genome_size) {
         var expected_genome_size = parseInt(values.expected_genome_size);
         var genome_size_units = values.genome_size_units;
-        var genome_size_value = 0;
-        if (genome_size_units == 'M') {
-          genome_size_value = 1000000;
-        }
-        else {
-          genome_size_value = 1000;
-        }
+        var genome_size_value = (genome_size_units == 'M') ? 1000000 : 1000;
         mobile_element_values.genome_size = genome_size_value * expected_genome_size;
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'filtering_preset') && values.filtering_preset) {
-        mobile_element_values['filtering-preset'] = values.filtering_preset;
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'cleanup') && values.cleanup) {
-        mobile_element_values.cleanup = (values.cleanup[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'restart') && values.restart) {
-        mobile_element_values.restart = (values.restart[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'verbose') && values.verbose) {
-        mobile_element_values.verbose = (values.verbose[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'lenient_taxonomy') && values.lenient_taxonomy) {
-        mobile_element_values['lenient-taxonomy'] = (values.lenient_taxonomy[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'full_ictv_lineage') && values.full_ictv_lineage) {
-        mobile_element_values['full-ictv-lineage'] = (values.full_ictv_lineage[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'composition') && values.composition) {
-        mobile_element_values.composition = values.composition;
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'force_auto') && values.force_auto) {
-        mobile_element_values['force-auto'] = (values.force_auto[0] === 'on');
-      }
-      if (Object.prototype.hasOwnProperty.call(values, 'debug') && values.debug) {
-        mobile_element_values.debug = values.debug;
       }
 
       // Delete assembly parameters when in contigs mode
@@ -654,21 +600,19 @@ define([
 
       if (inputType === 'contigs') {
         hasRequiredInput = this.input_file.get('value') && this.input_file.get('value').trim() !== '';
-        console.log('Contigs mode - input_file value:', this.input_file.get('value'));
       } else if (inputType === 'reads') {
         hasRequiredInput = this.libraryStore.data.length > 0;
-        console.log('Reads mode - library count:', this.libraryStore.data.length);
       }
 
       var outputPathValue = this.output_path.get('value');
       var outputFileValue = this.output_file.get('value');
 
-      console.log('Validation check:');
-      console.log('- inputType:', inputType);
-      console.log('- hasRequiredInput:', hasRequiredInput);
-      console.log('- outputPathValue:', outputPathValue);
-      console.log('- outputFileValue:', outputFileValue);
-      console.log('- submitButton exists:', !!this.submitButton);
+      // console.log('Validation check:');
+      // console.log('- inputType:', inputType);
+      // console.log('- hasRequiredInput:', hasRequiredInput);
+      // console.log('- outputPathValue:', outputPathValue);
+      // console.log('- outputFileValue:', outputFileValue);
+      // console.log('- submitButton exists:', !!this.submitButton);
 
       if (hasRequiredInput && outputPathValue && outputFileValue) {
         console.log('All validation passed, enabling submit button');
@@ -800,9 +744,9 @@ define([
               'trim': 'trim', 'min_contig_len': 'min_contig_len', 'racon_iter': 'racon_iter',
               'pilon_iter': 'pilon_iter', 'min_contig_cov': 'min_contig_cov', 'target_depth': 'target_depth',
               'max_bases': 'max_bases', 'filtering_preset': 'filtering_preset', 'cleanup': 'cleanup',
-              'restart': 'restart', 'verbose': 'verbose', 'lenient_taxonomy': 'lenient_taxonomy',
-              'full_ictv_lineage': 'full_ictv_lineage', 'composition': 'composition',
-              'force_auto': 'force_auto', 'debug': 'debug'
+              'restart': 'restart', 'verbose': 'verbose', 'lenient-taxonomy': 'lenient-taxonomy',
+              'full-ictv-lineage': 'full-ictv-lineage', 'composition': 'composition',
+              'force-auto': 'force-auto', 'debug': 'debug'
             };
             param_dict['service_specific'] = service_spec;
             AppBase.prototype.intakeRerunFormBase.call(this, param_dict);

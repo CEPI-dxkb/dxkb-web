@@ -1,16 +1,18 @@
 define([
-  'dojo/_base/declare', 'dojo/_base/array', 'dojo/topic', 'dijit/_WidgetBase', 'dojo/on',
+  'dojo/_base/declare', 'dojo/_base/array', 'dojo/topic', 'dijit/_WidgetBase', 'dojo/on', 'dojo/dom', 'dojo/dom-style',
   'dojo/fx/Toggler',
   'dojo/dom-class', 'dijit/_TemplatedMixin', 'dijit/_WidgetsInTemplateMixin',
   'dojo/text!./templates/StabilityPrediction.html', './AppBase',
-  'dojo/_base/lang', '../../WorkspaceManager', './rcsbList', './pdbDropdown'
+  'dojo/_base/lang', '../../WorkspaceManager', './rcsbList',"dojo/domReady!"
 ], function (
-  declare, array, Topic, WidgetBase, on,
+  declare, array, Topic, WidgetBase, on, dom, domStyle,
   Toggler,
   domClass, Templated, WidgetsInTemplate,
-  Template, AppBase, lang, WorkspaceManager, rcsbList, pdbDropdown
+  Template, AppBase, lang, WorkspaceManager, rcsbList
 ) {
-  return declare([AppBase], {
+    var validPDBCode = false;
+
+    return declare([AppBase], {
     baseClass: 'StabilityPrediction',
     templateString: Template,
     applicationName: 'StabilityPrediction',
@@ -32,13 +34,11 @@ define([
 
     startup: function () {
       var _self = this;
+
       rcsbList.getEntryIds().then(function(ids) {
-          console.log("Total IDs:", ids.length);
           var validPDBIDs = ids;
-          console.log("First few IDs:", ids.slice(0, 10));
-          console.log("All IDs: ", validPDBIDs);
           this.pdb_list = validPDBIDs;
-          pdbDropdown.initDropdown(this.pdb_list);
+          _self.initDropdown(this.pdb_list);
         }, function(err) {
           console.error("Error fetching PDB IDs:", err);
         });
@@ -62,17 +62,32 @@ define([
 
     onPbdFileUpload: function (val) {
       this.inherited(arguments)
-      this.user_pdb_preview.set('disabled', false);
+      this.checkParameterRequiredFields();
     },
 
     onProteinInputChange: function (evt) {
       this.protein_databank_selection
+
+      if (typeof this.protein_databank_selection != "undefined"){
+        // protein radio buttons
+        if (this.protein_databank_selection.checked) {
+          // set display logic
+          dojo.style(this.block_pdb_list, "display", "block");
+          dojo.style(this.block_pdb_upload, "display", "none");
+        }
+        else if (this.user_pdb_file.checked) {
+          dojo.style(this.block_pdb_list, "display", "none");
+          dojo.style(this.block_pdb_upload, "display", "block");
+        }
+      }
+
       if (this.protein_databank_selection.checked) {
         this.protein_databank_selection.value = "input_pdb";
       }
       else if (this.user_pdb_file.checked) {
         this.protein_databank_selection.value = "user_pdb_file";
       }
+      this.checkParameterRequiredFields();
     },
 
     onInputChange: function (evt) {
@@ -96,7 +111,6 @@ define([
 
     getValues: function () {
       var values = this.inherited(arguments);
-      console.log("VALS", values);
       var submit_values = {
         output_path: values.output_path,
         output_file: values.output_file,
@@ -110,7 +124,7 @@ define([
       if (values.protein_input === "input_pdb")
       {
 //        submit_values.protein_input_type = values.protein_input
-        submit_values.pdb_id = values.pdbDropdown
+        submit_values.pdb_id = values.pdbDropdownList
       }
       // repeat for pdb files
       else if (values.protein_input === "user_pdb_file")
@@ -123,17 +137,43 @@ define([
     },
 
     checkParameterRequiredFields: function () {
-      if (
-        (this.pdb_list.get('item') || this.user_pdb.get('value')) &&
-        this.output_path.get('value') &&
-        this.output_file.get('displayedValue')
-      ) {
-        this.validate();
-      } else {
-        if (this.submitButton) {
-          this.submitButton.set('disabled', true);
+
+      var submitButton = this.submitButton;
+
+      var pdb_choice = this.protein_databank_selection.value;
+      var validPdb;
+
+      setTimeout(() => {
+        if (pdb_choice === 'input_pdb'){
+            if (this.value.pdbDropdownList && validPDBCode) {
+              validPdb = true;
+            }
+            else {
+              validPdb = false;
+            }
         }
-      }
+        else if (pdb_choice === 'user_pdb_file'){
+          if (this.user_pdb.value) {
+            validPdb = true;
+          }
+          else {
+            validPdb = false;
+          }
+        }
+        if (validPdb &&
+          this.value.mode &&
+          this.output_path.get('value') &&
+          this.output_file.get('displayedValue')
+        ) {
+          if (this.submitButton) {
+            this.submitButton.set('disabled', false);
+          }
+        } else {
+          if (this.submitButton) {
+            this.submitButton.set('disabled', true);
+          }
+        }
+      }, 100);
     },
 
     onOutputPathChange: function (val) {
@@ -210,6 +250,211 @@ define([
           }
         }
       }
+    },
+
+    // This was pulled in from a separate file so that the dom elements can talk to each other all in here.
+    initDropdown: function(validIds) {
+        const self = this;
+
+        var input = dom.byId("pdbDropdownList");
+        var dropdown = dom.byId("pdbOptions");
+        var errorNode = dom.byId("pdbError");
+
+        var filtered = validIds.slice();
+        var maxVisible = 20;
+        var currentPage = 0;
+        var highlightedIndex = -1;
+        var allLiItems = [];
+
+        function showError(msg) {
+            domStyle.set(errorNode, "display", "block");
+            errorNode.innerHTML = msg;
+            input.style.borderColor = "red";
+        }
+
+        function hideError() {
+            domStyle.set(errorNode, "display", "none");
+            input.style.borderColor = "";
+        }
+
+        function filterOptions(value) {
+            var valUpper = value.toUpperCase();
+            filtered = validIds.filter(id => id.startsWith(valUpper));
+            currentPage = 0;
+            highlightedIndex = -1;
+            renderOptions();
+        }
+
+        function renderOptions() {
+            dropdown.innerHTML = "";
+            allLiItems = [];
+
+            if (filtered.length === 0) {
+                domStyle.set(dropdown, "display", "none");
+                return;
+            }
+
+            domStyle.set(dropdown, "display", "block");
+
+            var start = currentPage * maxVisible;
+            var end = Math.min(start + maxVisible, filtered.length);
+            var pageItems = filtered.slice(start, end);
+
+            // Previous options
+            if (currentPage > 0) {
+                var prevLi = document.createElement("li");
+                prevLi.textContent = "Previous options";
+                prevLi.style.padding = "4px";
+                prevLi.style.cursor = "pointer";
+                prevLi.style.fontStyle = "italic";
+                prevLi.addEventListener("mousedown", function(e) {
+                    e.preventDefault();
+                    currentPage--;
+                    renderOptions();
+                    highlightedIndex = 0;
+                    highlightItem(highlightedIndex);
+                });
+                dropdown.appendChild(prevLi);
+                allLiItems.push(prevLi);
+            }
+
+            // Page items
+            pageItems.forEach(function(opt) {
+                var li = document.createElement("li");
+                li.textContent = opt;
+                li.style.padding = "4px";
+                li.style.cursor = "pointer";
+                li.addEventListener("mousedown", function() {
+                    input.value = opt;
+                    input.placeholder = ""; // clear placeholder when selecting
+                    domStyle.set(dropdown, "display", "none");
+                    hideError();
+                });
+                dropdown.appendChild(li);
+                allLiItems.push(li);
+            });
+
+            // Next options
+            if (end < filtered.length) {
+                var nextLi = document.createElement("li");
+                nextLi.textContent = "Next options";
+                nextLi.style.padding = "4px";
+                nextLi.style.cursor = "pointer";
+                nextLi.style.fontStyle = "italic";
+                nextLi.addEventListener("mousedown", function(e) {
+                    e.preventDefault();
+                    currentPage++;
+                    renderOptions();
+                    highlightedIndex = 0;
+                    highlightItem(highlightedIndex);
+                });
+                dropdown.appendChild(nextLi);
+                allLiItems.push(nextLi);
+            }
+        }
+
+        function highlightItem(index) {
+            allLiItems.forEach((li, i) => {
+                li.style.background = i === index ? "#bde4ff" : "";
+            });
+
+            if (index >= 0 && allLiItems[index]) {
+                var li = allLiItems[index];
+                var liRect = li.getBoundingClientRect();
+                var dropdownRect = dropdown.getBoundingClientRect();
+
+                if (liRect.bottom > dropdownRect.bottom) {
+                    dropdown.scrollTop += liRect.bottom - dropdownRect.bottom;
+                } else if (liRect.top < dropdownRect.top) {
+                    dropdown.scrollTop -= dropdownRect.top - liRect.top;
+                }
+            }
+        }
+
+        // Show first page immediately on focus
+        input.addEventListener("focus", function() {
+            filterOptions('');
+        });
+
+        // Filter options as typing (no validation yet)
+        input.addEventListener("input", function() {
+            filterOptions(input.value);
+        });
+
+        input.addEventListener("keydown", function(e) {
+            if (domStyle.get(dropdown,"display")==="none") return;
+
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                if (highlightedIndex < allLiItems.length - 1) {
+                    highlightedIndex++;
+                    highlightItem(highlightedIndex);
+                }
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                if (highlightedIndex > 0) {
+                    highlightedIndex--;
+                    highlightItem(highlightedIndex);
+                }
+            } else if (e.key === "Enter") {
+                e.preventDefault();
+                if (highlightedIndex >= 0 && allLiItems[highlightedIndex]) {
+                    var selectedLi = allLiItems[highlightedIndex];
+                    if (selectedLi.textContent === "Next options") {
+                        currentPage++;
+                        renderOptions();
+                        highlightedIndex = 0;
+                        highlightItem(highlightedIndex);
+                    } else if (selectedLi.textContent === "Previous options") {
+                        currentPage--;
+                        renderOptions();
+                        highlightedIndex = 0;
+                        highlightItem(highlightedIndex);
+                    } else {
+                        input.value = selectedLi.textContent;
+                        input.placeholder = ""; // clear placeholder
+                        domStyle.set(dropdown, "display", "none");
+                        validPDBCode = true;
+                        hideError();
+                    }
+                }
+            }
+            self.checkParameterRequiredFields();
+        });
+
+        // Validate on input
+        input.addEventListener("input", function() {
+            var val = input.value.toUpperCase();
+            if (val && !validIds.includes(val)) {
+                showError("Invalid PDB ID");
+                validPDBCode = false;
+            } else {
+                hideError();
+                validPDBCode = true;
+            }
+            self.checkParameterRequiredFields();
+        });
+
+        // Validate on blur
+        input.addEventListener("blur", function() {
+            var val = input.value.toUpperCase();
+            if (val && !validIds.includes(val)) {
+                showError("Invalid PDB ID");
+                validPDBCode = false;
+            } else {
+                hideError();
+                validPDBCode = true;
+            }
+            self.checkParameterRequiredFields();
+        });
+
+        // Hide dropdown on outside click
+        document.addEventListener("mousedown", function(e) {
+            if (!dropdown.contains(e.target) && e.target !== input) {
+                domStyle.set(dropdown, "display", "none");
+            }
+        });
     }
+
   });
 });

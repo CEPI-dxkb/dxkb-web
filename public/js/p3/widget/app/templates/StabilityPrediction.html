@@ -40,16 +40,16 @@
         <br>
         <div class="appRow">
           <!-- Radio Buttons -->
-          <input id="${id}_protein_databank_selection" type="radio" data-dojo-type="dijit/form/RadioButton"
+          <input id="protein_databank_selection" type="radio" data-dojo-type="dijit/form/RadioButton"
                 data-dojo-attach-point="protein_databank_selection" name="protein_input" value="input_pdb"
                 data-dojo-attach-event="onChange:onProteinInputChange" checked />
                 <!-- data-dojo-attach-event="onChange:onInputChange" checked /> -->
           <!-- <label for="${id}_protein_databank_selection">Protein Databank Archive</label> -->
-          <label for="${id}_protein_databank_selection">Precomputed Structures</label>
-          <input id="${id}_user_pdb_file" type="radio" data-dojo-type="dijit/form/RadioButton"
+          <label for="protein_databank_selection">Precomputed Structures</label>
+          <input id="user_pdb_file" type="radio" data-dojo-type="dijit/form/RadioButton"
                 data-dojo-attach-point="user_pdb_file" name="protein_input" value="user_pdb_file"
-                data-dojo-attach-event="onChange:onInputChange">
-          <label for="${id}_user_pdb_file">Upload a PDB File</label>
+                data-dojo-attach-event="onChange:onProteinInputChange">
+          <label for="user_pdb_file">Upload a PDB File</label>
         </div>
         <!--  Protein Databank Selection Block  -->
         <div data-dojo-attach-point="block_pdb_list" style="display: block;">
@@ -58,13 +58,14 @@
           style="width:50%" data-dojo-attach-event="onChange:onPdbIdChange" required="false" data-dojo-props="">
         </div>
 -->
-        <input id="pdbDropdown"
-          name="pdbDropdown"
+        <input id="pdbDropdownList"
+          name="pdbDropdownList"
           data-dojo-type="dijit/form/TextBox"
-          required="true" />
+          />
         <div id="pdbError" style="color:red; display:none; margin-top:4px;"></div>
         <ul id="pdbOptions"
-            style="border:1px solid #ccc; max-height:200px; overflow:auto; list-style:none; padding:0; margin-top:4px; display:none;">
+            style="border:1px solid #ccc; max-height:200px; overflow:auto; list-style:none; padding:0; margin-top:4px; display:none;"
+            data-dojo-attach-event="onChange:onProteinInputChange">
         </ul>
 <!--
         <input id="${id}_pdb_preview" data-dojo-type="dijit/form/Button" data-dojo-attach-point="pdb_preview"
@@ -76,9 +77,9 @@
         <div data-dojo-attach-point="block_pdb_upload" style="display: block;">
           <div style="display: flex; align-items: center;">
             <!-- WorkspaceObjectSelector -->
-            <div data-dojo-type="p3/widget/WorkspaceObjectSelector" name="user_pdb" style="width:65%;"
+            <div data-dojo-type="p3/widget/WorkspaceObjectSelector" name="user_pdb" id="user_pdb" style="width:65%;"
                 data-dojo-attach-event="onChange:onPbdFileUpload"
-                data-dojo-attach-point="user_pdb" value="user_pdb"
+                data-dojo-attach-point="user_pdb" value=""
                 data-dojo-props="type:['txt','unspecified', 'pdb'],multi:false,promptMessage:'Select a PDB file for the protein of interest',missingMessage:'Protein input is required',placeHolder:'PDB data file'">
             </div>
 
@@ -96,7 +97,8 @@
         </div>
         <div class="appRow">
           <label class="paramlabel">SSM Mode</label><br>
-          <select data-dojo-type="dijit/form/Select" name="mode" data-dojo-attach-point="modeWidget" style="width:300px" required="true">
+          <select data-dojo-type="dijit/form/Select" name="mode" data-dojo-attach-point="modeWidget" style="width:300px" required="true"
+          data-dojo-attach-event="onChange:checkParameterRequiredFields">
             <option value="">--- Select Mode ---</option>
             <option value="single">Single</option>
             <option value="additive">Additive</option>

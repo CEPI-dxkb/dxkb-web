@@ -6,7 +6,7 @@ define([
 ], function(dom, domStyle, on) {
 
     function initDropdown(validIds) {
-        var input = dom.byId("pdbDropdown");
+        var input = dom.byId("pdbDropdownList");
         var dropdown = dom.byId("pdbOptions");
         var errorNode = dom.byId("pdbError");
 

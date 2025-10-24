@@ -198,13 +198,6 @@
                 </select>
               </div>
 
-              <div class="appRow" data-dojo-attach-point="genome_size_block" style="display:none">
-                <label class="paramlabel">Estimated Genome Size</label><br>
-                <div name="genome_size" class="medInput" data-dojo-type="dijit/form/NumberTextBox"
-                  data-dojo-attach-point="genome_size" value="5000000">
-                </div>
-              </div>
-
               <!-- Advanced Options Toggle -->
               <div class="appRow">
                 <div class="appRowSegment" style="margin: 10px 0 0 0;">
@@ -255,11 +248,11 @@
                     </div>
                   </div>
 
-                  <div class="appRowSegment" style="margin:0 25px 0 0; text-align:left">
+                  <div class="appRowSegment" style="margin:0 0 0 0; text-align:left; width:50%">
                     <label class="paramlabel">Estimated Genome Size</label>
                     <br>
-                    <div class="insertspinner" name="expected_genome_size" data-dojo-type="dijit/form/NumberSpinner"
-                      data-dojo-attach-point="expected_genome_size"
+                    <div class="insertspinner" name="genome_size" data-dojo-type="dijit/form/NumberSpinner"
+                      data-dojo-attach-point="genome_size"
                       data-dojo-props="value:5, smallDelta:1, constraints:{min:1,max:10,places:0}, invalidMessage:'Please provide an integer value'">
                     </div>
                     <select style="width: 10%; margin-left:5px" name="genome_size_units"
@@ -268,10 +261,10 @@
                       <option value="M">M</option>
                       <option value="K">K</option>
                     </select>
-                    <span style="margin-left:25px">x</span>
+                    <span style="margin-left:8px">x</span>
                   </div>
 
-                  <div class="appRowSegment" style="margin:0 50px 0 0; text-align:left">
+                  <div class="appRowSegment" style="margin:0 0 0 0; text-align:left; width:45%">
                     <label class="paramlabel">Target Genome Coverage</label>
                     <br>
                     <div class="insertspinner" name="target_depth" data-dojo-type="dijit/form/NumberSpinner"
@@ -289,7 +282,7 @@
                       <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
                     </div>
                   </div>
-                  <div class="appRowSegment" style="margin:0 50px 0 0; text-align:left">
+                  <div class="appRowSegment" style="margin:0 0 0 0; text-align:left; width:50%">
                     <label class="paramlabel">Racon Iterations</label>
                     <br>
                     <div class="insertspinner" name="racon_iter" data-dojo-type="dijit/form/NumberSpinner"
@@ -298,7 +291,7 @@
                     </div>
                   </div>
 
-                  <div class="appRowSegment" style="margin:0 50px 0 0; text-align:left">
+                  <div class="appRowSegment" style="margin:0 0 0 0; text-align:left; width:45%">
                     <label class="paramlabel">Pilon Iterations</label>
                     <br>
                     <div class="insertspinner" name="pilon_iter" data-dojo-type="dijit/form/NumberSpinner"
@@ -326,7 +319,7 @@
                     </div>
                   </div>
 
-                  <div class="appRowSegment" style="margin:0 50px 0 0; text-align:left">
+                  <div class="appRowSegment" style="margin:0 0 0 0; text-align:left">
                     <label class="paramlabel">Min. contig coverage</label>
                     <br>
                     <div class="insertspinner" name="min_contig_cov" data-dojo-type="dijit/form/NumberSpinner"
@@ -356,23 +349,49 @@
                   <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:50%">
                     <label class="paramlabel">Filtering preset</label>
                     <select data-dojo-type="dijit/form/Select" name="filtering-preset"
-                      data-dojo-attach-point="filtering-preset" style="width:300px" required="false">
+                      data-dojo-attach-point="filtering-preset" style="width:130px" required="false">
                       <option value="">None</option>
                       <option value="conservative">Conservative</option>
                       <option value="relaxed">Relaxed</option>
                     </select>
                   </div>
-                </div>
 
-                <div class="appRow">
                   <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:45%">
                     <label class="paramlabel">Sample composition</label>
                     <select data-dojo-type="dijit/form/Select" name="composition" data-dojo-attach-point="composition"
-                      style="width:300px" required="false">
+                      style="width:130px" required="false">
                       <option value="auto">Auto</option>
                       <option value="metagenome">Metagenome</option>
                       <option value="virome">Virome</option>
                     </select>
+                  </div>
+                </div>
+
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin:0 0 0 0; width:50%; text-align:left">
+                    <div id="${id}_restart" name="restart" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="restart" data-dojo-props="checked:true"></div>
+                    <label class="paramlabel">Restart analysis</label>
+                  </div>
+
+                  <div class="appRowSegment" style="margin:0 0 0 0; width:45%; text-align:left">
+                    <div id="${id}_verbose" name="verbose" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="verbose" data-dojo-props="checked:true"></div>
+                    <label class="paramlabel">Verbose output</label>
+                  </div>
+                </div>
+
+                <div class="appRow">
+                  <div class="appRowSegment" style="margin:0 0 0 0; width:50%; text-align:left">
+                    <div id="${id}_lenient-taxonomy" name="lenient-taxonomy" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="lenient-taxonomy" data-dojo-props="checked:false"></div>
+                    <label class="paramlabel">Lenient taxonomy</label>
+                  </div>
+
+                  <div class="appRowSegment" style="margin:0 0 0 0; width:45%; text-align:left">
+                    <div id="${id}_full-ictv-lineage" name="full-ictv-lineage" data-dojo-type="dijit/form/CheckBox"
+                      data-dojo-attach-point="full-ictv-lineage" data-dojo-props="checked:true"></div>
+                    <label class="paramlabel">Full ICTV lineage</label>
                   </div>
                 </div>
 
@@ -383,34 +402,7 @@
                     <label class="paramlabel">Cleanup intermediate files</label>
                   </div>
                 </div>
-                <div class="appRow">
-                  <div class="appRowSegment" style="margin:0 0 0 0">
-                    <div id="${id}_restart" name="restart" data-dojo-type="dijit/form/CheckBox"
-                      data-dojo-attach-point="restart" data-dojo-props="checked:true"></div>
-                    <label class="paramlabel">Restart analysis</label>
-                  </div>
-                </div>
-                <div class="appRow">
-                  <div class="appRowSegment" style="margin:0 0 0 0">
-                    <div id="${id}_verbose" name="verbose" data-dojo-type="dijit/form/CheckBox"
-                      data-dojo-attach-point="verbose" data-dojo-props="checked:true"></div>
-                    <label class="paramlabel">Verbose output</label>
-                  </div>
-                </div>
-                <div class="appRow">
-                  <div class="appRowSegment" style="margin:0 0 0 0">
-                    <div id="${id}_lenient_taxonomy" name="lenient_taxonomy" data-dojo-type="dijit/form/CheckBox"
-                      data-dojo-attach-point="lenient_taxonomy" data-dojo-props="checked:false"></div>
-                    <label class="paramlabel">Lenient taxonomy</label>
-                  </div>
-                </div>
-                <div class="appRow">
-                  <div class="appRowSegment" style="margin:0 0 0 0">
-                    <div id="${id}_full-ictv-lineage" name="full-ictv-lineage" data-dojo-type="dijit/form/CheckBox"
-                      data-dojo-attach-point="full-ictv-lineage" data-dojo-props="checked:true"></div>
-                    <label class="paramlabel">Full ICTV lineage</label>
-                  </div>
-                </div>
+
                 <div class="appRow">
                   <div class="appRowSegment" style="margin:0 0 0 0">
                     <div id="${id}_force-auto" name="force-auto" data-dojo-type="dijit/form/CheckBox"
@@ -418,6 +410,7 @@
                     <label class="paramlabel">Force automatic composition</label>
                   </div>
                 </div>
+
                 <div class="appRow">
                   <label class="paramlabel">Debug level</label><br>
                   <div class="insertspinner" name="debug" data-dojo-type="dijit/form/NumberSpinner"
@@ -478,28 +471,28 @@
         </tr>
       </table>
     </div>
-  </div>
 
-  <div class="appSubmissionArea">
-    <div style="width:400px; margin:auto" class="workingMessage messageContainer">
-      Submitting Mobile Element Detection Job
-    </div>
-    <div data-dojo-attach-point="submittedMessage" class="messageContainer submittedMessage"
-      style="margin-top:10px; text-align:center;">
-      Your job has been submitted successfully. Please visit your <a
-        data-dojo-attach-event="onclick:openJobsList"><u>Jobs List</u> </a>to check the status of your job and access
-      the results.
-    </div>
-    <div style="width:400px; margin:auto" class="errorMessage messageContainer">
-      <div style="font-weight:900;font-size:1.1em;">Error Submitting Mobile Element Detection Job</div>
-      <p data-dojo-attach-point="errorMessage">Error</p>
-    </div>
-    <div style="margin-top: 10px; text-align:center;">
-      <div data-dojo-attach-point="cancelButton" data-dojo-attach-event="onClick:onCancel"
-        data-dojo-type="dijit/form/Button">Cancel
+    <div class="appSubmissionArea">
+      <div style="width:400px; margin:auto" class="workingMessage messageContainer">
+        Submitting Mobile Element Detection Job
       </div>
-      <div data-dojo-attach-point="resetButton" type="reset" data-dojo-type="dijit/form/Button">Reset</div>
-      <div data-dojo-attach-point="submitButton" type="submit" data-dojo-type="dijit/form/Button">Submit
+      <div data-dojo-attach-point="submittedMessage" class="messageContainer submittedMessage"
+        style="margin-top:10px; text-align:center;">
+        Your job has been submitted successfully. Please visit your <a
+          data-dojo-attach-event="onclick:openJobsList"><u>Jobs List</u> </a>to check the status of your job and access
+        the results.
+      </div>
+      <div style="width:400px; margin:auto" class="errorMessage messageContainer">
+        <div style="font-weight:900;font-size:1.1em;">Error Submitting Mobile Element Detection Job</div>
+        <p data-dojo-attach-point="errorMessage">Error</p>
+      </div>
+      <div style="margin-top: 10px; text-align:center;">
+        <div data-dojo-attach-point="cancelButton" data-dojo-attach-event="onClick:onCancel"
+          data-dojo-type="dijit/form/Button">Cancel
+        </div>
+        <div data-dojo-attach-point="resetButton" type="reset" data-dojo-type="dijit/form/Button">Reset</div>
+        <div data-dojo-attach-point="submitButton" type="submit" data-dojo-type="dijit/form/Button">Submit
+        </div>
       </div>
     </div>
   </div>

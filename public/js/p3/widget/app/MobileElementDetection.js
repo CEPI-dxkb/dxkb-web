@@ -301,17 +301,17 @@ define([
         }
       });
 
-      // Handle special case for expected_genome_size
-      if (Object.prototype.hasOwnProperty.call(values, 'expected_genome_size') && values.expected_genome_size) {
-        var expected_genome_size = parseInt(values.expected_genome_size);
+      // Handle special case for genome_size
+      if (Object.prototype.hasOwnProperty.call(values, 'genome_size') && values.genome_size) {
+        var genome_size = parseInt(values.genome_size);
         var genome_size_units = values.genome_size_units;
         var genome_size_value = (genome_size_units == 'M') ? 1000000 : 1000;
-        mobile_element_values.genome_size = genome_size_value * expected_genome_size;
+        mobile_element_values.genome_size = genome_size_value * genome_size;
       }
 
       // Delete assembly parameters when in contigs mode
       if (inputType === 'contigs') {
-        var assembly_inputs = ['recipe', 'genome_size', 'trim', 'normalize', 'filtlong', 'target_depth', 'racon_iter', 'pilon_iter', 'min_contig_len', 'min_contig_cov', 'max_bases', 'expected_genome_size', 'filtering_preset', 'cleanup', 'restart', 'verbose', 'lenient-taxonomy', 'full-ictv-lineage', 'composition', 'force-auto', 'debug', 'srr_ids', 'paired_end_libs', 'single_end_libs'];
+        var assembly_inputs = ['recipe', 'genome_size', 'trim', 'normalize', 'filtlong', 'target_depth', 'racon_iter', 'pilon_iter', 'min_contig_len', 'min_contig_cov', 'max_bases', 'genome_size', 'filtering_preset', 'cleanup', 'restart', 'verbose', 'lenient-taxonomy', 'full-ictv-lineage', 'composition', 'force-auto', 'debug', 'srr_ids', 'paired_end_libs', 'single_end_libs'];
         assembly_inputs.forEach(function (key) {
           if (Object.prototype.hasOwnProperty.call(mobile_element_values, key)) {
             delete mobile_element_values[key];
@@ -649,14 +649,14 @@ define([
 
     onGenomeSizeUnitsChange: function () {
       if (this.genome_size_units.value == 'M') {
-        this.expected_genome_size.set('constraints', { min: 1, max: 10, places: 0, smallDelta: 1 });
-        this.expected_genome_size.set('value', 5);
-        this.expected_genome_size.set('smallDelta', 1);
+        this.genome_size.set('constraints', { min: 1, max: 10, places: 0, smallDelta: 1 });
+        this.genome_size.set('value', 5);
+        this.genome_size.set('smallDelta', 1);
       }
       else {
-        this.expected_genome_size.set('constraints', { min: 100, max: 10000, places: 0 });
-        this.expected_genome_size.set('value', 500);
-        this.expected_genome_size.set('smallDelta', 100);
+        this.genome_size.set('constraints', { min: 100, max: 10000, places: 0 });
+        this.genome_size.set('value', 500);
+        this.genome_size.set('smallDelta', 100);
       }
     },
 

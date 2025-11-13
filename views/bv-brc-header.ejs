@@ -59,19 +59,18 @@
             {name: "Pneumoviridae", href: "/view/Taxonomy/11244#view_tab=overview"}
         ]
 
-        var featured_virus = [
-            {name: "Bacteriophages", href: "/view/GenomeList/?eq(genome_name,phage)"},
-            {name: "Dengue virus", href: "/view/Taxonomy/12637#view_tab=overview"},
-            {name: "Ebolavirus", href: "/view/Taxonomy/186536#view_tab=overview"},
-            {name: "Enterovirus", href: "/view/Taxonomy/12059#view_tab=overview"},
-            {name: "Hepacivirus", href: "/view/Taxonomy/11102#view_tab=overview"},
-            {name: "Influenza A virus", href: "/view/Taxonomy/11320#view_tab=overview"},
-            {name: "Mammarenavirus lassaense", href: "/view/Taxonomy/3052310#view_tab=overview"},
-            {name: "Monkeypox virus", href: "/view/Taxonomy/10244#view_tab=overview"},
-            {name: "SARS-CoV-2", href: "/view/Taxonomy/2697049#view_tab=overview"},
-            {name: "Zika virus", href: "/view/Taxonomy/64320#view_tab=overview"},
-        ]
-
+    var featured_virus = [
+        {name: "Bacteriophages", href: "/view/GenomeList/?eq(genome_name,phage)"},
+        {name: "Dengue virus", href: "/view/Taxonomy/12637#view_tab=overview"},
+        {name: "Ebolavirus", href: "/view/Taxonomy/186536#view_tab=overview"},
+        {name: "Enterovirus", href: "/view/Taxonomy/12059#view_tab=overview"},
+        {name: "Hepacivirus", href: "/view/Taxonomy/11102#view_tab=overview"},
+        {name: "Influenza A virus", href: "/view/Taxonomy/11320#view_tab=overview"},
+        {name: "Mammarenavirus lassaense", href: "/view/Taxonomy/3052310#view_tab=overview"},
+        {name: "Monkeypox virus", href: "/view/Taxonomy/10244#view_tab=overview"},
+        {name: "SARS-CoV-2", href: "/view/Taxonomy/2697049#view_tab=overview"},
+        {name: "Zika virus", href: "/view/Taxonomy/64320#view_tab=overview"},
+    ]
 
         var servicesMiddle = Math.round(services.length / 2);
         var virusMiddle = Math.round(virus.length / 2);
@@ -162,18 +161,25 @@
                                     <div><a class="navigationLink" href="/app/GenomeAlignment">Genome Alignment</a></div>
                                     <div><a class="navigationLink" href="/app/Variation">Variation Analysis</a></div>
                                     <!-- <div><a class="navigationLink" href="/app/Tnseq">Tn-Seq Analysis</a></div> -->
+
                                 </div>
                                 <div class="navbarMenuHeader">Phylogenomics</div>
                                 <div class="menuItems">
                                     <!-- <div><a class="navigationLink" href="/app/PhylogeneticTree">Bacterial Genome Tree</a></div> -->
                                     <div><a class="navigationLink" href="/app/ViralGenomeTree">Viral Genome Tree</a></div>
                                     <div><a class="navigationLink" href="/app/GeneTree">Gene/Protein Tree</a></div>
+                                    <div><a class="navigationLink" href="/app/CoreGenomeMLST">Core Genome MLST</a></div>
+                                    <div><a class="navigationLink" href="/app/WholeGenomeSNPAnalysis">Whole Genome SNP Analysis</a></div>
                                 </div>
                                 <div class="navbarMenuHeader">Protein Tools</div>
                                 <div class="menuItems">
                                     <div><a class="navigationLink" href="/app/MSA">MSA and SNP Analysis</a></div>
                                     <div><a class="navigationLink" href="/app/MetaCATS">Meta-CATS</a></div>
                                     <div><a class="navigationLink" href="/app/SeqComparison">Proteome Comparison</a></div>
+                                    <div><a class="navigationLink" href="/app/AlphaFold">AlphaFold</a></div>
+                                    <div><a class="navigationLink" href="/app/ESMFold">ESMFold</a></div>
+                                    <div><a class="navigationLink" href="/app/Folding">Folding</a></div>
+                                    <div><a class="navigationLink" href="/app/StabilityPrediction">Stability Prediction</a></div>
                                     <!-- <div><a class="navigationLink" href="/app/ComparativeSystems">Protein Family Sorter</a></div> -->
                                     <!-- <div><a class="navigationLink" href="/app/ComparativeSystems">Comparative Systems</a></div> -->
                                     <!-- <div><a class="navigationLink" href="/app/Docking">Docking</a></div> -->
@@ -186,6 +192,7 @@
                                     <div><a class="navigationLink" href="/app/TaxonomicClassification">Taxonomic Classification</a></div>
                                     <div><a class="navigationLink" href="/app/MetagenomicBinning">Metagenomic Binning</a></div>
                                     <div><a class="navigationLink" href="/app/MetagenomicReadMapping">Metagenomic Read Mapping</a></div>
+                                    <div><a class="navigationLink" href="/app/MobileElementDetection">Mobile Element Detection</a></div>
                                 </div>
                               <!-- <div class="navbarMenuHeader">Transcriptomics</div>
                               <div class="menuItems">
@@ -429,6 +436,7 @@
                                 <div><a href="/app/GenomeDistance">Similar Genome Finder</a></div>
                                 <div><a href="/app/GenomeAlignment">Genome Alignment</a></div>
                                 <div><a href="/app/Variation">Variation Analysis</a></div>
+                                <div><a href="/app/StabilityPrediction">Stability Prediction</a></div>
                                 <!-- <div><a href="/app/Tnseq">Tn-Seq Analysis</a></div> -->
                             </div>
                             <div class="navbarMenuHeader">Phylogenomics</div>
@@ -442,6 +450,9 @@
                                 <div><a href="/app/MSA">MSA and SNP Analysis</a></div>
                                 <div><a href="/app/MetaCATS">Meta-CATS</a></div>
                                 <div><a href="/app/SeqComparison">Proteome Comparison</a></div>
+                                <div><a href="/app/AlphaFold">AlphaFold</a></div>
+                                <div><a href="/app/ESMFold">ESMFold</a></div>
+                                <div><a href="/app/Folding">Folding</a></div>
                                 <!-- <div><a href="/app/ComparativeSystems">Protein Family Sorter</a></div> -->
                                 <!-- <div><a href="/app/ComparativeSystems">Comparative Systems</a></div> -->
                                 <!-- <div><a href="/app/Docking">Docking</a></div> -->
@@ -451,6 +462,7 @@
                                 <div><a href="/app/TaxonomicClassification">Taxonomic Classification</a></div>
                                 <div><a href="/app/MetagenomicBinning">Metagenomic Binning</a></div>
                                 <div><a href="/app/MetagenomicReadMapping">Metagenomic Read Mapping</a></div>
+                                <div><a href="/app/MobileElementDetection">Mobile Element Detection</a></div>
                             </div>
                             <!-- <div class="navbarMenuHeader">Transcriptomics</div>
                             <div class="sub-menu">
@@ -469,6 +481,7 @@
                                 <!-- <div><a href="/app/SequenceSubmission">Influenza Sequence Submission</a></div> -->
                                 <div><a href="/app/HASubtypeNumberingConversion">Influenza HA Subtype Conversion</a></div>
                                 <div><a href="/app/SubspeciesClassification">Subspecies Classification</a></div>
+                                <div><a href="/app/ViralAssembly">Viral Assembly</a></div>
                                 <div><a href="/app/ViralAssembly">Viral Assembly</a></div>
                             </div>
                             <div class="navbarMenuHeader">BV-BRC Outbreak Tracker</div>
@@ -587,38 +600,3 @@
     <!-- <div class="msg-box-below-topnav"><strong>Welcome to the BV-BRC Alpha website. This site is used for active development and testing of the BV-BRC resource. Hence, the data and functionality may change frequently and without notice.</strong></div> -->
     <!-- <div class="msg-box-below-topnav"><strong>Welcome to the BV-BRC Beta website. This site is used to seek early community feedback for the BV-BRC resource, which is still under development. Please note that the data and functionality on this site may change frequently and without notice.</strong></div> -->
 </div>
-<!-- <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        var user_data = JSON.parse(localStorage.getItem('userProfile'));
-        // if (user_data.roles && user_data.roles.includes('admin')) {
-        var dropdownButton = document.createElement('div');
-        dropdownButton.className = 'topMenuButton showOnLoad dijitHidden';
-        dropdownButton.setAttribute('data-dojo-type', 'dijit/form/DropDownButton');
-
-        var span = document.createElement('span');
-        span.textContent = 'COPILOT';
-        dropdownButton.appendChild(span);
-
-        var tooltipDialog = document.createElement('div');
-        tooltipDialog.setAttribute('data-dojo-type', 'p3/widget/TooltipDialog');
-
-        var menuHeader = document.createElement('div');
-        menuHeader.className = 'menuHeader';
-        menuHeader.textContent = 'AI Assistant';
-        menuHeader.style.width = '100px';
-        tooltipDialog.appendChild(menuHeader);
-
-        var link = document.createElement('a');
-        link.className = 'TopMenuLink';
-        link.href = '/view/Copilot';
-        link.textContent = 'Chat';
-
-        var innerDiv = document.createElement('div');
-        innerDiv.appendChild(link);
-        tooltipDialog.appendChild(innerDiv);
-        dropdownButton.appendChild(tooltipDialog);
-
-        var dropdownHeader = document.querySelector('[data-dojo-attach-point="dropdownHeader"]');
-        dropdownHeader.appendChild(dropdownButton);
-    });
-</script> -->

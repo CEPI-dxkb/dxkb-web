@@ -1,6 +1,6 @@
 {
   "name": "p3-web",
-  "version": "0.2.5",
+  "version": "0.2.11",
   "private": true,
   "scripts": {
     "start": "node ./bin/p3-web",
@@ -29,9 +29,11 @@
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-formidable": "^1.2.0",
+    "express-http-proxy": "^2.1.1",
     "feedparser": "^2.2.10",
     "flag-icons": "^7.2.1",
     "formidable": "^2.1.2",
+    "html2canvas": "^1.4.1",
     "http-proxy": "^1.18.1",
     "httpntlm": "^1.8.13",
     "jbrowse": "github:GMOD/jbrowse#759433708fe59e2c0a09e781cf93dc7ec4670461",

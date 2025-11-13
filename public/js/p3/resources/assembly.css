@@ -1,5 +1,5 @@
 .appTemplate {
-    width: 750px;
+    max-width: 750px;
     margin: auto;
 }
 
@@ -46,6 +46,7 @@
 
 .appTitle {
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .appTitle h3 {
@@ -252,16 +253,11 @@ div.appsublabel {
     padding: 0 0 15px 0;
 }
 
-.round-button:hover {
-    /*background: #262626;*/
-}
+
 
 .onoffswitch {
     position: relative;
     width: 55px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
 }
 
 .onoffswitch-checkbox {

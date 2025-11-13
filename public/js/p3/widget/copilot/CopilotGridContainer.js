@@ -88,8 +88,7 @@ define([
             class: 'chat-options-bar',
             copilotApi: this.copilotApi,
             modelList: modelList,
-            ragList: ragList,
-            id: 'chat-options-bar',
+            ragList: ragList
           });
           leftContainer.addChild(leftTopPane);
 
@@ -97,8 +96,7 @@ define([
           var chatSessionPane = new ChatSessionScrollBar({
             region: 'center',
             class: 'chat-session-scroll-bar',
-            copilotApi: this.copilotApi,
-            id: 'chat-session-scroll-bar',
+            copilotApi: this.copilotApi
           });
           leftContainer.addChild(chatSessionPane);
 
@@ -108,8 +106,7 @@ define([
           var rightContainer = new ChatSessionContainer({
             region: 'center',
             gutters: false,
-            copilotApi: this.copilotApi,
-            id: 'chat-session-container',
+            copilotApi: this.copilotApi
           });
           this.addChild(rightContainer);
 
@@ -117,7 +114,7 @@ define([
           // Show error dialog if service is unavailable
           new Dialog({
             title: "Service Unavailable",
-            content: "The BV-BRC Copilot service is currently disabled. Please try again later.",
+            content: "The BRC Copilot service is currently disabled. Please try again later.",
             style: "width: 300px"
           }).show();
           console.error('Error getting model list:', err);

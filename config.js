@@ -19,8 +19,10 @@ const defaults = {
   'shockServiceURL': 'https://p3.theseed.org/services/shock_api', // only for status dashboard
   dataServiceURL: 'https://p3.theseed.org/services/data_api',
   accountURL: 'http://user.patric.local:3002/',
-  docsServiceURL: 'https://dxkb.org/docs/',
-  userServiceURL: 'https://user.patricbrc.org',
+  docsServiceURL: 'https://www.dxkb.org/docs/',
+  userServiceURL: '',
+  'copilotApiURL': 'https://www.bv-brc.org/services/copilot-api/copilot-api/chatbrc',
+  'copilotDbURL': 'https://www.bv-brc.org/services/copilot-api/copilot-api/db',
   localStorageCheckInterval: 86400,
   enableDevTools: false,
   reportProblemEmailAddress: 'help@bv-brc.org',

@@ -1,0 +1,227 @@
+<form dojoAttachPoint="containerNode" class="PanelForm"
+  dojoAttachEvent="onreset:_onReset,onsubmit:_onSubmit,onchange:validate">
+  <div class="appTemplate page-content" style="margin-top: 40px;">
+    <div class="appTitle">
+      <h1 class="page-content-header">Services</h1>
+      <h2 class="page-content-subheader">${applicationLabel}
+        <div name="overview" class="infobox iconbox infobutton dialoginfo">
+          <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+        </div>
+        <div class="infobox iconbox tutorialButton tutorialInfo">
+          <a href="${docsServiceURL}${tutorialLink}" target="_blank"><i class="fa icon-books fa-1x"
+              title="click to open tutorial"></i></a>
+        </div>
+        <div class="infobox iconbox videoButton videoInfo">
+          <a href="${videoLink}" target="_blank"><i class="fa icon-play-circle fa-1x"
+              title="click to open the video tutorial"></i></a>
+        </div>
+      </h2>
+      <hr class="page-content-divider" />
+      <p style="font-size: 14px; font-weight: 500;">
+        ${applicationDescription} For further explanation, please see the ${applicationLabel} Service <a
+          href="${docsServiceURL}${applicationHelp}" target="_blank">Quick Reference Guide</a>, <a
+          href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a> and <a href="${videoLink}"
+          target="_blank">Instructional Video</a>.
+      </p>
+    </div>
+
+    <div class="appBox appShadow">
+      <div class="headerrow">
+        <div style="width:85%;display:inline-block;">
+          <label class="appBoxLabel">Query source</label>
+          <div name="query-source" class="infobox iconbox infobutton dialoginfo">
+            <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="appRow">
+          <div class="appFieldLong">
+            <label>Input sequences</label><br>
+            <div data-dojo-type="p3/widget/WorkspaceObjectSelector" data-dojo-attach-point="sequences" name="sequences"
+              style="width:100%" required="true"
+              data-dojo-props="type:['contigs'],multi:false,promptMessage:'Select or Upload FASTA files to your workspace for processing',missingMessage:'FASTA file must be provided.'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="appBox appShadow">
+      <div class="headerrow">
+        <div style="width:85%;display:inline-block;">
+          <label class="appBoxLabel">Output Files</label>
+          <div name="output-files" class="infobox iconbox infobutton dialoginfo">
+            <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="appRow">
+        <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:50%">
+          <label class="paramlabel">Output Folder</label>
+          <div data-dojo-type="p3/widget/WorkspaceObjectSelector" name="output_path"
+            data-dojo-attach-point="output_path" style="width:300px" required="true"
+            data-dojo-props="title:'Select an Output Folder',autoSelectCurrent:true,selectionText:'Destination',title:'Select an Output Folder',type:['folder'],multi:false,placeHolder:'Output Folder'"
+            data-dojo-attach-event="onChange:onOutputPathChange">
+          </div>
+        </div>
+
+        <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:40%">
+          <label class="paramlabel">Output File Basename</label><span class="charError"
+            style="color:red; font-size:8pt; padding-left:10px; font-weight:bold">&nbsp;</span><br>
+          <div data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="output_file_basename"
+            data-dojo-attach-event="onChange:checkOutputName" data-dojo-attach-point="output_file_basename"
+            style="width:300px" required="true"
+            data-dojo-props="intermediateChanges:true,missingMessage:'Name must be provided for the job result',trim:true,placeHolder:'esmfold_results'">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="appRow" style="text-align:center">
+      <div class="appRowSegment" data-dojo-attach-point="advanced">
+        <label class="largelabel">Advanced options</label>
+        <div class="iconbox" style="margin-left:0">
+          <i data-dojo-attach-point="advancedOptionIcon" class="fa icon-caret-down fa-1"></i>
+        </div>
+      </div>
+    </div>
+    <div data-dojo-attach-point="advancedOptions" style="display: none">
+      <div class="appBox appShadow">
+        <div class="headerrow">
+          <div style="width:85%;display:inline-block;">
+            <label class="appBoxLabel">ESMFold Parameters</label>
+            <div name="model-parameters" class="infobox iconbox infobutton dialoginfo">
+              <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="appRow">
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:25%">
+            <div class="headerrow">
+              <label class="paramlabel">Number of Recycles</label>
+              <div name="num_recycles" class="infobox iconbox infobutton dialoginfo">
+                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+              </div>
+            </div>
+            <input name="num_recycles" style="width:96%; margin-left:10px" data-dojo-type="dijit/form/NumberSpinner"
+              data-dojo-attach-event="onChange:onNumRecyclesChange"
+              data-dojo-props="disabled:false,constraints:{min:0,max:4,places:0},value:4"
+              data-dojo-attach-point="num_recycles">
+          </div>
+
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:25%">
+            <div class="headerrow">
+              <label class="paramlabel">Chunk Size</label>
+              <div name="chunk_size" class="infobox iconbox infobutton dialoginfo">
+                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+              </div>
+            </div>
+            <input name="chunk_size" style="width:96%; margin-left:10px" data-dojo-type="dijit/form/NumberSpinner"
+              data-dojo-attach-event="onChange:onChunkSizeChange"
+              data-dojo-props="disabled:false,constraints:{min:16,max:512,places:0},value:128"
+              data-dojo-attach-point="chunk_size">
+          </div>
+
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:25%">
+            <div class="headerrow">
+              <label class="paramlabel">Max Sequence Length</label>
+              <div name="max_sequence_length" class="infobox iconbox infobutton dialoginfo">
+                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+              </div>
+            </div>
+            <input name="max_sequence_length" style="width:96%; margin-left:10px"
+              data-dojo-type="dijit/form/NumberSpinner" data-dojo-attach-event="onChange:onMaxSequenceLengthChange"
+              data-dojo-props="disabled:false,constraints:{min:100,max:2048,places:0},value:512"
+              data-dojo-attach-point="max_sequence_length">
+          </div>
+        </div>
+
+        <div class="appRow">
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:20%;">
+            <div class="headerrow">
+              <label class="paramlabel">Batch Processing</label>
+              <div name="batch_sequences" class="infobox iconbox infobutton dialoginfo">
+                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+              </div>
+            </div>
+            <div data-dojo-type="dijit/form/CheckBox" name="batch_sequences"
+              data-dojo-attach-event="onChange:onBatchSequencesChange" data-dojo-props="checked:false"
+              data-dojo-attach-point="batch_sequences">
+            </div>
+          </div>
+
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:25%;">
+            <div class="headerrow">
+              <label class="paramlabel">Max Tokens per Batch</label>
+              <div name="max_tokens_per_batch" class="infobox iconbox infobutton dialoginfo">
+                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+              </div>
+            </div>
+            <input name="max_tokens_per_batch" style="width:80%; margin-left:10px"
+              data-dojo-type="dijit/form/NumberSpinner" data-dojo-attach-event="onChange:onMaxTokensPerBatchChange"
+              data-dojo-props="disabled:true,constraints:{min:512,max:4096,places:0},value:1024"
+              data-dojo-attach-point="max_tokens_per_batch">
+          </div>
+        </div>
+
+        <!-- <div class="appRow">
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:33%">
+            <div class="headerrow">
+              <label class="paramlabel">Use GPU</label>
+              <div name="use_gpu" class="infobox iconbox infobutton dialoginfo">
+                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+              </div>
+            </div>
+            <div data-dojo-type="dijit/form/CheckBox" name="use_gpu" data-dojo-attach-event="onChange:onUseGpuChange"
+              data-dojo-props="checked:true" data-dojo-attach-point="use_gpu">
+            </div>
+          </div>
+
+          <div class="appRowSegment" style="margin-left: 0px; text-align:left; width:32%">
+            <div class="headerrow">
+              <label class="paramlabel">CPU Offloading</label>
+              <div name="cpu_offload" class="infobox iconbox infobutton dialoginfo">
+                <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
+              </div>
+            </div>
+            <div data-dojo-type="dijit/form/CheckBox" name="cpu_offload"
+              data-dojo-attach-event="onChange:onCpuOffloadChange" data-dojo-props="checked:false"
+              data-dojo-attach-point="cpu_offload">
+            </div>
+          </div>
+        </div> -->
+
+      </div>
+    </div>
+  </div>
+
+  <div class="appSubmissionArea">
+    <div data-dojo-attach-point="workingMessage" class="messageContainer workingMessage"
+      style="margin-top:10px; text-align:center;">
+      Submitting ESMFold job
+    </div>
+    <div data-dojo-attach-point="errorMessage" class="messageContainer errorMessage"
+      style="margin-top:10px; text-align:center;">
+      Error submitting job
+    </div>
+    <div data-dojo-attach-point="submittedMessage" class="messageContainer submittedMessage"
+      style="margin-top:10px; text-align:center;">
+      Your job has been submitted successfully. Please visit your <a
+        data-dojo-attach-event="onclick:openJobsList"><u>Jobs List</u> </a>to check the status of your job and
+      access the results.
+    </div>
+    <div style="margin-top: 10px; text-align:center;">
+      <div data-dojo-attach-point="cancelButton" data-dojo-attach-event="onClick:onCancel"
+        data-dojo-type="dijit/form/Button">Cancel
+      </div>
+      <div data-dojo-attach-point="resetButton" type="reset" data-dojo-type="dijit/form/Button">Reset
+      </div>
+      <div data-dojo-attach-point="submitButton" type="submit" data-dojo-type="dijit/form/Button">Submit
+      </div>
+    </div>
+  </div>
+</form>

@@ -9,6 +9,7 @@
  * - Handles keyboard events for save/cancel during editing
  * - Publishes title change events for other widgets to subscribe to
  * - Provides API for enabling/disabling title editing
+ * - Includes a plus icon button for creating new chat sessions
  */
 define([
   'dojo/_base/declare', // Base class for creating Dojo classes
@@ -17,7 +18,8 @@ define([
   'dojo/on', // Event handling
   'dojo/topic', // Pub/sub messaging
   'dojo/_base/lang', // Language utilities like hitch
-  'dijit/form/TextBox' // Text input widget
+  'dijit/form/TextBox', // Text input widget
+  'dijit/form/Button' // Button widget for new chat
 ], function (
   declare,
   ContentPane,
@@ -25,7 +27,8 @@ define([
   on,
   topic,
   lang,
-  TextBox
+  TextBox,
+  Button
 ) {
   /**
    * @class ChatSessionTitle
@@ -51,6 +54,9 @@ define([
     /** Flag controlling whether title editing is allowed */
     editingEnabled: true,
 
+    /** Maximum length of the title */
+    maxLength: 100,
+
     /**
      * Constructor that initializes the widget
      * Mixes in any provided configuration options using safeMixin
@@ -71,15 +77,17 @@ define([
       // Create container for title elements
       this.titleContainer = domConstruct.create('div', {
         class: 'chat-session-title',
-        style: 'display: flex; align-items: center; padding: 5px;'
+        style: 'display: flex; align-items: center; padding: 5px; gap: 8px;'
       }, this.containerNode);
 
       this.createTitleDisplay();
       this.createTitleEditor();
+      this.createNewChatButton();
 
       // Subscribe to relevant topics
       topic.subscribe('ChatSessionSelected', lang.hitch(this, 'onSessionSelected'));
       topic.subscribe('ChatSessionTitleUpdated', lang.hitch(this, 'updateTitle'));
+      topic.subscribe('ChatSessionTitleMaxLengthChanged', lang.hitch(this, 'setMaxLength'));
     },
 
     /**
@@ -90,8 +98,9 @@ define([
      */
     createTitleDisplay: function() {
       this.titleDisplay = domConstruct.create('div', {
-        innerHTML: this.title,
-        class: 'chat-title-header'
+        innerHTML: this.truncateTitle(this.title),
+        class: 'chatTitleDisplay',
+        style: 'flex: 1; cursor: pointer;'
       }, this.titleContainer);
 
       on(this.titleDisplay, 'click', lang.hitch(this, 'startEditing'));
@@ -106,8 +115,9 @@ define([
      */
     createTitleEditor: function() {
       this.titleEditor = new TextBox({
-        style: 'display: none; width: 100%; font-size: 1.2em; font-weight: bold;',
-        maxLength: 100
+        class: 'chatTitleEditor',
+        maxLength: this.maxLength,
+        style: 'flex: 1; display: none;'
       });
       this.titleEditor.placeAt(this.titleContainer);
 
@@ -122,6 +132,36 @@ define([
 
       // Handle blur event
       on(this.titleEditor, 'blur', lang.hitch(this, 'saveTitleEditor'));
+    },
+
+    /**
+     * Creates the new chat button with plus icon
+     * - Uses Button widget with plus icon
+     * - Publishes createNewChatSession topic when clicked
+     */
+    createNewChatButton: function() {
+      this.newChatButton = new Button({
+        label: '<img src="/public/js/p3/resources/images/message-square-plus.svg" alt="New Chat" style="width: 16px; height: 16px;">',
+        style: 'width: 24px; height: 24px; padding: 0; border-radius: 50%; background-color: #007bff; color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;',
+        onClick: lang.hitch(this, function() {
+          // Publish the createNewChatSession topic
+          topic.publish('createNewChatSession');
+        })
+      });
+      this.newChatButton.placeAt(this.titleContainer);
+    },
+
+    /**
+     * Truncates title if it exceeds maxLength
+     * - Adds ellipsis if title is longer than maxLength
+     * @param {string} title - The title to truncate
+     * @returns {string} Truncated title with ellipsis if needed
+     */
+    truncateTitle: function(title) {
+      if (title.length <= this.maxLength) {
+        return title;
+      }
+      return title.substr(0, this.maxLength - 3) + '...';
     },
 
     /**
@@ -159,7 +199,8 @@ define([
             title: newTitle
           });
         }), lang.hitch(this, function(error) {
-          topic.publish('UpdateSessionTitleError', error);
+          // topic.publish('UpdateSessionTitleError', error);
+          console.log('Error updating session title', error);
         }));
       }
       this.cancelEditing();
@@ -173,14 +214,14 @@ define([
      */
     saveTitle: function() {
       if (!this.sessionId) return;
-
       this.copilotApi.updateSessionTitle(this.sessionId, this.title).then(lang.hitch(this, function() {
         topic.publish('ChatSessionTitleChanged', {
           sessionId: this.sessionId,
           title: this.title
         });
       }), lang.hitch(this, function(error) {
-        topic.publish('UpdateSessionTitleError', error);
+        // topic.publish('UpdateSessionTitleError', error);
+        console.log('Error updating session title', error);
       }));
     },
 
@@ -202,7 +243,15 @@ define([
      */
     updateTitle: function(newTitle) {
       this.title = newTitle;
-      this.titleDisplay.innerHTML = newTitle;
+      this.titleDisplay.innerHTML = this.truncateTitle(newTitle);
+    },
+
+    /**
+     * Returns the current title
+     * @returns {string} The current title
+     */
+    getTitle: function() {
+      return this.title;
     },
 
     /**
@@ -258,6 +307,32 @@ define([
       this.titleDisplay.style.cursor = 'default';
       if (this.isEditing) {
         this.cancelEditing();
+      }
+    },
+
+    /**
+     * Sets the maximum length for titles
+     * - Updates maxLength property
+     * - Updates TextBox constraints
+     * - Re-truncates current title if needed
+     * @param {number|Object} length - New max length or object containing maxLength property
+     */
+    setMaxLength: function(length) {
+      // Handle both direct value or object parameter
+      const newMaxLength = typeof length === 'object' ? length.maxLength : length;
+
+      if (typeof newMaxLength === 'number' && newMaxLength > 0) {
+        this.maxLength = newMaxLength;
+
+        // Update TextBox constraints
+        if (this.titleEditor) {
+          this.titleEditor.set('maxLength', this.maxLength);
+        }
+
+        // Re-truncate current title if needed
+        if (this.titleDisplay) {
+          this.titleDisplay.innerHTML = this.truncateTitle(this.title);
+        }
       }
     }
   });

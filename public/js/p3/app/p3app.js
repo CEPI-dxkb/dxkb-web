@@ -7,7 +7,9 @@ define([
   'dojo/ready', './app', '../router',
   'dojo/window', '../widget/Drawer', 'dijit/layout/ContentPane',
   '../jsonrpc', '../panels', '../WorkspaceManager', '../DataAPI', 'dojo/keys',
-  'dijit/ConfirmDialog', '../util/PathJoin', 'dojo/request', '../widget/WorkspaceController'
+  'dijit/ConfirmDialog', '../util/PathJoin', 'dojo/request', '../widget/WorkspaceController',
+  'p3/widget/copilot/ChatButton'
+
 ], function (
   declare,
   Topic, on, dom, domClass, domAttr, domConstruct, domQuery,
@@ -18,7 +20,7 @@ define([
   Router, Window,
   Drawer, ContentPane,
   RPC, Panels, WorkspaceManager, DataAPI, Keys,
-  ConfirmDialog, PathJoin, xhr, WorkspaceController
+  ConfirmDialog, PathJoin, xhr, WorkspaceController, ChatButton
 ) {
   return declare([App], {
     panels: Panels,
@@ -42,6 +44,18 @@ define([
           } else {
             domClass.add(document.body, 'unverified_email')
           }
+
+          // Initialize chat button
+          var chatButton = new ChatButton({
+            region: 'center',
+            width: '60px',
+            height: '60px',
+            backgroundColor: '#007bff',
+            borderRadius: '50%'
+          }).placeAt(document.body);
+        }).catch(function(err) {
+          console.error("Failed to refresh user data during startup:", err);
+          // Continue with startup even if refresh fails
         })
       }
 
@@ -560,6 +574,7 @@ define([
           }, false)
           // show the upload and jobs widget
           // window.App.uploadJobsWidget('show');
+          window.App.chatButtonWidget('show');
           window.App.checkSU();
           window.App.alreadyLoggedIn = true;
         } else {
@@ -749,8 +764,32 @@ define([
     //     console.log('I should not see the upload and jobs widget');
     //   }
     // },
+    chatButtonWidget: function (action) {
+      if (action === 'show') {
+        var chatButton = new ChatButton({
+          region: 'center',
+          width: '60px',
+          height: '60px',
+          backgroundColor: '#007bff',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+        });
+      } else {
+        console.log('I should not see the chat button');
+      }
+    },
     refreshUser: function () {
-      return xhr.get(this.userServiceURL + '/user/' + window.localStorage.userid, {
+      // Check if userServiceURL is configured
+      if (!this.userServiceURL) {
+        console.error('refreshUser: userServiceURL is not configured');
+        return Promise.reject(new Error('User service URL is not configured'));
+      }
+
+      var url = this.userServiceURL + '/user/' + window.localStorage.userid;
+      console.log('refreshUser: Making request to:', url);
+
+      return xhr.get(url, {
         headers: {
           'Accept': 'application/json',
           'Authorization': window.App.authorizationToken
@@ -758,6 +797,21 @@ define([
       })
         .then(
           function (user) {
+            // Defensive check: is the response valid JSON?
+            function isJsonString(str) {
+              try {
+                JSON.parse(str);
+                return true;
+              } catch (e) {
+                return false;
+              }
+            }
+            if (typeof user !== 'string' || !isJsonString(user)) {
+              console.error('refreshUser: Response is not valid JSON', user);
+              console.error('refreshUser: This usually means the user service is not available or returning an error page');
+              // Optionally, handle logout or show an error to the user here
+              return;
+            }
             var userObj = JSON.parse(user);
             // console.log(userObj);
             userObj.id += '@' + localStorage.getItem('realm');
@@ -771,7 +825,8 @@ define([
           },
           /* istanbul ignore next */
           function (err) {
-            console.log(err);
+            console.error('refreshUser: Request failed:', err);
+            console.error('refreshUser: This could be due to network issues or the user service being unavailable');
           }
         );
     },
@@ -842,64 +897,51 @@ define([
       });
     },
     updateUserWorkspaceList: function (data) {
-      var wsNode = dom.byId('YourWorkspaces');
-      domConstruct.empty('YourWorkspaces');
+      const wsNode = dom.byId('YourWorkspaces');
+      const wsMobileNode = dom.byId('YourWorkspaces-mobile');
 
-      let wsMobileNode = dom.byId('YourWorkspaces-mobile');
-      domConstruct.empty('YourWorkspaces-mobile');
+      // Check if Workspace DOM nodes exist; skip if not.
+      if (!wsNode && !wsMobileNode) {
+        return;
+      }
+
+      if (wsNode) domConstruct.empty(wsNode);
+      if (wsMobileNode) domConstruct.empty(wsMobileNode);
 
       const ws = data.find(d => d.name === 'home');
-      if (ws) {
-        var d = domConstruct.create('div', {style: {'padding-left': '12px'}}, wsNode);
+      if (!ws) return;
+
+      if (wsNode) {
+        const d = domConstruct.create('div', { style: { 'padding-left': '12px' } }, wsNode);
         domConstruct.create('i', {
           'class': 'fa icon-caret-down fa-1x noHoverIcon',
-          style: {'margin-right': '4px'}
+          style: { 'margin-right': '4px' }
         }, d);
         domConstruct.create('a', {
           'class': 'navigationLink',
           href: '/workspace' + ws.path,
           innerHTML: ws.name
         }, d);
-        domConstruct.create('a', {
-          href: '/workspace' + ws.path,
-          innerHTML: ws.name
-        }, wsMobileNode);
         domConstruct.create('br', {}, d);
-        domConstruct.create('a', {
-          'class': 'navigationLink',
-          'style': {'padding-left': '16px'},
-          href: '/workspace' + ws.path + '/Genome%20Groups',
-          innerHTML: 'Genome Groups'
-        }, d);
-        domConstruct.create('a', {
-          'style': {'padding-left': '16px'},
-          href: '/workspace' + ws.path + '/Genome%20Groups',
-          innerHTML: 'Genome Groups'
-        }, wsMobileNode);
-        domConstruct.create('br', {}, d);
-        domConstruct.create('a', {
-          'class': 'navigationLink',
-          'style': {'padding-left': '16px'},
-          href: '/workspace' + ws.path + '/Feature%20Groups',
-          innerHTML: 'Feature Groups'
-        }, d);
-        domConstruct.create('a', {
-          'style': {'padding-left': '16px'},
-          href: '/workspace' + ws.path + '/Feature%20Groups',
-          innerHTML: 'Feature Groups'
-        }, wsMobileNode);
-        domConstruct.create('br', {}, d);
-        domConstruct.create('a', {
-          'class': 'navigationLink',
-          'style': {'padding-left': '16px'},
-          href: '/workspace' + ws.path + '/Experiment%20Groups',
-          innerHTML: 'Experiment Groups'
-        }, d);
-        domConstruct.create('a', {
-          'style': {'padding-left': '16px'},
-          href: '/workspace' + ws.path + '/Experiment%20Groups',
-          innerHTML: 'Experiment Groups'
-        }, wsMobileNode);
+        ['Genome Groups', 'Feature Groups', 'Experiment Groups'].forEach(group => {
+          domConstruct.create('a', {
+            'class': 'navigationLink',
+            style: { 'padding-left': '16px' },
+            href: `/workspace${ws.path}/${encodeURIComponent(group)}`,
+            innerHTML: group
+          }, d);
+          domConstruct.create('br', {}, d);
+        });
+      }
+
+      if (wsMobileNode) {
+        ['home', 'Genome Groups', 'Feature Groups', 'Experiment Groups'].forEach(group => {
+          domConstruct.create('a', {
+            style: { 'padding-left': '16px' },
+            href: `/workspace${ws.path}/${encodeURIComponent(group)}`,
+            innerHTML: group
+          }, wsMobileNode);
+        });
       }
     }
   });

@@ -28,6 +28,7 @@
 @import url("./dlp.css");
 @import url("./help.css");
 @import url("webpage.css");
+@import url("./copilot.css");
 @import url("./D3BarChartRace.css");
 @import url("./D3VerticalBarChart.css");
 @import url("./D3StackedAreaChart.css");
@@ -1595,4 +1596,9 @@ body footer.main-footer ul.left {
     margin: 15px;
     padding: 8px;
     font-size: .9em;
+}
+
+.appHeader {
+    font-size: 1.4rem;
+    color: black;
 }

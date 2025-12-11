@@ -13,16 +13,16 @@ define([
 ) {
 
   return declare([AppBase], {
-    baseClass: 'App MobileElementDetection',
+    baseClass: 'MobileElementDetection',
     pageTitle: 'Mobile Element Detection Service | DXKB',
     templateString: Template,
     applicationName: 'MobileElementDetection',
     requireAuth: true,
     applicationLabel: 'Mobile Element Detection',
-    applicationDescription: 'Executes genome assembly (if needed) followed by geNomad pipeline for plasmid and virus identification, with automated annotation of viral genomes',
+    applicationDescription: 'Executes genome assembly (if needed) followed by geNomad pipeline for plasmid and virus identification, with automated annotation of viral and plasmid genomes.',
     applicationHelp: 'quick_references/services/mobile_element_detection_service.html',
     tutorialLink: 'tutorial/mobile_element_detection/mobile_element_detection.html',
-    videoLink: 'https://youtube.com/playlist?list=PLWfOyhOW_Oat3lYK7hXorV9jPZxgwBw32&si=L0ApfPQlx-65230D',
+    // videoLink: 'https://youtube.com/playlist?list=PLWfOyhOW_Oat3lYK7hXorV9jPZxgwBw32&si=L0ApfPQlx-65230D',
     libraryData: null,
     defaultPath: '',
     startingRows: 13,

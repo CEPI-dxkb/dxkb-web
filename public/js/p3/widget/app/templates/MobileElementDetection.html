@@ -13,9 +13,12 @@
         </div>
       </h2>
       <hr class="page-content-divider" />
-      <p style="font-size: 14px; font-weight: 500;">${applicationDescription} For further explanation, please see the
-        ${applicationLabel} Service <a href="${docsServiceURL}${applicationHelp}" target="_blank">Quick Reference
-          Guide</a> and <a href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.</p>
+      <p style="font-size: 14px; font-weight: 500;">${applicationDescription}
+        <br>
+        For further explanation, please see the ${applicationLabel} Service
+        <a href="${docsServiceURL}${applicationHelp}" target="_blank">Quick Reference Guide</a>
+        and <a href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.
+      </p>
     </div>
 
     <div class="formFieldsContainer" style="margin-top: 20px;">
@@ -310,7 +313,7 @@
                     </div>
                   </div>
 
-                  <div class="appRowSegment" style="margin:0 50px 0 0; text-align:left">
+                  <div class="appRowSegment" style="margin:0 0 0 0; text-align:left; width:50%">
                     <label class="paramlabel">Min. contig length</label>
                     <br>
                     <div class="insertspinner" name="min_contig_len" data-dojo-type="dijit/form/NumberSpinner"
@@ -319,7 +322,7 @@
                     </div>
                   </div>
 
-                  <div class="appRowSegment" style="margin:0 0 0 0; text-align:left">
+                  <div class="appRowSegment" style="margin:0 0 0 0; text-align:left; width:45%">
                     <label class="paramlabel">Min. contig coverage</label>
                     <br>
                     <div class="insertspinner" name="min_contig_cov" data-dojo-type="dijit/form/NumberSpinner"
@@ -396,7 +399,7 @@
                 </div>
 
                 <div class="appRow">
-                  <div class="appRowSegment" style="margin:0 0 0 0">
+                  <div class="appRowSegment" style="margin:0 0 0 0; width:50%; text-align:left">
                     <div id="${id}_cleanup" name="cleanup" data-dojo-type="dijit/form/CheckBox"
                       data-dojo-attach-point="cleanup" data-dojo-props="checked:true"></div>
                     <label class="paramlabel">Cleanup intermediate files</label>
@@ -404,10 +407,10 @@
                 </div>
 
                 <div class="appRow">
-                  <div class="appRowSegment" style="margin:0 0 0 0">
+                  <div class="appRowSegment" style="margin:0 0 0 0; width:50%; text-align:left">
                     <div id="${id}_force-auto" name="force-auto" data-dojo-type="dijit/form/CheckBox"
                       data-dojo-attach-point="force-auto" data-dojo-props="checked:false"></div>
-                    <label class="paramlabel">Force automatic composition</label>
+                    <label class="paramlabel">Force auto composition</label>
                   </div>
                 </div>
 

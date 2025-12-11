@@ -1504,14 +1504,13 @@ pre.bv-brc-code-block button:active {
   border-bottom-right-radius: 12px;
   border-top-right-radius: 12px;
 }
-
+/*
 .claro .dijitTooltipDialog {
   margin-top: 15px;
 }
 
 .claro .dijitTooltipDialog .dijitTooltipConnector {
-  /* the arrow piece */
-  /* left: 14px; */
+  left: 14px;
   margin-top: 15px;
 }
 
@@ -1522,10 +1521,10 @@ pre.bv-brc-code-block button:active {
   border-bottom-right-radius: 20px;
   border-bottom-left-radius: 20px;
   border-top-right-radius: 20px;
-  /* -moz-border-radius-bottomright: 20px;
-    -moz-border-radius-bottomleft: 20px; */
-  /* margin: 10px -10px -8px; */
-  /* background-color: var(--cepi-yellow); */
+  -moz-border-radius-bottomright: 20px;
+    -moz-border-radius-bottomleft: 20px;
+  margin: 10px -10px -8px;
+  background-color: var(--cepi-yellow);
 }
 
 .claro .dijitTooltipABRight .dijitTooltipContainer {
@@ -1539,7 +1538,7 @@ pre.bv-brc-code-block button:active {
 
 .claro .dijitTooltipDialog .dijitTooltipContents .dijitTooltipFocusNode {
   background-color: var(--cepi-malibu);
-}
+} */
 
 /* Select Dropdown Styling */
 .claro .topMenuButtonIcon.dijitDropDownButton .dijitButtonNode,
@@ -1829,14 +1828,14 @@ pre.bv-brc-code-block button:active {
 
 }
 
-#dijit__MasterTooltip_0 {
+/* #dijit__MasterTooltip_0 {
   margin-top: 56px;
 }
 
 #dijit__MasterTooltip_0 .dijitTooltipConnector {
   margin-top: 0px;
   transform: translateY(-45px) rotate(180deg);
-}
+} */
 
 .desktop-only {
   display: inline-block;

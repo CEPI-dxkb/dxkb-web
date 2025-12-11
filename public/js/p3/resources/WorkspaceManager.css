@@ -427,15 +427,6 @@ th.dgrid-cell.wsItemMembers {
 	color: var(--cepi-sapphire);
 }
 
-/* .claro .dijitTooltipBelow.dijitTooltipABRight .dijitTooltipConnector {
-  above or below tooltip, but the arrow appears on the right,
-		and the right edges of target and tooltip are aligned rather than the left.
-		Override above rules for .dijitTooltipBelow, .dijitTooltipAbove
-
-  left: auto;
-  right: 3px;
-} */
-
 .GeneExpFilterPanel .ActionButtonWrapper:hover {
 	border: 1px solid var(--cepi-sapphire);
 	color: var(--cepi-sapphire);

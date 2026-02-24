@@ -8,7 +8,7 @@ const updateList = [
     {
         title: "High-resolution in situ structures of hantavirus glycoprotein tetramers",
         link: "https://www.biorxiv.org/content/10.1101/2025.06.17.660152v1",
-        image: "https://www.biorxiv.org/content/biorxiv/early/2025/06/18/2025.06.17.660152/F1.medium.gif",
+        image: "/patric/images/cepi/hantaviruses.jpg",
         description: "New World hantaviruses cause severe infections in humans, with case fatality rates approaching 40%. Previous structural studies have advanced our understanding of hantavirus glycoprotein architecture and function, however, the lack of high-resolution in situ structures of the glycoprotein tetramer and its lattice organization has limited mechanistic insights into viral assembly, entry, and antigenicity"
     },
     /*

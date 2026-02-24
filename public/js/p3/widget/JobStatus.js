@@ -25,7 +25,7 @@ define([
         label: '<i class="icon-tasks Queued"></i> Queued | ' +
           '<i class="icon-play22 Running"></i> Running | ' +
           '<i class="icon-checkmark2 Completed"></i> Completed',
-        position: ['above']
+        position: ['below']
       });
     },
     openJobs: function () {

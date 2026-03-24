@@ -116,10 +116,13 @@ define([
         output_file: values.output_file,
         batch_size: 256,
         chains: values.chains,
-        distance: values.distance,
-        mode: values.mode,
-        ss_penalty: values.ss_penalty,
-        threshold: values.threshold
+        model_name: values.model_name,
+        ca_only: values.ca_only,
+        omit_amino_acids: values.omit_amino_acids,
+        backbone_noise: values.backbone_noise,
+        num_seq_per_target: values.num_seq_per_target,
+        sampling_temp: values.sampling_temp,
+        pssm_multi: values.pssm_multi
       }
       if (values.protein_input === "input_pdb") {
         //        submit_values.protein_input_type = values.protein_input
@@ -140,6 +143,16 @@ define([
 
       var pdb_choice = this.protein_databank_selection.value;
       var validPdb;
+
+      var model_choice = this.model_nameWidget.value;
+
+      if (model_choice === "v_48_030") {
+        this.ca_onlyWidget.set('value', "false");
+        this.ca_onlyWidget.set('disabled', true);
+      }
+      else{
+        this.ca_onlyWidget.set('disabled', false);
+      }
 
       setTimeout(() => {
         if (pdb_choice === 'input_pdb') {

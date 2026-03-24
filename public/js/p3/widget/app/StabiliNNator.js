@@ -114,12 +114,10 @@ define([
       var submit_values = {
         output_path: values.output_path,
         output_file: values.output_file,
-        batch_size: 256,
-        chains: values.chains,
-        distance: values.distance,
-        mode: values.mode,
-        ss_penalty: values.ss_penalty,
-        threshold: values.threshold
+        analysis_type: values.analysis_type,
+        hidden_dim: values.hidden_dim,
+        accelerator: values.accelerator,
+        dry_run: values.dry_run
       }
       if (values.protein_input === "input_pdb")
       {

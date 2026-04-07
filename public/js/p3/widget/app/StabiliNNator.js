@@ -116,8 +116,8 @@ define([
         output_file: values.output_file,
         analysis_type: values.analysis_type,
         hidden_dim: values.hidden_dim,
-        accelerator: values.accelerator,
-        dry_run: values.dry_run
+//        accelerator: values.accelerator,
+//        dry_run: values.dry_run
       }
       if (values.protein_input === "input_pdb")
       {

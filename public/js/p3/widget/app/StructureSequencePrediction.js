@@ -118,6 +118,7 @@ define([
         chains: values.chains,
         model_name: values.model_name,
         ca_only: values.ca_only,
+        use_soluble_model: values.use_soluble_model,
         omit_amino_acids: values.omit_amino_acids,
         backbone_noise: values.backbone_noise,
         num_seq_per_target: values.num_seq_per_target,
@@ -320,6 +321,7 @@ define([
           prevLi.style.fontStyle = "italic";
           prevLi.addEventListener("mousedown", function (e) {
             e.preventDefault();
+            e.stopPropagation();
             currentPage--;
             renderOptions();
             highlightedIndex = 0;
@@ -354,6 +356,7 @@ define([
           nextLi.style.fontStyle = "italic";
           nextLi.addEventListener("mousedown", function (e) {
             e.preventDefault();
+            e.stopPropagation();
             currentPage++;
             renderOptions();
             highlightedIndex = 0;

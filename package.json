@@ -1,6 +1,6 @@
 {
   "name": "p3-web",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "private": true,
   "scripts": {
     "start": "node ./bin/p3-web",
@@ -12,7 +12,7 @@
     "postinstall": "./post_install.sh"
   },
   "dependencies": {
-    "axios": "^1.6.8",
+    "axios": "^1.15.0",
     "body-parser": "^1.20.2",
     "braces": "^3.0.3",
     "bvbrc_js_client": "github:bv-brc/bvbrc_js_client",
@@ -35,21 +35,21 @@
     "formidable": "^2.1.2",
     "html2canvas": "^1.4.1",
     "http-proxy": "^1.18.1",
-    "httpntlm": "^1.8.13",
+    "httpntlm": "^1.4.1",
     "jbrowse": "github:GMOD/jbrowse#759433708fe59e2c0a09e781cf93dc7ec4670461",
     "jquery": "^3.7.1",
     "markdown-it": "^14.1.0",
     "morgan": "^1.10.0",
     "MultiBigWig": "github:BV-BRC/multibigwig#master",
     "nconf": "^0.12.1",
-    "nodemailer": "^6.9.13",
-    "nodemailer-smtp-transport": "^2.7.4",
+    "nodemailer": "^8.0.5",
+    "nodemailer-smtp-transport": "^2.4.2",
     "phyloxml": "^1.0.0",
     "promised-io": "^0.3.6",
     "pug": "^3.0.3",
     "rql": "^0.3.3",
     "serve-favicon": "^2.5.0",
-    "underscore": "^1.13.6",
+    "underscore": "^1.13.8",
     "webcola": "^3.4.0"
   },
   "devDependencies": {
@@ -57,7 +57,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.1",
     "gulp-replace": "^1.1.4",
-    "minimatch": "^9.0.4",
+    "minimatch": "^9.0.9",
     "stylelint": "^16.5.0",
     "stylelint-config-standard": "^36.0.0"
   }

@@ -1,0 +1,94 @@
+views/index.ejs
+  ea593cf59a7a33c4 7-8,14-15
+views/javascript.ejs
+  ea593cf59a7a33c4 201
+public/js/p3/widget/app/templates/Folding.html
+  da7f2ecc7054ed7b 175-176,217-219,222,224-225,236,258,263,265,283,294,301,312,317,319-320,325-328,345,348,353-356,359,367,369,373,376,381-382,402,416,426,467,495
+  2bd723a4013ad763 30,33,39-49,51-57,64,92-94,124,127-129,138-139,144-147,151-156,158-163,165,168-169,171,182,185,187,209,213,227,238,240-241,243-250,252,254,257,264,266,271-272,274-276,285-286,291-293,295-298,303-304,309-311,313-314,329-339,347,368,375
+  2246f4ad9c1f5038 73-74,76-77,79-88,95,100-110,122,166-167,172-174,177,183,186,193,195-198,200-208,210-212,214-216,223,228,230-235,237,388-401,403-407,409-413,417-425,428
+  851bb145bcc766bc 61,65,75,78,89-91,99,111-118,432-438,440-453,455-461
+views/p3app.ejs
+  ea593cf59a7a33c4 6-7,17
+.claude/settings.local.json
+  ea593cf59a7a33c4 13-17
+public/js/p3/widget/app/Folding.js
+  2bd723a4013ad763 28,30,38-39,56-59,81-86,89-99,116,118-119,123-125,207,209-210,220-224,226-227,233-236,238-240,244,263-270,273,292-294,296-297,299-300,302-303,305-306,309,323,328-334,339,345
+  851bb145bcc766bc 101,113,131,133,182-183,212,215,217,280-281,283
+  2246f4ad9c1f5038 29,31,34,40-41,100,102-109,112,120-122,126-130,132,134-136,145-155,158-163,178-181,211,213-214,229,231,282,284-287,311-312,315-316,318-320
+  da7f2ecc7054ed7b 17,19-20,24,32-33,35-37,114,216,225,228,230,232,237,241-243,245-247,250-252,288-289,310,313-314,317,324-325,335-336,340-344,346,376
+  ea593cf59a7a33c4 60-62,110-111,137-141
+public/js/p3/resources/assembly.css
+  ea593cf59a7a33c4 19-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "782bead832c2bc0485e636fb53c2b0a532749925",
+  "prompts": {
+    "2246f4ad9c1f5038": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2ffdeef4-79f0-45fe-8f96-847197282bdb",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 346,
+      "total_deletions": 257,
+      "accepted_lines": 174,
+      "overriden_lines": 0
+    },
+    "2bd723a4013ad763": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e43fe67f-8da5-43c6-9e0d-f9087750496c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 485,
+      "total_deletions": 292,
+      "accepted_lines": 223,
+      "overriden_lines": 2
+    },
+    "851bb145bcc766bc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5795ccf9-3a1e-4a39-9612-56214d3d8451",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 99,
+      "total_deletions": 32,
+      "accepted_lines": 64,
+      "overriden_lines": 0
+    },
+    "da7f2ecc7054ed7b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7a3acf2d-fdb4-4e45-9452-e3c4e3f16a41",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 105,
+      "total_deletions": 178,
+      "accepted_lines": 105,
+      "overriden_lines": 0
+    },
+    "ea593cf59a7a33c4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2ecdf6db-3d26-44a6-bb11-a01e84ed237f",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 45,
+      "total_deletions": 135,
+      "accepted_lines": 35,
+      "overriden_lines": 0
+    }
+  }
+}

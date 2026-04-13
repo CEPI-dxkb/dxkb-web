@@ -93,56 +93,64 @@
           </div>
         </div>
         <div class="appRow">
-          <label class="paramlabel">SSM Mode</label><br>
-          <select data-dojo-type="dijit/form/Select" name="mode" data-dojo-attach-point="modeWidget" style="width:300px"
-            required="true" data-dojo-attach-event="onChange:checkParameterRequiredFields">
-            <option value="single">Single</option>
-            <option value="additive">Additive</option>
-            <option value="epistatic" selected="true">Epistatic</option>
+          <label class="paramlabel">Model Name</label><br>
+          <select data-dojo-type="dijit/form/Select" name="model_name" id="model_name" data-dojo-attach-point="model_nameWidget"
+            style="width:300px" required="true" data-dojo-attach-event="onChange:checkParameterRequiredFields">
+            <option value="v_48_002">v_48_002</option>
+            <option value="v_48_010">v_48_010</option>
+            <option value="v_48_020" selected="selected">v_48_020</option>
+            <option value="v_48_030">v_48_030</option>
           </select>
         </div>
         <div class="appRow">
-          <label class="paramlabel">SS Penalty</label><br>
-          <select data-dojo-type="dijit/form/Select" name="ss_penalty" style="width:50px"
-            data-dojo-attach-point="ss_penaltyWidget" required="true">
+          <label class="paramlabel">CA Only</label><br>
+          <select data-dojo-type="dijit/form/Select" name="ca_only" id="ca_only" style="width:50px"
+            data-dojo-attach-point="ca_onlyWidget" required="false">
             <option value="true">True</option>
-            <option value="false">False</option>
+            <option value="false" selected="selected">False</option>
+          </select>
+        </div>
+        <div class="appRow">
+          <label class="paramlabel">Use Soluble Model</label><br>
+          <select data-dojo-type="dijit/form/Select" name="use_soluble_model" style="width:50px"
+            data-dojo-attach-point="use_soluble_modelWidget" required="false">
+            <option value="true">True</option>
+            <option value="false" selected="selected">False</option>
           </select>
         </div>
         <div class="appRow">
           <label>Chains</label><br>
-          <div data-dojo-attach-point="chainsWidget" style="width:380px; background-color:#F0F1F3"
-            data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="chains" required="false"></div>
+          <div data-dojo-attach-point="chainsWidget" style="width:380px;"
+            data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="chains" id="chains" required="false"></div>
         </div>
         <div class="appRow">
-          <div class="left" style="width:50%">
-            <label class="paramlabel">Threshold: </label><br />
-            <div data-dojo-type="dijit/form/Select" data-dojo-attach-point="thresholdWidget" name="threshold"
-              style="width:60px">
-              <option value="-0.5">-0.5</option>
-              <option value="0.1">0.1</option>
-              <option value="0.25">0.25</option>
-              <option value="0.5">0.5</option>
-              <option value="0.75">0.75</option>
-              <option value="1">1</option>
-              <option value="2.5">2.5</option>
-              <option value="5">5</option>
-              <option value="100" selected="selected">100</option>
-            </div>
+          <label>Omit Amino Acids</label><br />
+          <div data-dojo-attach-point="omit_amino_acidsWidget" style="width:380px;"
+            data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="omit_amino_acids" id="omit_amino_acids" required="false" value="X">
           </div>
-          <div class="left" style="width:50%">
-            <label class="paramlabel">Distance: </label><br />
-            <div data-dojo-type="dijit/form/Select" data-dojo-attach-point="distanceWidget" name="distance"
-              style="width:60px">
-              <option value="-0.5">-0.5</option>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="15">15</option>
-              <option value="20">20</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100" selected="selected">100</option>
-            </div>
+        </div>
+        <div class="appRow">
+          <label>Backbone Noise</label><br />
+          <div data-dojo-attach-point="backbone_noiseWidget" style="width:380px;"
+            data-dojo-type="dijit/form/NumberTextBox" constraints="{pattern:'0.00'}" value="0.00" name="backbone_noise" id="backbone_noise" required="false">
+          </div>
+        </div>
+        <div class="appRow">
+          <label>Number of Sequences per Target</label><br />
+          <div data-dojo-attach-point="num_seq_per_targetWidget" style="width:380px;"
+            data-dojo-type="dijit/form/NumberTextBox" constraints="{places: 0}" value="1" name="num_seq_per_target" id="num_seq_per_target" required="false">
+          </div>
+        </div>
+        <div class="appRow">
+          <label>Sampling Temperature</label><br />
+          <div data-dojo-attach-point="sampling_tempWidget" style="width:380px;"
+            data-dojo-type="dijit/form/NumberTextBox" constraints="{pattern:'0.00'}" value="0.1" name="sampling_temp" id="sampling_temp" required="false">
+          </div>
+        </div>
+        <div class="appRow">
+          <label>PSSM Multi</label><br />
+          <div data-dojo-attach-point="pssm_multiWidget" style="width:380px;"
+            data-dojo-type="dijit/form/NumberTextBox" constraints="{pattern:'0.00'}" value="0.0" name="pssm_multi" id="pssm_multi" required="false">
           </div>
         </div>
         <br clear="all" />

@@ -49,7 +49,7 @@
     "pug": "^3.0.3",
     "rql": "^0.3.3",
     "serve-favicon": "^2.5.0",
-    "underscore": "^1.13.6",
+    "underscore": "^1.13.8",
     "webcola": "^3.4.0"
   },
   "devDependencies": {

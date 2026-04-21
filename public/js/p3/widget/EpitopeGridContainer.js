@@ -74,6 +74,14 @@ define([
               value: encodeURIComponent(query),
               name: 'rql'
             }, form);
+            // Add authorization as form field for POST requests
+            if (window.App.authorizationToken) {
+              domConstruct.create('input', {
+                type: 'hidden',
+                value: window.App.authorizationToken,
+                name: 'http_authorization'
+              }, form);
+            }
             form.submit();
 
             popup.close(downloadTT);

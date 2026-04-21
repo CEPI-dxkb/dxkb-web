@@ -45,7 +45,10 @@ define([], function () {
         'TnSeq': 'Tnseq',
         'TreeSort': 'TreeSort',
         'Variation': 'Variation',
-        'ViralAssembly': 'ViralAssembly'
+        'ViralAssembly': 'ViralAssembly',
+        'CoreGenomeMLST': 'CoreGenomeMLST',
+        'WholeGenomeSNPAnalysis': 'WholeGenomeSNPAnalysis',
+        'MobileElementDetection': 'MobileElementDetection'
       };
 
       // TODO: addin modal parameter

@@ -1,0 +1,145 @@
+public/js/p3/widget/SurveillanceGrid.js
+  h_e893c4a39fbc49 145-146
+.github/workflows/hotfix.yml
+  8abe80e503d0c138 1-60
+views/pages/brc-niaid-ai-codeathon-2025.ejs
+  8abe80e503d0c138 1-117
+routes/linkedin.js
+  8abe80e503d0c138 7,71-73,81-85,95-96,109-114,116
+public/js/p3/widget/ProteinStructureGridContainer.js
+  h_e893c4a39fbc49 61,76-83
+public/js/p3/resources/domain-viewer.css
+  8abe80e503d0c138 1-251
+public/js/p3/jsonrpc.js
+  8abe80e503d0c138 8,19-21,41-46
+public/patric/images/chat-lines-blue.svg
+  8abe80e503d0c138 1-6
+.github/workflows/release.yml
+  8abe80e503d0c138 1-59
+public/js/p3/widget/copilot/ChatButton.js
+  h_e893c4a39fbc49 55-57,64-76,94-97,99-180,213-219,234,295-427
+public/js/p3/widget/SerologyGridContainer.js
+  h_e893c4a39fbc49 60,75-82
+app.js
+  8abe80e503d0c138 32-58,62,66-89,109-111,113-116,141-150,179-185,197-208,212-217,228-243,246-249,288,291-292,296-297
+public/js/p3/app/p3app.js
+  8abe80e503d0c138 3,11,15,23,255,276-288,295,409,416-418,429,456,492-493,543-548,554-574,740-741,928-931,991-992,995,1001-1002,1007-1046,1079-1095,1097-1141,1143-1173,1176
+  h_e893c4a39fbc49 56-99,256
+  6c9c022bbeb277d0 1096,1142
+public/js/p3/widget/viewer/GenomeList.js
+  h_e893c4a39fbc49 2-3,7-9,11-12,16-18,25-26,53-72,82-90,93,161-168,196-231,234-270,273,278-306
+public/js/p3/widget/copilot/CopilotApi.js
+  h_e893c4a39fbc49 19-21,23,46-51,77-78,96,126,143-168,170-183,215,219,225,227-228,231-232,234-235,237-238,241-251,253,258-259,275-827,830,845,887,932,962,993,995-1011,1018-1032,1040-1060,1300-1596
+public/js/p3/resources/copilot.css
+  8abe80e503d0c138 43-141,353-354,728-730,732,735-741,744-745,747-748,751-755,758-764,766,769-770,773-774,777-784,787-788,791-792,795-801,804-808,811-814,817-888,890-1118,1120-1194,1196-1222,1224-1615,1619-3000,3003-3005,3008-3018,3021-3028,3031-3038,3041-3045,3047-3053,3056-3066,3069-3070,3073-3074,3077-3105,3108-3111,3114-3117,3120-3123,3126-3130,3132-3134,3137-3140,3143-3146,3149-3200,3204,3207-3219,3223,3226,3228-3233,3236-3245,3247-3250,3252-3253,3256-3257,3260-3271,3274-3290,3294,3296-3315,3318-3321,3324-3334,3336-3337,3339-3346
+  h_e893c4a39fbc49 350,355-378,381-384,387-393,396-402,405-411,414-420,423-426,429-432,435-439,442-447,450-455,458-472,475,477-481,484-488,491-497,500-501,503-507,510-513,515,517-518,521-528,530-533,535-540,542-547,550-553,556-557,560-563,566-569,572-575,578-581,584-587,590-593,596-599,602-605,608-611,614-618,621-628,631-636,639-643,646-652,655-691,693-699,702-706,710-716,719-727,1616-1618
+public/js/p3/widget/EpitopeGridContainer.js
+  h_e893c4a39fbc49 77-84
+docs/adding-icons.md
+  8abe80e503d0c138 14
+public/js/p3/widget/ExperimentGridContainer.js
+  h_e893c4a39fbc49 71,86-93
+public/js/p3/resources/p3.css
+  8abe80e503d0c138 371-375,379-383,387-390,393-398,408-410,412-414,417-418
+  h_e893c4a39fbc49 36,329,351,354,362,365,378,386,392,411,416,1129-1130
+public/js/p3/widget/ProteinFeaturesGridContainer.js
+  h_e893c4a39fbc49 2,5-7,10,13-14,35-207,235,250-257
+public/js/p3/panels.js
+  8abe80e503d0c138 6,13,19,27,35,44,52,61,68,75,82,89,96
+public/js/p3/app/app.js
+  8abe80e503d0c138 123-128,295-301,524,526-536,553-554
+  h_e893c4a39fbc49 312
+public/js/p3/widget/copilot/types/session-files.d.ts
+  8abe80e503d0c138 1-55
+public/js/p3/widget/templates/GlobalSearch.html
+  h_e893c4a39fbc49 18-20
+config.js
+  8abe80e503d0c138 26-31,36-39
+docs/pre-commit-linting.md
+  8abe80e503d0c138 72
+routes/index.js
+  8abe80e503d0c138 16-21
+README.md
+  h_e893c4a39fbc49 2-56
+public/js/p3/widget/DownloadTooltipDialog.js
+  h_e893c4a39fbc49 137-140,147-155,183,189-197,218,325,340,368-378
+public/js/p3/widget/JobManager.js
+  h_e893c4a39fbc49 7,14,21-278,452-551,555-561,563-573,630-645,649-813,820-841,857,859-873,875,879,883,891-895,897,903-916,918-919,923,925-929,932-940,942-964
+routes/google.js
+  8abe80e503d0c138 4-5,7-42,44-59,61-74,76-128,130-131
+public/js/p3/widget/copilot/ChatSessionOptionsBar.js
+  h_e893c4a39fbc49 75,86-135,198-201,273,382-383,385-387,656-659,661-670,687-689
+views/javascript.ejs
+  8abe80e503d0c138 8-9,76-107,109-112,127-137,139-177,180-192,194-197,255,399-404
+public/js/release.profile.js
+  8abe80e503d0c138 5-7,48-49,72-150,163-164,166,168,170-177,179,181,183-253,255,257,259-361,363,366
+public/js/p3/widget/FeatureGridContainer.js
+  h_e893c4a39fbc49 60,75-82
+public/js/archaeopteryx/archaeopteryx-dependencies/jquery-ui.js
+  8abe80e503d0c138 6577
+views/bv-brc-header.ejs
+  8abe80e503d0c138 177,216,459,494,518-519,547,551,554,561-562,565,568,570,573,575,577,579,582,585,591,594,596,608
+  h_e893c4a39fbc49 476,520-529
+  6c9c022bbeb277d0 237-251,254-264
+.github/workflows/hotfix-tag.yml
+  8abe80e503d0c138 1-123
+public/js/p3/widget/viewer/JobResult.js
+  h_e893c4a39fbc49 13-18,47-94,96,100-105,107-108,113-139,141-151,228,245-249,257-270
+public/js/p3/widget/SurveillanceGridContainer.js
+  h_e893c4a39fbc49 60,75-82
+public/js/p3/widget/SequenceGridContainer.js
+  h_e893c4a39fbc49 55,70-77
+public/js/p3/resources/WorkspaceManager.css
+  h_e893c4a39fbc49 5,9,15-16,19-22,24-96,113,116-120,122,130,144-197,201,206,210,215,222,226,232,236,241,245,253,262,270,284,289,305,309,314,320,325,329-330,332-340,342,352,360,366,371,375,377-378,388-393,396-400,405-406,411,416,420,426,432,441,443-444,451-456,459,461-462,465,467-468,473,477,481,485,489,499-500,504,508,519,527,535,539,548,550-775
+public/js/p3/widget/templates/UserProfileForm.html
+  h_e893c4a39fbc49 49,53-68
+package.json
+  h_e893c4a39fbc49 58
+  8abe80e503d0c138 33,36,38,45,55,69-71
+views/header.ejs
+  h_e893c4a39fbc49 1,537-539,541,546-547,549,554-555,557,562-563,565,570-571,573,578-579,581,586-587,589,594-595,597,602-603,605,610-611,613,1000-1001
+.github/workflows/release-tag.yml
+  8abe80e503d0c138 1-40
+public/js/p3/widget/formatter.js
+  8abe80e503d0c138 180,183,431,440-451,563-575
+public/js/p3/widget/GridContainer.js
+  h_e893c4a39fbc49 368-462,591-595,599,608-613,1143,1519,1529
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "2b1a320088243f26e53693b0c0858e81ab3b8264",
+  "prompts": {
+    "6c9c022bbeb277d0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "129653ae-ea8b-4744-a2a2-bb49d00b8e1b",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 50,
+      "total_deletions": 44,
+      "accepted_lines": 30,
+      "overriden_lines": 0
+    },
+    "8abe80e503d0c138": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "576d7c67-634c-4869-a986-5de1b4cbddce",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 104499,
+      "total_deletions": 679,
+      "accepted_lines": 101268,
+      "overriden_lines": 63
+    }
+  },
+  "humans": {
+    "h_e893c4a39fbc49": {
+      "author": "Chris Escobar"
+    }
+  }
+}

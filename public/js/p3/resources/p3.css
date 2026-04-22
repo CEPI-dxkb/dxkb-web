@@ -1095,6 +1095,14 @@ div.pubmed ul li {
     font-size: 20px;
 }
 
+.patric .PerspectiveQuery {
+    display: inline;
+}
+
+.patric .PerspectiveQuery > div {
+    display: inline;
+}
+
 .patric .PerspectiveQuery .navigationLink {
     font-family: 'Roboto', Arial, sans-serif;
     font-size: 1.1em;

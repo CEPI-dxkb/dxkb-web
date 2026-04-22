@@ -1,0 +1,30 @@
+public/js/p3/resources/p3.css
+  d6b5095a6edee432 1098-1105
+views/bv-brc-header.ejs
+  h_e893c4a39fbc49 57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "ba3202af1cfa66b27dfec991320fba93ea8b7490",
+  "prompts": {
+    "d6b5095a6edee432": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "810a6a3e-7982-4b42-8619-6d787aaf68dd",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 0,
+      "accepted_lines": 8,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_e893c4a39fbc49": {
+      "author": "Chris Escobar"
+    }
+  }
+}

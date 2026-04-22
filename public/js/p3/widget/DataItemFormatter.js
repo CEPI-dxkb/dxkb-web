@@ -294,6 +294,26 @@ define([
     });
   }
 
+  function buildRoleNameRow(label, role_items) {
+    // Build the row DOM directly so role names (untrusted data) go through
+    // textContent while bullets/bold/line-breaks stay as real DOM nodes.
+    var tr = domConstruct.create('tr', {});
+    domConstruct.create('td', {
+      'class': 'DataItemProperty',
+      innerHTML: label  // labels are developer-controlled
+    }, tr);
+    var td = domConstruct.create('td', { 'class': 'DataItemValue' }, tr);
+    for (var i = 0; i < role_items.length; i += 2) {
+      td.appendChild(document.createTextNode('• ' + role_items[i] + ' '));
+      domConstruct.create('span', {
+        style: 'font-weight: bold;',
+        textContent: '(' + role_items[i + 1] + ')'
+      }, td);
+      domConstruct.create('br', {}, td);
+    }
+    return tr;
+  }
+
   function displayDetailSubsystems(item, columns, parent, options) {
     var table = domConstruct.create('table', {}, parent);
     var tbody = domConstruct.create('tbody', {}, table);
@@ -305,66 +325,29 @@ define([
         // 2. this is a wrong taxon id to use (e.g. 1763 -> 1765)
         // 3. need to de-duplicate fecet query
 
+        var genomeClause;
         if (item.genome_count > 1) {
-
-          var query = 'q=genome_id:(' + options.genome_ids.join(' OR ') + ') AND subsystem_id:("' + item.subsystem_id + '")&facet=true&facet.field=role_name&facet.mincount=1&facet.limit-1&rows=25000';
-          when(request.post(PathJoin(window.App.dataAPI, '/subsystem/'), {
-            handleAs: 'json',
-            headers: {
-              Accept: 'application/solr+json',
-              'Content-Type': 'application/solrquery+x-www-form-urlencoded',
-              'X-Requested-With': null,
-              Authorization: (window.App.authorizationToken || '')
-            },
-            data: query
-          }), function (response) {
-
-            var role_list = '';
-            var role_items = response.facet_counts.facet_fields.role_name;
-
-            for (var i = 0; i < role_items.length; i += 2) {
-              var role = '&#8226 ' + role_items[i] + ' <span style="font-weight: bold;">(' + role_items[i + 1] + ')</span><br>';
-              role_list += role;
-            }
-
-            item.role_name = role_list;
-
-            var row = renderProperty(column, item, options);
-            if (row) {
-              domConstruct.place(row, tbody);
-            }
-          });
+          genomeClause = 'genome_id:(' + options.genome_ids.join(' OR ') + ')';
         } else if (item.genome_id !== undefined) {
-          var query = 'q=genome_id:(' + item.genome_id + ') AND subsystem_id:("' + item.subsystem_id + '")&facet=true&facet.field=role_name&facet.mincount=1&facet.limit-1&rows=25000';
-
-          when(request.post(PathJoin(window.App.dataAPI, '/subsystem/'), {
-            handleAs: 'json',
-            headers: {
-              Accept: 'application/solr+json',
-              'Content-Type': 'application/solrquery+x-www-form-urlencoded',
-              'X-Requested-With': null,
-              Authorization: (window.App.authorizationToken || '')
-            },
-            data: query
-          }), function (response) {
-
-            var role_list = '';
-            var role_items = response.facet_counts.facet_fields.role_name;
-
-            for (var i = 0; i < role_items.length; i += 2) {
-              var role = '&#8226 ' + role_items[i] + ' <span style="font-weight: bold;">(' + role_items[i + 1] + ')</span><br>';
-              role_list += role;
-            }
-
-            // var role_list = role_names.join("<br>");
-            item.role_name = role_list;
-
-            var row = renderProperty(column, item, options);
-            if (row) {
-              domConstruct.place(row, tbody);
-            }
-          });
+          genomeClause = 'genome_id:(' + item.genome_id + ')';
+        } else {
+          return;
         }
+
+        var query = 'q=' + genomeClause + ' AND subsystem_id:("' + item.subsystem_id + '")&facet=true&facet.field=role_name&facet.mincount=1&facet.limit-1&rows=25000';
+        when(request.post(PathJoin(window.App.dataAPI, '/subsystem/'), {
+          handleAs: 'json',
+          headers: {
+            Accept: 'application/solr+json',
+            'Content-Type': 'application/solrquery+x-www-form-urlencoded',
+            'X-Requested-With': null,
+            Authorization: (window.App.authorizationToken || '')
+          },
+          data: query
+        }), function (response) {
+          var role_items = response.facet_counts.facet_fields.role_name;
+          domConstruct.place(buildRoleNameRow(column.name, role_items), tbody);
+        });
       } else {
         var row = renderProperty(column, item, options);
         if (row) {

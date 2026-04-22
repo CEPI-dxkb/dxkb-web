@@ -143,7 +143,14 @@ define([
       if (!path) {
         return '';
       }
-      return path.charAt(0) === '/' ? (this._baseUrl + path) : path;
+      if (path.charAt(0) === '/') {
+        return this._baseUrl + path;
+      }
+      // Only permit explicit http(s) URLs; reject javascript:, data:, vbscript:, etc.
+      if (/^https?:\/\//i.test(path)) {
+        return path;
+      }
+      return '';
     }
   });
 });

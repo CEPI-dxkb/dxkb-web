@@ -28,15 +28,15 @@ define([
   function evaluateLink(link, value, item) {
     if (link && value !== '-' && value !== '0') {
       if (typeof (link) == 'function') {
-        return link.apply(this, [item]);
+        // Function-style link handlers return HTML strings from developer-controlled templates.
+        return { __html: link.apply(this, [item]) };
       } else {
-        // Create link element safely instead of HTML string concatenation
         var a = domConstruct.create('a', {
           href: link + value,
           target: '_blank',
           textContent: String(value).split(',').join(', ')
         });
-        return a.outerHTML;
+        return { __html: a.outerHTML };
       }
     }
     return value;
@@ -49,18 +49,15 @@ define([
       innerHTML: property  // Property labels are developer-controlled, safe
     }, tr);
 
-    // Use innerHTML only if value contains HTML from evaluateLink, otherwise textContent
-    var valueCell = domConstruct.create('td', {
-      'class': 'DataItemValue'
-    }, tr);
-
-    if (typeof value === 'string' && (value.indexOf('<a ') === 0 || value.indexOf('<') !== -1)) {
-      // Value contains HTML (from evaluateLink or formatter), use innerHTML
-      valueCell.innerHTML = value;
+    // Only render as HTML when the value is explicitly tagged by evaluateLink.
+    // Raw data values — including ones that happen to contain '<' — go through textContent.
+    var valueCellProps = { 'class': 'DataItemValue' };
+    if (value && typeof value === 'object' && typeof value.__html === 'string') {
+      valueCellProps.innerHTML = value.__html;
     } else {
-      // Raw data value, use textContent to prevent XSS
-      valueCell.textContent = value;
+      valueCellProps.textContent = (value == null) ? '' : String(value);
     }
+    domConstruct.create('td', valueCellProps, tr);
 
     return tr;
   }

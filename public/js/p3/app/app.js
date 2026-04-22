@@ -550,7 +550,7 @@ define([
 
       /*  istanbul ignore else */
       if (newNavState.widgetClass) {
-        layers = (window.App && window.App.production && newNavState.layers)?newNavState.layers:[]
+        var layers = (window.App && window.App.production && newNavState.layers) ? newNavState.layers : [];
         ctor = this.getConstructor(newNavState.widgetClass, layers);
       } else {
         ctor = ContentPane;

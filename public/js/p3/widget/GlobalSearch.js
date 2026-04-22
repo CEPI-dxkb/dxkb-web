@@ -162,8 +162,7 @@ define([
               Topic.publish('/navigate', { href: '/view/Feature/' + encodeURIComponent(figIds[0]) });
             } else if (figIds.length > 1) {
               // Multiple feature IDs - go to feature list with in() query
-              // Escape | as %7C for the query
-              var escapedIds = figIds.map(function(id) { return id.replace(/\|/g, '%7C'); });
+              var escapedIds = figIds.map(function(id) { return encodeURIComponent(id); });
               var featureQuery = 'in(patric_id,(' + escapedIds.join(',') + '))';
               Topic.publish('/navigate', { href: '/view/FeatureList/?' + featureQuery });
             }

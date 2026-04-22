@@ -47,8 +47,7 @@ define([], function () {
         'Variation': 'Variation',
         'ViralAssembly': 'ViralAssembly',
         'CoreGenomeMLST': 'CoreGenomeMLST',
-        'WholeGenomeSNPAnalysis': 'WholeGenomeSNPAnalysis',
-        'MobileElementDetection': 'MobileElementDetection'
+        'WholeGenomeSNPAnalysis': 'WholeGenomeSNPAnalysis'
       };
 
       // TODO: addin modal parameter

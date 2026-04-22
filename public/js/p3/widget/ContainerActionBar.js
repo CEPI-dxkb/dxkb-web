@@ -111,8 +111,15 @@ define([
 
       // Add favorite star at the beginning (if applicable)
       if (this._shouldShowFavoriteStar(path)) {
+        // Escape path for safe insertion into the data-path attribute (innerHTML below)
+        var escapedPath = String(path)
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
         // Start with outline star, will be updated async after render
-        out.push('<i class="icon-star-o wsFavoriteStar not-favorite" data-path="' + path + '" title="Add to favorites"></i> ');
+        out.push('<i class="icon-star-o wsFavoriteStar not-favorite" data-path="' + escapedPath + '" title="Add to favorites"></i> ');
       }
 
       // if viewing all public workspaces, just create header

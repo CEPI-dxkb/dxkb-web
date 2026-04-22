@@ -1,0 +1,14 @@
+package.json
+  h_e893c4a39fbc49 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "6a4502eb2ee837955fbd9e16115369b14243bb9c",
+  "prompts": {},
+  "humans": {
+    "h_e893c4a39fbc49": {
+      "author": "Chris Escobar"
+    }
+  }
+}

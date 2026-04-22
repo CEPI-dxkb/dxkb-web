@@ -134,13 +134,25 @@ define([
           action: baseUrl
         }, this.domNode);
         domConstruct.create('input', { type: 'hidden', value: encodeURIComponent(query), name: 'rql' }, form);
+        // Add authorization as form field for POST requests
+        if (window.App.authorizationToken) {
+          domConstruct.create('input', { type: 'hidden', value: window.App.authorizationToken, name: 'http_authorization' }, form);
+        }
         form.submit();
       }
     },
 
     _tocsv: function (selection) {
       var out = [];
-      var keys = Object.keys(selection[0]);
+      var keys = Object.keys(selection[0]).filter(function(key) {
+        // Skip internal fields and complex objects
+        if (key.charAt(0) === '_') return false;
+        if (key === 'detail') return false;
+        var val = selection[0][key];
+        // Skip if value is an object but not an array
+        if (val !== null && typeof val === 'object' && !(val instanceof Array)) return false;
+        return true;
+      });
 
       var header = [];
       keys.forEach(function (key) {
@@ -168,13 +180,21 @@ define([
         out.push(io.join(','));
       });
 
-      return out.join('\n');
+      return out.join('\n') + '\n';
 
     },
 
     _totsv: function (selection) {
       var out = [];
-      var keys = Object.keys(selection[0]);
+      var keys = Object.keys(selection[0]).filter(function(key) {
+        // Skip internal fields and complex objects
+        if (key.charAt(0) === '_') return false;
+        if (key === 'detail') return false;
+        var val = selection[0][key];
+        // Skip if value is an object but not an array
+        if (val !== null && typeof val === 'object' && !(val instanceof Array)) return false;
+        return true;
+      });
 
       var header = [];
       keys.forEach(function (key) {
@@ -195,7 +215,7 @@ define([
         out.push(io.join('\t'));
       });
 
-      return out.join('\n');
+      return out.join('\n') + '\n';
 
     },
 
@@ -302,6 +322,7 @@ define([
         pk: 'sequence_id',
         tableData: true,
         otherData: ['dna+fasta'],
+        generateDownloadFromStore: true,
         selectList: 'genome_id,genome_name,sequence_id,gi,accession,sequence_type,topology,description,gc_content,length,release_date,version,date_inserted'
       },
       sequence_feature_data: {
@@ -316,6 +337,7 @@ define([
         pk: 'feature_id',
         tableData: true,
         otherData: ['dna+fasta', 'protein+fasta'],
+        generateDownloadFromStore: true,
         selectList: 'genome_name,genome_id,accession,brc_id,refseq_locus_tag,feature_id,annotation,feature_type,start,end,strand,figfam_id,plfam_id,pgfam_id,protein_id,aa_length,gene,product,go,date_inserted'
       },
       protein_data: {
@@ -342,6 +364,18 @@ define([
         // set secondaryDataType & secondartyPK to allow download from a second table
         secondaryDataType: 'genome_feature',
         secondartyPK: 'feature_id'
+      },
+      specialty_genes: {
+        label: 'Specialty Genes',
+        pk: '_id',
+        generateDownloadFromStore: true,
+        tableData: true
+      },
+      fasta_data: {
+        label: 'FASTA Results',
+        pk: '_id',
+        generateDownloadFromStore: true,
+        tableData: true
       },
       spgene_ref_data: {
         dataType: 'sp_gene_ref',

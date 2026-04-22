@@ -1,9 +1,9 @@
-<%
-const load_css = [
-	"p3/resources/p3.css",
-	"heatmap/dist/hotmap.css"
-]
-%>
+
+	<%
+	const load_css = [
+		"p3/resources/p3.css"
+	]
+	%>
 
 <% if (request && request.production){ %>
   <% load_css.forEach(function(url){ %>
@@ -531,88 +531,88 @@ var virus = [
 	}
 ];
 
-var featuredVirus = [
-	{
-		name: "Bacteriophages",
-		href: "/view/GenomeList/?eq(genome_name,phage)",
-		title: "Bacteriophages - Therapeutic Applications",
-		description: "Research bacteriophages for therapeutic and vaccine development.",
-		robots: "index,dontfollow",
-		keywords: "phage therapy, vaccine development, DXKB research"
-	},
-	{
-		name: "Dengue virus",
-		href: "/view/Taxonomy/12637",
-		title: "Dengue Virus - Vaccine Development",
-		description: "Study dengue virus immunology for vaccine development.",
-		robots: "index,dontfollow",
-		keywords: "dengue vaccines, viral immunity, DXKB database"
-	},
-	{
-		name: "Ebolavirus",
-		href: "/view/Taxonomy/186536",
-		title: "Ebolavirus - Vaccine Research",
-		description: "Research vaccine strategies against Ebola virus.",
-		robots: "index,dontfollow",
-		keywords: "Ebola vaccines, viral prevention, DXKB research"
-	},
-	{
-		name: "Enterovirus",
-		href: "/view/Taxonomy/12059",
-		title: "Enterovirus - Vaccine Development",
-		description: "Study enterovirus biology for vaccine development approaches.",
-		robots: "index,dontfollow",
-		keywords: "enterovirus vaccines, viral prevention, DXKB database"
-	},
-	{
-		name: "Hepacivirus",
-		href: "/view/Taxonomy/11102",
-		title: "Hepacivirus - HCV Vaccine Research",
-		description: "Research vaccine strategies against hepatitis C virus.",
-		robots: "index,dontfollow",
-		keywords: "HCV vaccines, viral prevention, DXKB research"
-	},
-	{
-		name: "Influenza A virus",
-		href: "/view/Taxonomy/11320",
-		title: "Influenza A - Vaccine Development",
-		description: "Study influenza A immunology for improved vaccines.",
-		robots: "index,dontfollow",
-		keywords: "influenza vaccines, viral prevention, DXKB database"
-	},
-	{
-		name: "Mammarenavirus lassaense",
-		href: "/view/Taxonomy/3052310",
-		title: "Lassa Virus - Vaccine Research",
-		description: "Research vaccine approaches against Lassa fever virus.",
-		robots: "index,dontfollow",
-		keywords: "Lassa vaccines, viral prevention, DXKB research"
-	},
-	{
-		name: "Monkeypox virus",
-		href: "/view/Taxonomy/10244",
-		title: "Monkeypox - Vaccine Development",
-		description: "Study monkeypox virus for vaccine development strategies.",
-		robots: "index,dontfollow",
-		keywords: "monkeypox vaccines, viral prevention, DXKB database"
-	},
-	{
-		name: "SARS-CoV-2",
-		href: "/view/Taxonomy/2697049",
-		title: "SARS-CoV-2 - COVID-19 Vaccines",
-		description: "Research vaccine approaches against SARS-CoV-2 variants.",
-		robots: "index,dontfollow",
-		keywords: "COVID vaccines, viral immunity, DXKB research"
-	},
-	{
-		name: "Zika virus",
-		href: "/view/Taxonomy/64320",
-		title: "Zika Virus - Vaccine Development",
-		description: "Study Zika virus biology for vaccine development strategies.",
-		robots: "index,dontfollow",
-		keywords: "Zika vaccines, viral prevention, DXKB database"
-	}
-];
+	var featuredVirus = [
+		{
+			name: "Bacteriophages",
+			href: "/view/GenomeList/?and(eq(genome_name,phage),eq(superkingdom,Viruses))",
+			title: "Bacteriophages - Viruses Infecting Bacteria",
+			description: "Explore bacteriophages, viruses that infect and replicate within bacteria.",
+			robots: "index,dontfollow",
+			keywords: "bacteriophages, phage therapy, bacterial viruses"
+		},
+		{
+			name: "Dengue virus",
+			href: "/view/Taxonomy/12637",
+			title: "Dengue Virus - Mosquito-Borne Virus Causing Dengue Fever",
+			description: "Learn about the Dengue virus, a mosquito-borne virus causing dengue fever.",
+			robots: "index,dontfollow",
+			keywords: "Dengue virus, mosquito-borne diseases, dengue fever"
+		},
+		{
+			name: "Ebolavirus",
+			href: "/view/Taxonomy/186536",
+			title: "Ebolavirus - Virus Causing Severe Hemorrhagic Fever",
+			description: "Discover Ebolavirus, known for causing severe hemorrhagic fever in humans.",
+			robots: "index,dontfollow",
+			keywords: "Ebolavirus, hemorrhagic fever, Ebola virus"
+		},
+		{
+			name: "Enterovirus",
+			href: "/view/Taxonomy/12059",
+			title: "Enterovirus - Includes Poliovirus and Coxsackievirus",
+			description: "Investigate Enterovirus, a genus of viruses including poliovirus and coxsackievirus.",
+			robots: "index,dontfollow",
+			keywords: "Enterovirus, poliovirus, coxsackievirus, viral pathogens"
+		},
+		{
+			name: "Hepacivirus",
+			href: "/view/Taxonomy/11102",
+			title: "Hepacivirus - Includes Hepatitis C Virus",
+			description: "Access information on Hepacivirus, which includes the hepatitis C virus.",
+			robots: "index,dontfollow",
+			keywords: "Hepacivirus, hepatitis C virus, viral infections"
+		},
+		{
+			name: "Influenza A virus",
+			href: "/view/Taxonomy/11320",
+			title: "Influenza A Virus - Major Cause of Seasonal Flu",
+			description: "Explore Influenza A virus, a major cause of seasonal flu epidemics.",
+			robots: "index,dontfollow",
+			keywords: "Influenza A virus, seasonal flu, viral infections"
+		},
+		{
+			name: "Mammarenavirus lassaense",
+			href: "/view/Taxonomy/3052310",
+			title: "Mammarenavirus Lassaense - Virus Causing Lassa Fever",
+			description: "Learn about Mammarenavirus lassaense, the virus responsible for Lassa fever.",
+			robots: "index,dontfollow",
+			keywords: "Mammarenavirus lassaense, Lassa fever, hemorrhagic fever"
+		},
+		{
+			name: "Monkeypox virus",
+			href: "/view/Taxonomy/10244",
+			title: "Monkeypox Virus - Similar to Smallpox",
+			description: "Examine Monkeypox virus, a virus similar to smallpox causing monkeypox disease.",
+			robots: "index,dontfollow",
+			keywords: "Monkeypox virus, smallpox, zoonotic diseases"
+		},
+		{
+			name: "SARS-CoV-2",
+			href: "/view/Taxonomy/2697049",
+			title: "SARS-CoV-2 - Virus Responsible for COVID-19",
+			description: "Study SARS-CoV-2, the virus responsible for the COVID-19 pandemic.",
+			robots: "index,dontfollow",
+			keywords: "SARS-CoV-2, COVID-19, coronavirus pandemic"
+		},
+		{
+			name: "Zika virus",
+			href: "/view/Taxonomy/64320",
+			title: "Zika Virus - Mosquito-Borne Virus Linked to Birth Defects",
+			description: "Investigate Zika virus, a mosquito-borne virus linked to birth defects.",
+			robots: "index,dontfollow",
+			keywords: "Zika virus, mosquito-borne diseases, birth defects"
+		}
+	];
 
 var toolsAndServices = [
 	{
@@ -997,6 +997,6 @@ title =
 <link rel="icon" sizes="16x16 32x32" href="/favicon.ico"/>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet"/>
 
-<% if (!request.originalUrl || !request.originalUrl.includes('workspace')) { %>
-	<link rel="canonical" href="<%= request.originalUrl ? 'https://www.dxkb.org' + request.originalUrl : 'https://www.dxkb.org' %>"/>
+<% if (!request.safeOriginalUrl || !request.safeOriginalUrl.includes('workspace')) { %>
+	<link rel="canonical" href="<%= request.safeOriginalUrl ? 'https://www.dxkb.org' + request.safeOriginalUrl : 'https://www.dxkb.org' %>"/>
 <% } %>

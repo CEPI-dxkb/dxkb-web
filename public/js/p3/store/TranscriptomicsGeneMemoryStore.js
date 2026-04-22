@@ -268,13 +268,20 @@ define([
       var wsComparisons = params.filter(function (s) {
         return s.match(/wsComparisonId=.*/);
       });
+      var safeDecode = function (id) {
+        try {
+          return decodeURIComponent(id);
+        } catch (e) {
+          return id;
+        }
+      };
       var wsExpIds,
         wsComparisonIds;
       if (wsExperiments.length > 0) {
-        wsExpIds = wsExperiments[0].replace('wsExpId=', '').split(',');
+        wsExpIds = wsExperiments[0].replace('wsExpId=', '').split(',').map(safeDecode);
       }
       if (wsComparisons.length > 0) {
-        wsComparisonIds = wsComparisons[0].replace('wsComparisonId=', '').split(',');
+        wsComparisonIds = wsComparisons[0].replace('wsComparisonId=', '').split(',').map(safeDecode);
       }
 
       // console.log(this.state.search, "wsExpIds: ", wsExpIds, "wsComparisonIds: ", wsComparisonIds);

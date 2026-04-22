@@ -1,11 +1,13 @@
 define([
   'dojo/_base/declare', 'dojo/_base/Deferred', 'dojo/request', 'dojo/_base/lang', 'dojo/topic',
+  'dojo/dom-construct',
   './_GenomeList', '../Phylogeny', '../../util/PathJoin', '../../store/SFVTViruses',
-  '../TaxonomyTreeGridContainer', '../TaxonomyOverview', '../../util/QueryToEnglish'
+  '../TaxonomyTreeGridContainer', '../TaxonomyOverview', '../../util/QueryToEnglish', '../PhylogenyVirus'
 ], function (
   declare, Deferred, xhr, lang, Topic,
+  domConstruct,
   GenomeList, Phylogeny, PathJoin, SFVTViruses,
-  TaxonomyTreeGrid, TaxonomyOverview, QueryToEnglish
+  TaxonomyTreeGrid, TaxonomyOverview, QueryToEnglish, PhylogenyVirus
 ) {
   return declare([GenomeList], {
     params: null,
@@ -15,6 +17,10 @@ define([
     context: 'bacteria',
     perspectiveLabel: 'Taxon View',
     perspectiveIconClass: 'icon-selection-Taxonomy',
+
+    _phyloIndexUrl: 'https://www.bv-brc.org/api/content/phyloxml_trees/phylogeny-tree-groups.json',
+    _phyloGateSeq: 0,
+
     postCreate: function () {
       this.inherited(arguments);
 
@@ -24,11 +30,19 @@ define([
         state: this.state
       });
 
+      this.phylogenyVirus = new PhylogenyVirus({
+        title: 'Phylogeny',
+        id: this.viewer.id + '_phylogenyVirus',
+        state: this.state
+      });
+
       this.taxontree = new TaxonomyTreeGrid({
         title: 'Taxonomy',
         id: this.viewer.id + '_taxontree',
         state: this.state
       });
+      // TODO: Improve this logic
+      this.viewer.addChild(this.phylogenyVirus, 1);
       this.viewer.addChild(this.phylogeny, 1);
       this.viewer.addChild(this.taxontree, 2);
 
@@ -70,53 +84,58 @@ define([
     },
 
     onSetTaxonomy: function (attr, oldVal, taxonomy) {
-      this.queryNode.innerHTML = this.buildHeaderContent(taxonomy);
+      // Use DOM placement instead of innerHTML to prevent XSS
+      this.queryNode.textContent = '';
+      domConstruct.place(this.buildHeaderContent(taxonomy), this.queryNode);
       var taxon_header_label = 'Taxon View - ' + taxonomy.lineage.split(',').reverse()[0];
       this.perspectiveLabel = taxon_header_label;
       // customization for viruses only when the context is changed
-      if (this.context === 'bacteria') {
-        if (this.taxonomy.lineage_names.includes('Influenza A virus') || this.taxonomy.lineage_names.includes('Rhinovirus A')) {
-          if (!this.surveillance) {
-            this.viewer.addChild(this.surveillance);
-          }
-          if (!this.serology) {
-            this.viewer.addChild(this.serology);
-          }
-        } else {
-          this.viewer.removeChild(this.surveillance);
-          this.viewer.removeChild(this.serology);
-        }
 
-        // SFVT
-        if (this.taxonomy.lineage_ids.some(id => SFVTViruses.get(id))) {
-          if (!this.sfvt) {
-            this.viewer.addChild(this.sfvt);
-          }
-        } else {
-          this.viewer.removeChild(this.sfvt);
-        }
+      const isSpecialVirus =
+        taxonomy.lineage_names.includes('Alphainfluenzavirus influenzae') ||
+        taxonomy.lineage_names.includes('Rhinovirus A');
 
-        // strains
-        // if (this.taxonomy.lineage_names.includes('Orthomyxoviridae') || this.taxonomy.lineage_names.includes('Bunyavirales')) {
-        //   this.viewer.addChild(this.strains, 3);
-        // } else {
-        //   this.viewer.removeChild(this.strains);
-        // }
+      this._toggleTab(this.surveillance, isSpecialVirus);
+      this._toggleTab(this.serology, isSpecialVirus);
 
-        if (this.taxonomy.lineage_names.includes('Orthomyxoviridae')) {
-          this.viewer.addChild(this.strains_orthomyxoviridae, 3);
-        } else if (this.taxonomy.lineage_names.includes('Bunyavirales')) {
-          this.viewer.addChild(this.strains_bunyavirales, 3);
-        } else {
-          this.viewer.removeChild(this.strains || this.strains_orthomyxoviridae || this.strains_bunyavirales);
+      const seq = ++this._phyloGateSeq;
+      this._getPhyloIndex().then(lang.hitch(this, function (idx) {
+        if (seq !== this._phyloGateSeq) return;
+
+        const taxonBlock = idx && idx[taxonomy.taxon_id];
+        const shouldShow = this._taxonHasPhyloData(taxonBlock);
+
+        this._toggleTab(this.phylogenyVirus, shouldShow, 1);
+
+        if (shouldShow && this.phylogenyVirus) {
+          this.phylogenyVirus.setTreeData(taxonBlock);
         }
+      }));
+
+      // SFVT
+      const isSFVT = taxonomy.lineage_ids && taxonomy.lineage_ids.some(id => SFVTViruses.get(id));
+      this._toggleTab(this.sfvt, !!isSFVT);
+
+      // strains
+      // if (this.taxonomy.lineage_names.includes('Orthomyxoviridae') || this.taxonomy.lineage_names.includes('Bunyavirales')) {
+      //   this.viewer.addChild(this.strains, 3);
+      // } else {
+      //   this.viewer.removeChild(this.strains);
+      // }
+
+      if (taxonomy.lineage_names.includes('Orthomyxoviridae')) {
+        this.viewer.addChild(this.strains_orthomyxoviridae, 3);
+      } else if (taxonomy.lineage_names.includes('Bunyavirales')) {
+        this.viewer.addChild(this.strains_bunyavirales, 3);
+      } else {
+        this.viewer.removeChild(this.strains || this.strains_orthomyxoviridae || this.strains_bunyavirales);
       }
 
       // switch tab configuration & view context
-      if (this.taxonomy.lineage_names.includes('Bacteria') && this.context === 'virus') {
-        this.set('context', 'bacteria')
+      if (taxonomy.lineage_names.includes('Bacteria') && this.context === 'virus') {
+        this.set('context', 'bacteria');
         this.changeToBacteriaContext();
-      } else if (this.taxonomy.lineage_names.includes('Viruses') && this.context === 'bacteria') {
+      } else if (taxonomy.lineage_names.includes('Viruses') && this.context === 'bacteria') {
         this.set('context', 'virus');
         this.changeToVirusContext();
       }
@@ -178,14 +197,18 @@ define([
           }
           state.search = sx.join('&').replace('&&', '&');
           if (this.taxonomy) {
-            this.queryNode.innerHTML = this.buildHeaderContent(this.taxonomy);
+            // Use DOM placement instead of innerHTML to prevent XSS
+            this.queryNode.textContent = '';
+            domConstruct.place(this.buildHeaderContent(this.taxonomy), this.queryNode);
           }
 
         } else {
           state.search = s;
           this.filteredTaxon = false;
           if (this.taxonomy) {
-            this.queryNode.innerHTML = this.buildHeaderContent(this.taxonomy);
+            // Use DOM placement instead of innerHTML to prevent XSS
+            this.queryNode.textContent = '';
+            domConstruct.place(this.buildHeaderContent(this.taxonomy), this.queryNode);
           }
         }
 
@@ -224,8 +247,10 @@ define([
 
         this.setActivePanelState();
       }), lang.hitch(this, function (msg) {
-        this.queryNode.innerHTML = '<b>' + msg + '</b>';
-        this.totalCountNode.innerHTML = '';
+        // Use safe DOM construction for error messages to prevent XSS
+        this.queryNode.textContent = '';
+        domConstruct.create('b', { textContent: msg }, this.queryNode);
+        this.totalCountNode.textContent = '';
       }));
     },
     onSetGenomeIds: function (attr, oldVal, genome_ids) {
@@ -256,8 +281,13 @@ define([
           activeTab.set('state', lang.mixin({}, this.state));
           break;
         case 'sfvt':
+          // Temporary remap: Influenza A virus taxon fix
+          const taxon_id =
+            this.state.taxon_id === 2955291
+              ? 11320
+              : this.state.taxon_id;
           activeTab.set('state', lang.mixin({}, this.state, {
-            search: 'eq(taxon_id,' + this.state.taxon_id + ')'
+            search: 'eq(taxon_id,' + taxon_id + ')'
           }));
           break;
         case 'structures':
@@ -325,15 +355,28 @@ define([
         lastVisibleIndex = visibleIndexes[visibleIndexes.length - 1];
       }
 
-      var out = visibleIndexes.map(function (idx) {
-        return '<a class="navigationLink' + ((idx === lastVisibleIndex) ? ' current' : '') + '" href="/view/Taxonomy/' + taxon_lineage_ids[idx] + '">' + taxon_lineage_names[idx] + '</a>';
+      // Build breadcrumb using safe DOM construction to prevent XSS
+      var container = domConstruct.create('div');
+
+      visibleIndexes.forEach(function (idx, i) {
+        if (i > 0) {
+          domConstruct.place(document.createTextNode(' » '), container);
+        }
+        var linkClass = 'navigationLink' + ((idx === lastVisibleIndex) ? ' current' : '');
+        domConstruct.create('a', {
+          'class': linkClass,
+          href: '/view/Taxonomy/' + taxon_lineage_ids[idx],
+          textContent: taxon_lineage_names[idx]
+        }, container);
       });
 
       if (this.filteredTaxon) {
-        out.push(this.filteredTaxon);
+        domConstruct.place(document.createTextNode(' » '), container);
+        // filteredTaxon contains pre-escaped HTML from QueryToEnglish, render it as HTML
+        var filterSpan = domConstruct.create('span', { innerHTML: this.filteredTaxon }, container);
       }
 
-      return out.join(' &raquo; ');
+      return container;
     },
 
     createOverviewPanel: function () {
@@ -375,6 +418,65 @@ define([
       }, this).join('&');
 
       Topic.publish('/navigate', { href: l });
+    },
+
+    _getPhyloIndex: function () {
+      if (this._phyloIndexData) {
+        return Promise.resolve(this._phyloIndexData);
+      }
+      if (this._phyloIndexPromise) {
+        return this._phyloIndexPromise;
+      }
+
+      this._phyloIndexPromise = xhr.get(this._phyloIndexUrl, { handleAs: 'json' }).then(
+        lang.hitch(this, function (raw) {
+          this._phyloIndexData = raw || {};
+          return this._phyloIndexData;
+        }),
+        lang.hitch(this, function (err) {
+          console.error('Failed to load phylogeny index:', err);
+          // allow retry later
+          this._phyloIndexPromise = null;
+          this._phyloIndexData = null;
+          return null;
+        })
+      );
+
+      return this._phyloIndexPromise;
+    },
+
+    _taxonHasPhyloData: function (taxonBlock) {
+      if (!taxonBlock) {
+        return false;
+      }
+
+      const groups = Array.isArray(taxonBlock.groups) ? taxonBlock.groups : [];
+      return groups.some(function (g) {
+        const phy = Array.isArray(g.archaeopteryx) ? g.archaeopteryx.length : 0;
+        const nxt = Array.isArray(g.nextstrain) ? g.nextstrain.length : 0;
+        return (phy + nxt) > 0;
+      });
+    },
+
+    _toggleTab: function (widget, shouldShow, position) {
+      if (!widget || !this.viewer) return;
+
+      // dijit/TabContainer sets parent when the child is added
+      const isShown = widget.getParent && (widget.getParent() === this.viewer);
+
+      if (shouldShow) {
+        if (!isShown) {
+          if (typeof position === "number") {
+            this.viewer.addChild(widget, position);
+          } else {
+            this.viewer.addChild(widget);
+          }
+        }
+      } else {
+        if (isShown) {
+          this.viewer.removeChild(widget);
+        }
+      }
     }
   });
 });

@@ -246,9 +246,10 @@ define([
       // References to HTML elements/controls
       //----------------------------------------------------------------------------------------------------------------------------
 
-      // The "advanced options" container and control.
-      advancedOptionsContainerEl: null,
-      advancedOptionsControlEl: null,
+      // The "advanced options" toggle and container (matches the advanced/advrow/advicon pattern used by other services).
+      advanced: null,
+      advrow: null,
+      advicon: null,
 
       cladesPathEl: null,
       deviationEl: null,
@@ -320,7 +321,7 @@ define([
             if (segment_.isDefault) { this.defaultRefSegment = segment_.name; }
 
             const segmentControl = document.createElement("div");
-            segmentControl.className = "treesort--segment-control";
+            segmentControl.className = "treesort-segment-control";
             segmentControl.setAttribute("data-index", `${index_}`);
 
             // Create a checkbox for a segment and add its DOM element to the page.
@@ -414,9 +415,9 @@ define([
          }
 
 
-         let html = `<div class="treesort--validation-summary treesort--error">
-            <div class="treesort--validation-title">${title}</div>
-            <div class="treesort--validation-description">${message}</div>
+         let html = `<div class="treesort-validation-summary">
+            <div class="treesort-validation-title error">${title}</div>
+            <div>${message}</div>
          </div>`;
 
          return html;
@@ -447,7 +448,7 @@ define([
                ? "1 strain"
                : `${notEnoughSegments} strains`
 
-            ignoredStrains = `<div class="treesort--ignored-strains">
+            ignoredStrains = `<div style="margin-bottom:1rem;">
                Note: ${strainText} didn't have sequences for all ${segmentCount} segments and will not be included in the analysis.
             </div>`;
          }
@@ -460,19 +461,19 @@ define([
          if (example && example.header && example.strain) {
 
             // Highlight the strain name in the FASTA header.
-            exampleHeader = example.header.replace(example.strain, `<span class="treesort--highlighted-text">${example.strain}</span>`);
+            exampleHeader = example.header.replace(example.strain, `<span class="treesort-highlighted-text">${example.strain}</span>`);
 
-            exampleHTML = `<div class="treesort--example-panel">
-               <div class="treesort--example-message">In this example FASTA header, we found the highlighted strain name:</div>
-               <pre class="treesort--example-header">>${exampleHeader}</pre>
-               <div class="treesort--example-help">If this isn't correct, please contact our technical support for assistance.</div>
+            exampleHTML = `<div style="margin-bottom:1.5rem;">
+               <div>In this example FASTA header, we found the highlighted strain name:</div>
+               <pre class="treesort-example-header">>${exampleHeader}</pre>
+               <div>If this isn't correct, please contact our technical support for assistance.</div>
             </div>`;
          }
 
-         return `<div class="treesort--validation-summary">
-            <div class="treesort--validation-title treesort--success">Your FASTA file was successfully validated.</div>
-            <div class="treesort--validation-description">Please make sure the following summary is what you expected:</div>
-            <ul class="treesort--validation-list">
+         return `<div class="treesort-validation-summary">
+            <div class="treesort-validation-title success">Your FASTA file was successfully validated.</div>
+            <div>Please make sure the following summary is what you expected:</div>
+            <ul style="margin:0.25rem 0 1rem 1.5rem;">
                <li>${results.segments.length} segments: ${segmentList}</li>
                <li>${results.validNames.toLocaleString()} valid strains</li>
             </ul>
@@ -578,11 +579,6 @@ define([
          if (this.validate()) { return jobDescription; }
       },
 
-      // Handle a click event on the advanced options control.
-      handleAdvancedOptionsClick() {
-         this.advancedOptionsContainerEl.classList.toggle("visible");
-      },
-
       // Handle a change to the deviation control.
       handleDeviationChange: function (value_) {
 
@@ -622,8 +618,8 @@ define([
          if (value_.length > 0) {
             if (this.fastaValidationPanelEl) {
                this.fastaValidationPanelEl.innerHTML = `
-            <div class="treesort--validation-summary treesort--validating">
-               <div class="treesort--validation-title">
+            <div class="treesort-validation-summary">
+               <div class="treesort-validation-title validating">
                   <i class="fa icon-spinner fa-spin" style="display:inline-block;"></i>
                   Validating FASTA file...
                </div>
@@ -1254,7 +1250,7 @@ define([
             if (event_.target.nodeName == "INPUT") { return true; }
 
             // Get the parent DIV and its "data-index" attribute.
-            const segmentControl = event_.target.closest("div.treesort--segment-control");
+            const segmentControl = event_.target.closest("div.treesort-segment-control");
 
             // Get the data index attribute to determine the associated checkbox.
             const strIndex = segmentControl.getAttribute("data-index");
@@ -1269,6 +1265,13 @@ define([
 
             checkbox.set('checked', !checkbox.get('checked'));
          })
+
+         // Wire up the advanced options toggle (same pattern as other service forms).
+         on(this.advanced, 'click', lang.hitch(this, function () {
+            const isOpen = this.advrow.style.display !== 'none';
+            this.advrow.style.display = isOpen ? 'none' : 'block';
+            this.advicon.className = isOpen ? 'fa icon-caret-down fa-1' : 'fa icon-caret-left fa-1';
+         }));
 
          try {
             // NOTE: this sets this.displayDefaults to false if we are populating the page controls using job data.

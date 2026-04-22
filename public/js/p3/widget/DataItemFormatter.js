@@ -334,7 +334,7 @@ define([
           return;
         }
 
-        var query = 'q=' + genomeClause + ' AND subsystem_id:("' + item.subsystem_id + '")&facet=true&facet.field=role_name&facet.mincount=1&facet.limit-1&rows=25000';
+        var query = 'q=' + genomeClause + ' AND subsystem_id:("' + item.subsystem_id + '")&facet=true&facet.field=role_name&facet.mincount=1&facet.limit=-1&rows=25000';
         when(request.post(PathJoin(window.App.dataAPI, '/subsystem/'), {
           handleAs: 'json',
           headers: {

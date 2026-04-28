@@ -146,3 +146,5 @@ gulpfile.js
 chroma.log
 chroma_data/
 src/
+
+.claude/settings.local.json

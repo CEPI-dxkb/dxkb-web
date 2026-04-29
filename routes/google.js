@@ -127,7 +127,7 @@ router.get('/news', async function (req, res) {
     // Pipe axios stream -> feedparser
     response.data.pipe(feedparser);
   } catch (e) {
-    console.error(`Top-level error for feed "${feedKey}":`, e);
+    console.error('Top-level error for feed "%s":', feedKey, e);
     safeSend(502, {message: 'Error fetching RSS feed'});
   }
 });

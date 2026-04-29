@@ -2458,6 +2458,9 @@ $.fn.position = function( options ) {
 
 	// Make a copy, we don't want to modify arguments
 	options = $.extend( {}, options );
+	if ( typeof options.of === "string" && /\s*</.test( options.of ) ) {
+		return this;
+	}
 
 	var atOffset, targetWidth, targetHeight, targetOffset, basePosition, dimensions,
 		target = $( options.of ),
@@ -5722,7 +5725,7 @@ var keycode = $.ui.keyCode = {
 
 // Internal use only
 var escapeSelector = $.ui.escapeSelector = ( function() {
-	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g;
+	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g;
 	return function( selector ) {
 		return selector.replace( selectorEscape, "\\$1" );
 	};
@@ -8962,7 +8965,7 @@ $.extend( Datepicker.prototype, {
 			inst.append.remove();
 		}
 		if ( appendText ) {
-			inst.append = $( "<span class='" + this._appendClass + "'>" + appendText + "</span>" );
+			inst.append = $( "<span></span>" ).addClass( this._appendClass ).text( appendText );
 			input[ isRTL ? "before" : "after" ]( inst.append );
 		}
 
@@ -9805,14 +9808,16 @@ $.extend( Datepicker.prototype, {
 
 	/* Update any alternate field to synchronise with the main field. */
 	_updateAlternate: function( inst ) {
-		var altFormat, date, dateStr,
+		var altFormat, date, dateStr, safeAltField,
 			altField = this._get( inst, "altField" );
 
 		if ( altField ) { // update alternate field too
 			altFormat = this._get( inst, "altFormat" ) || this._get( inst, "dateFormat" );
 			date = this._getDate( inst );
 			dateStr = this.formatDate( altFormat, date, this._getFormatConfig( inst ) );
-			$( altField ).val( dateStr );
+			// Avoid passing HTML-like strings into $(), which can be interpreted as markup.
+			safeAltField = typeof altField === "string" && /\s*</.test( altField ) ? $() : $( altField );
+			safeAltField.val( dateStr );
 		}
 	},
 
@@ -19151,7 +19156,7 @@ $.widget( "ui.tabs", {
 	},
 
 	_sanitizeSelector: function( hash ) {
-		return hash ? hash.replace( /[!"$%&'()*+,.\/:;<=>?@\[\]\^`{|}~]/g, "\\$&" ) : "";
+		return hash ? hash.replace( /[!"$%&'()*+,.\/:;<=>?@\[\\\]\^`{|}~]/g, "\\$&" ) : "";
 	},
 
 	refresh: function() {
@@ -23482,7 +23487,7 @@ function BlurStack()
             };
 
             // Microsoft Edge fix
-            var allUppercase = new RegExp("^[A-Z\-]+$");
+            var allUppercase = new RegExp("^[A-Z-]+$");
             var normalizeAttributeName = function (name) {
                 if (allUppercase.test(name)) {
                     return name.toLowerCase();

@@ -68,14 +68,14 @@ router.get('/news', async function (req, res) {
     const items = [];
 
     response.data.on('error', (err) => {
-      console.error(`Request stream error for feed "${feedKey}":`, err);
+      console.error('Request stream error for feed "%s":', feedKey, err);
       safeSend(502, {message: 'Error fetching RSS feed'});
       // stop feedparser from continuing to process
       feedparser.destroy(err);
     });
 
     feedparser.on('error', (err) => {
-      console.error(`FeedParser error for feed "${feedKey}":`, err);
+      console.error('FeedParser error for feed "%s":', feedKey, err);
       safeSend(502, {message: 'Error parsing RSS feed'});
     });
 

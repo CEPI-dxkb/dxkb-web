@@ -937,7 +937,7 @@
             };
 
             // Microsoft Edge fix
-            var allUppercase = new RegExp("^[A-Z\-]+$");
+            var allUppercase = new RegExp("^[A-Z-]+$");
             var normalizeAttributeName = function (name) {
                 if (allUppercase.test(name)) {
                     return name.toLowerCase();
@@ -2570,7 +2570,7 @@
             for (var i = 0; i < node.childNodes.length; i++) {
                 css += node.childNodes[i].data;
             }
-            css = css.replace(/(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)|(^[\s]*\/\/.*)/gm, ''); // remove comments
+            css = css.replace(/(\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)|(^[\s]*\/\/.*)/gm, ''); // remove comments
             css = svg.compressSpaces(css); // replace whitespace
             var cssDefs = css.split('}');
             for (var i = 0; i < cssDefs.length; i++) {

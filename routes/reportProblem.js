@@ -5,7 +5,14 @@ var defer = require('promised-io/promise').defer;
 const axios = require("axios");
 var formidable = require('express-formidable');
 var fs = require('fs');
+var os = require('os');
+var path = require('path');
 const { sanitizeEmail, sanitizeEmailHeader, sanitizeEmailSubject } = require('../lib/securityUtils');
+
+function isPathWithin(parentPath, targetPath) {
+  var relative = path.relative(parentPath, targetPath);
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
+}
 
 function mail(message, subject, from, files, options) {
   if (!message) {
@@ -44,11 +51,22 @@ function mail(message, subject, from, files, options) {
   };
 
   var attachments = [];
+  var uploadRoot = path.resolve(config.get('reportProblemUploadDir') || os.tmpdir());
   if (files && files.length > 0) {
     files.forEach(function (f) {
+      var attachmentPath = f && (f.path || f.filepath);
+      if (!attachmentPath) {
+        return;
+      }
+
+      var resolvedAttachmentPath = path.resolve(attachmentPath);
+      if (!isPathWithin(uploadRoot, resolvedAttachmentPath) || !fs.existsSync(resolvedAttachmentPath)) {
+        return;
+      }
+
       var attach = {};
-      attach.filename = f.name;
-      attach.content = fs.createReadStream(f.path);
+      attach.filename = path.basename(f.name || f.originalFilename || 'attachment');
+      attach.content = fs.createReadStream(resolvedAttachmentPath);
       attachments.push(attach);
     });
     mailmsg.attachments = attachments;

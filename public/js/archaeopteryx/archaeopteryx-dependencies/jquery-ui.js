@@ -879,6 +879,10 @@ $.fn.position = function( options ) {
 	// Make a copy, we don't want to modify arguments
 	options = $.extend( {}, options );
 
+	if ( typeof options.of === "string" && /<[^>]+>/.test( options.of ) ) {
+		return this;
+	}
+
 	var atOffset, targetWidth, targetHeight, targetOffset, basePosition, dimensions,
 		target = $( options.of ),
 		within = $.position.getWithinInfo( options.within ),
@@ -4142,7 +4146,7 @@ var keycode = $.ui.keyCode = {
 
 // Internal use only
 var escapeSelector = $.ui.escapeSelector = ( function() {
-	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g;
+	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\\]^`{|}~])/g;
 	return function( selector ) {
 		return selector.replace( selectorEscape, "\\$1" );
 	};
@@ -7382,7 +7386,7 @@ $.extend( Datepicker.prototype, {
 			inst.append.remove();
 		}
 		if ( appendText ) {
-			inst.append = $( "<span class='" + this._appendClass + "'>" + appendText + "</span>" );
+			inst.append = $( "<span></span>" ).addClass( this._appendClass ).text( appendText );
 			input[ isRTL ? "before" : "after" ]( inst.append );
 		}
 
@@ -8226,13 +8230,18 @@ $.extend( Datepicker.prototype, {
 	/* Update any alternate field to synchronise with the main field. */
 	_updateAlternate: function( inst ) {
 		var altFormat, date, dateStr,
+			altFieldElement,
 			altField = this._get( inst, "altField" );
 
 		if ( altField ) { // update alternate field too
 			altFormat = this._get( inst, "altFormat" ) || this._get( inst, "dateFormat" );
 			date = this._getDate( inst );
 			dateStr = this.formatDate( altFormat, date, this._getFormatConfig( inst ) );
-			$( altField ).val( dateStr );
+			if ( typeof altField === "string" && /<[^>]+>/.test( altField ) ) {
+				return;
+			}
+			altFieldElement = $( altField );
+			altFieldElement.val( dateStr );
 		}
 	},
 
@@ -17571,7 +17580,7 @@ $.widget( "ui.tabs", {
 	},
 
 	_sanitizeSelector: function( hash ) {
-		return hash ? hash.replace( /[!"$%&'()*+,.\/:;<=>?@\[\]\^`{|}~]/g, "\\$&" ) : "";
+		return hash ? hash.replace( /[!"#$%&'()*+,./:;<=>?@\[\\\]^`{|}~]/g, "\\$&" ) : "";
 	},
 
 	refresh: function() {

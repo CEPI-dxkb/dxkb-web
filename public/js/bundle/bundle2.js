@@ -9808,16 +9808,18 @@ $.extend( Datepicker.prototype, {
 
 	/* Update any alternate field to synchronise with the main field. */
 	_updateAlternate: function( inst ) {
-		var altFormat, date, dateStr, safeAltField,
+		var altFormat, date, dateStr,
 			altField = this._get( inst, "altField" );
 
 		if ( altField ) { // update alternate field too
 			altFormat = this._get( inst, "altFormat" ) || this._get( inst, "dateFormat" );
 			date = this._getDate( inst );
 			dateStr = this.formatDate( altFormat, date, this._getFormatConfig( inst ) );
-			// Avoid passing HTML-like strings into $(), which can be interpreted as markup.
-			safeAltField = typeof altField === "string" && /\s*</.test( altField ) ? $() : $( altField );
-			safeAltField.val( dateStr );
+
+			// $( altField ) treats strings starting with '<' as HTML, allowing
+			// XSS when altField originates from untrusted input. Restrict the
+			// lookup to existing DOM nodes via $(document).find().
+			$( document ).find( altField ).val( dateStr );
 		}
 	},
 

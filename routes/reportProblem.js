@@ -9,11 +9,6 @@ var os = require('os');
 var path = require('path');
 const { sanitizeEmail, sanitizeEmailHeader, sanitizeEmailSubject } = require('../lib/securityUtils');
 
-function isPathWithin(parentPath, targetPath) {
-  var relative = path.relative(parentPath, targetPath);
-  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
-}
-
 function mail(message, subject, from, files, options) {
   if (!message) {
     throw Error('Message is required for mail()');
@@ -55,18 +50,26 @@ function mail(message, subject, from, files, options) {
   if (files && files.length > 0) {
     files.forEach(function (f) {
       var attachmentPath = f && (f.path || f.filepath);
-      if (!attachmentPath) {
+      if (!attachmentPath || typeof attachmentPath !== 'string') {
         return;
       }
 
-      var resolvedAttachmentPath = path.resolve(attachmentPath);
-      if (!isPathWithin(uploadRoot, resolvedAttachmentPath) || !fs.existsSync(resolvedAttachmentPath)) {
+      // Restrict the attachment to a file directly inside uploadRoot.
+      // path.basename strips any directory components from the user-influenced
+      // input, and path.join with the trusted root prevents path traversal.
+      var safeBasename = path.basename(attachmentPath);
+      if (!safeBasename || safeBasename === '.' || safeBasename === '..') {
+        return;
+      }
+      var safeAttachmentPath = path.join(uploadRoot, safeBasename);
+
+      if (!fs.existsSync(safeAttachmentPath)) {
         return;
       }
 
       var attach = {};
       attach.filename = path.basename(f.name || f.originalFilename || 'attachment');
-      attach.content = fs.createReadStream(resolvedAttachmentPath);
+      attach.content = fs.createReadStream(safeAttachmentPath);
       attachments.push(attach);
     });
     mailmsg.attachments = attachments;

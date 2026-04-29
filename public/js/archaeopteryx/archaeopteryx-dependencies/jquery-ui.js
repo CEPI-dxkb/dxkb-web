@@ -8230,18 +8230,17 @@ $.extend( Datepicker.prototype, {
 	/* Update any alternate field to synchronise with the main field. */
 	_updateAlternate: function( inst ) {
 		var altFormat, date, dateStr,
-			altFieldElement,
 			altField = this._get( inst, "altField" );
 
 		if ( altField ) { // update alternate field too
 			altFormat = this._get( inst, "altFormat" ) || this._get( inst, "dateFormat" );
 			date = this._getDate( inst );
 			dateStr = this.formatDate( altFormat, date, this._getFormatConfig( inst ) );
-			if ( typeof altField === "string" && /<[^>]+>/.test( altField ) ) {
-				return;
-			}
-			altFieldElement = $( altField );
-			altFieldElement.val( dateStr );
+
+			// $( altField ) treats strings starting with '<' as HTML, allowing
+			// XSS when altField originates from untrusted input. Restrict the
+			// lookup to existing DOM nodes via $(document).find().
+			$( document ).find( altField ).val( dateStr );
 		}
 	},
 

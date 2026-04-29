@@ -1,0 +1,191 @@
+views/javascript.ejs
+  ae3b16a5f5f40d0c 233-249,258-261
+public/js/p3/store/TranscriptomicsGeneMemoryStore.js
+  cf2dd2217787a30f 480,511,617
+public/js/p3/widget/WorkspaceBrowser.js
+  2e2732d0147a4d30 2691,2900
+routes/google.js
+  b8cf199cfef041ff 71,78
+routes/reportProblem.js
+  b4aa3c11f8b357f3 8-9,12-16,54,57-66,68-69
+public/js/p3/resources/icomoon/demo-files/demo.js
+  ae3b16a5f5f40d0c 18
+public/js/bundle/bundle.js
+  h_e893c4a39fbc49 6,18,10902
+public/js/p3/widget/viewer/HASubtypeNumberingReport.js
+  ca7606578b90f4fe 222,234
+public/js/p3/widget/copilot/CopilotStateManager.js
+  b8cf199cfef041ff 18-34,575,587,599
+.github/workflows/node.yml
+  6dd14f9d27a880d4 11-13
+public/js/p3/widget/search/SFVTSearch.js
+  ca7606578b90f4fe 30
+public/js/p3/widget/app/PrimerDesign.js
+  ca7606578b90f4fe 319
+public/js/p3/widget/viewer/TSV_CSV.js
+  b4aa3c11f8b357f3 313,445,472,504,545
+public/js/archaeopteryx/archaeopteryx-dependencies/jquery-ui.js
+  aa8666d7c4a8544f 7389
+public/js/archaeopteryx/archaeopteryx-dependencies/canvg.js
+  h_e893c4a39fbc49 2573
+  6759bfaa4942ed25 940
+public/js/p3/store/TsvCsvMemoryStore.js
+  2a8bf9565104103a 91,97
+public/js/archaeopteryx/archaeopteryx-dependencies/jquery-1.12.4.js
+  276f63ed54b1210b 6130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "74048adf8e65c7131172db1d25e3ce17230e3058",
+  "prompts": {
+    "276f63ed54b1210b": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "144056a0-2b73-4a8a-a51d-40cbf7ed673e",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "2a8bf9565104103a": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "b40c974f-47d5-4a5c-a4ee-4716b7a75c54",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    },
+    "2e2732d0147a4d30": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "74d0ce7f-e06f-4ebe-9fc2-0ec80979a4c2",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    },
+    "6759bfaa4942ed25": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2420b36b-42bb-4d4b-acf4-9c9a8c46ad65",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "6dd14f9d27a880d4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c31e6795-7f55-4fec-87cc-a098a844c75d",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 0,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    },
+    "aa8666d7c4a8544f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "ce55ed82-12cd-48f5-97af-6e38157f1cff",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "ae3b16a5f5f40d0c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f69b244c-e5bd-4036-a6cb-829d5f815591",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 22,
+      "total_deletions": 3,
+      "accepted_lines": 22,
+      "overriden_lines": 0
+    },
+    "b4aa3c11f8b357f3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "999b9725-9d07-4b2d-bc63-8eebc4c8f0e6",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 45,
+      "total_deletions": 9,
+      "accepted_lines": 26,
+      "overriden_lines": 0
+    },
+    "b8cf199cfef041ff": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "87e8ddc7-9a50-45fe-b306-2fccc5e79992",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 29,
+      "total_deletions": 19,
+      "accepted_lines": 22,
+      "overriden_lines": 1
+    },
+    "ca7606578b90f4fe": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "fb6add41-e333-416e-8622-8ff4996f4a3b",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 4,
+      "accepted_lines": 4,
+      "overriden_lines": 0
+    },
+    "cf2dd2217787a30f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "842f728e-b09c-4eb1-a6f2-a337bb652c6b",
+        "model": "default"
+      },
+      "human_author": "Chris Escobar",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 3,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  },
+  "humans": {
+    "h_e893c4a39fbc49": {
+      "author": "Chris Escobar"
+    }
+  }
+}

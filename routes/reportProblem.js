@@ -5,6 +5,8 @@ var defer = require('promised-io/promise').defer;
 const axios = require("axios");
 var formidable = require('express-formidable');
 var fs = require('fs');
+var os = require('os');
+var path = require('path');
 const { sanitizeEmail, sanitizeEmailHeader, sanitizeEmailSubject } = require('../lib/securityUtils');
 
 function mail(message, subject, from, files, options) {
@@ -44,11 +46,30 @@ function mail(message, subject, from, files, options) {
   };
 
   var attachments = [];
+  var uploadRoot = path.resolve(config.get('reportProblemUploadDir') || os.tmpdir());
   if (files && files.length > 0) {
     files.forEach(function (f) {
+      var attachmentPath = f && (f.path || f.filepath);
+      if (!attachmentPath || typeof attachmentPath !== 'string') {
+        return;
+      }
+
+      // Restrict the attachment to a file directly inside uploadRoot.
+      // path.basename strips any directory components from the user-influenced
+      // input, and path.join with the trusted root prevents path traversal.
+      var safeBasename = path.basename(attachmentPath);
+      if (!safeBasename || safeBasename === '.' || safeBasename === '..') {
+        return;
+      }
+      var safeAttachmentPath = path.join(uploadRoot, safeBasename);
+
+      if (!fs.existsSync(safeAttachmentPath)) {
+        return;
+      }
+
       var attach = {};
-      attach.filename = f.name;
-      attach.content = fs.createReadStream(f.path);
+      attach.filename = path.basename(f.name || f.originalFilename || 'attachment');
+      attach.content = fs.createReadStream(safeAttachmentPath);
       attachments.push(attach);
     });
     mailmsg.attachments = attachments;

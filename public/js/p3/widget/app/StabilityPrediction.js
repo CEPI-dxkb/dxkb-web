@@ -138,6 +138,12 @@ define([
 
     checkParameterRequiredFields: function () {
 
+      if (document.activeElement === input) {
+        return;
+      }
+
+      if (this._pagingDropdown) return;
+
       var submitButton = this.submitButton;
 
       var pdb_choice = this.protein_databank_selection.value;
@@ -266,6 +272,8 @@ define([
         var highlightedIndex = -1;
         var allLiItems = [];
 
+        self._pagingDropdown = false;
+
         function showError(msg) {
             domStyle.set(errorNode, "display", "block");
             errorNode.innerHTML = msg;
@@ -278,11 +286,13 @@ define([
         }
 
         function filterOptions(value) {
-            var valUpper = value.toUpperCase();
-            filtered = validIds.filter(id => id.startsWith(valUpper));
-            currentPage = 0;
-            highlightedIndex = -1;
-            renderOptions();
+          if (self._pagingDropdown) return;
+
+          var valUpper = value.toUpperCase();
+          filtered = validIds.filter(id => id.startsWith(valUpper));
+          currentPage = 0;
+          highlightedIndex = -1;
+          renderOptions();
         }
 
         function renderOptions() {
@@ -309,10 +319,18 @@ define([
                 prevLi.style.fontStyle = "italic";
                 prevLi.addEventListener("mousedown", function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
+
+                    self._pagingDropdown = true;
+
                     currentPage--;
                     renderOptions();
                     highlightedIndex = 0;
                     highlightItem(highlightedIndex);
+
+                    setTimeout(() => {
+                      self._pagingDropdown = false;
+                    }, 0);
                 });
                 dropdown.appendChild(prevLi);
                 allLiItems.push(prevLi);
@@ -325,7 +343,11 @@ define([
                 li.style.padding = "4px";
                 li.style.cursor = "pointer";
                 li.addEventListener("mousedown", function() {
-                    input.value = opt;
+                input._suppressValidation = true;
+                input.value = opt;
+                setTimeout(() => {
+                  input._suppressValidation = false;
+                }, 0);
                     input.placeholder = ""; // clear placeholder when selecting
                     domStyle.set(dropdown, "display", "none");
                     hideError();
@@ -343,10 +365,18 @@ define([
                 nextLi.style.fontStyle = "italic";
                 nextLi.addEventListener("mousedown", function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
+
+                    self._pagingDropdown = true;
+
                     currentPage++;
                     renderOptions();
                     highlightedIndex = 0;
                     highlightItem(highlightedIndex);
+
+                    setTimeout(() => {
+                      self._pagingDropdown = false;
+                    }, 0);
                 });
                 dropdown.appendChild(nextLi);
                 allLiItems.push(nextLi);
@@ -376,9 +406,23 @@ define([
             filterOptions('');
         });
 
-        // Filter options as typing (no validation yet)
-        input.addEventListener("input", function() {
-            filterOptions(input.value);
+        input.addEventListener("input", function () {
+            if (self._pagingDropdown) return;
+
+            var value = input.value;
+
+            filterOptions(value);
+
+            var val = value.toUpperCase();
+            if (val && !validIds.includes(val)) {
+                showError("Invalid PDB ID");
+                validPDBCode = false;
+            } else {
+                hideError();
+                validPDBCode = true;
+            }
+
+            self.checkParameterRequiredFields();
         });
 
         input.addEventListener("keydown", function(e) {
@@ -421,7 +465,7 @@ define([
             }
             self.checkParameterRequiredFields();
         });
-
+/*
         // Validate on input
         input.addEventListener("input", function() {
             var val = input.value.toUpperCase();
@@ -434,21 +478,24 @@ define([
             }
             self.checkParameterRequiredFields();
         });
+*/
 
         // Validate on blur
         input.addEventListener("blur", function() {
-            var val = input.value.toUpperCase();
-            if (val && !validIds.includes(val)) {
-                showError("Invalid PDB ID");
-                validPDBCode = false;
-            } else {
-                hideError();
-                validPDBCode = true;
-            }
-            self.checkParameterRequiredFields();
+          if (input._suppressValidation) return;
+
+          var val = input.value.toUpperCase();
+          if (val && !validIds.includes(val)) {
+              showError("Invalid PDB ID");
+              validPDBCode = false;
+          } else {
+              hideError();
+              validPDBCode = true;
+          }
+          self.checkParameterRequiredFields();
         });
 
-        // Hide dropdown on outside click
+        // Hide dropdown on outside mousedown
         document.addEventListener("mousedown", function(e) {
             if (!dropdown.contains(e.target) && e.target !== input) {
                 domStyle.set(dropdown, "display", "none");

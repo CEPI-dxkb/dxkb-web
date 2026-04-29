@@ -219,7 +219,7 @@ define([
         if (line[0] === '>') {
           yield {
             'header': header,
-            'data': data.join('').replace(' ', '').replace('\r', '')
+            'data': data.join('').replace(' ', '').replace(/\r/g, '')
           };
           data = [];
           header = line.slice(1).trim();
@@ -231,7 +231,7 @@ define([
 
       yield {
         'header': header,
-        'data': data.join('').replace(' ', '').replace('\r', '')
+        'data': data.join('').replace(' ', '').replace(/\r/g, '')
       };
     },
 

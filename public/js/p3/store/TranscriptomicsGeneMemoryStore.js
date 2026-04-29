@@ -477,7 +477,7 @@ define([
       // if comparison order is changed, then needs to or-organize distribution in columns.
       var thisGFS = this.tgState.comparisonFilterStatus;
 
-      if (comparisonOrder !== [] && comparisonOrder.length > 0) {
+      if (Array.isArray(comparisonOrder) && comparisonOrder.length > 0) {
         this.tgState.comparisonIds = comparisonOrder;
         comparisonOrder.forEach(function (comparisonId, idx) {
           thisGFS[comparisonId].setIndex(idx);
@@ -508,7 +508,7 @@ define([
       }
 
       var geneOrderMap = {};
-      if (geneOrder !== [] && geneOrder.length > 0) {
+      if (Array.isArray(geneOrder) && geneOrder.length > 0) {
         geneOrder.forEach(function (geneId, idx) {
           geneOrderMap[geneId] = idx;
         });
@@ -614,7 +614,7 @@ define([
         if (push_flag) {
           var order = geneOrderMap[gene.feature_id];
           if (gene.patric_id) {
-            cols[order] = createColumn(order, gene.feature_id, gene.patric_id.replace('|', '') + ' - ' + gene.product, gene.dist, meta);
+            cols[order] = createColumn(order, gene.feature_id, gene.patric_id.replace(/\|/g, '') + ' - ' + gene.product, gene.dist, meta);
           } else {
             cols[order] = createColumn(order, gene.feature_id, gene.gene + ' - ' + gene.product, gene.dist, meta);
           }

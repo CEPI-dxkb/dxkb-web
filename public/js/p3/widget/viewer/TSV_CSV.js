@@ -310,7 +310,7 @@ define([
 
           // if this cell contains a feature id
           if (String(data[j][Object.keys(data[j])[i]]).match(/^fig\|\d+.\d+/)) {
-            var featureString = String(data[j][Object.keys(data[j])[i]]).replace('|', '%7C');
+            var featureString = String(data[j][Object.keys(data[j])[i]]).split('|').join('%7C');
             var elementPos = checkFeatureIDs.map(function (x) { return x.feature; }).indexOf(featureString);
             if (elementPos === -1) {
               checkFeatureIDs.push({ columns: [Object.keys(data[j])[i]], feature: (featureString) });
@@ -442,7 +442,7 @@ define([
               pressAndHold: function (selection, button, opts, evt) {
                 var columnName = featureCounts[0].columnName;
                 if (columnName in selection[0]) {
-                  var sel = (selection[0][columnName]).replace('|', '%7C');
+                  var sel = String(selection[0][columnName]).split('|').join('%7C');
                   var query = '?eq(patric_id,' + sel + ')&select(feature_id)';
                   request.get(PathJoin(window.App.dataAPI, 'genome_feature', query), {
                     handleAs: 'json',
@@ -469,7 +469,7 @@ define([
             }, function (selection) {
               var columnName = featureCounts[0].columnName;
               if (columnName in selection[0]) {
-                var sel = (selection[0][columnName]).replace('|', '%7C');
+                var sel = String(selection[0][columnName]).split('|').join('%7C');
                 var query = '?eq(patric_id,' + sel + ')&select(feature_id)';
                 request.get(PathJoin(window.App.dataAPI, 'genome_feature', query), {
                   handleAs: 'json',
@@ -501,7 +501,7 @@ define([
                 } else {
                   var q = selection.map(function (sel) {
                     if (sel[columnName]) {
-                      return (sel[columnName]).replace('|', '%7C');
+                      return String(sel[columnName]).split('|').join('%7C');
                     }
                     return '';
                   });
@@ -542,7 +542,7 @@ define([
               } else {
                 var q = selection.map(function (sel) {
                   if (sel[columnName]) {
-                    return (sel[columnName]).replace('|', '%7C');
+                    return String(sel[columnName]).split('|').join('%7C');
                   }
                   return '';
                 });

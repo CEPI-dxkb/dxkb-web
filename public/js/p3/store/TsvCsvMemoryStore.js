@@ -88,13 +88,13 @@ define([
           range = range.replace('>=', '');
           return numValue >= parseFloat(range.trim());
         } else if (range.startsWith('>')) {
-          range = range.replace('>', '');
+          range = range.replace(/>/g, '');
           return numValue > parseFloat(range.trim());
         } else if (range.startsWith('<=')) {
           range = range.replace('<=', '');
           return numValue <= parseFloat(range.trim());
         } else if (range.startsWith('<')) {
-          range = range.replace('<', '');
+          range = range.replace(/</g, '');
           return numValue < parseFloat(range.trim());
         } else if (range.includes('-')) {
           range = range.split('-');

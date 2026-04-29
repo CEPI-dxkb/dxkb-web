@@ -2688,7 +2688,7 @@ define([
             break;
           case 'genome_group':
             panelCtor = window.App.getConstructor('p3/widget/viewer/WSGenomeGroup');
-            params.query = '?&in(genome_id,GenomeGroup(' + encodeURIComponent(this.path).replace('(', '%28').replace(')', '%29') + '))';
+            params.query = '?&in(genome_id,GenomeGroup(' + encodeURIComponent(this.path).replace(/\(/g, '%28').replace(/\)/g, '%29') + '))';
             break;
           case 'feature_group':
             panelCtor = window.App.getConstructor('p3/widget/viewer/WSFeatureList');
@@ -2897,7 +2897,7 @@ define([
       var query = '';
       switch (obj.type) {
         case 'genome_group':
-          query = '?&in(genome_id,GenomeGroup(' + encodeURIComponent(obj.path).replace('(', '%28').replace(')', '%29') + '))';
+          query = '?&in(genome_id,GenomeGroup(' + encodeURIComponent(obj.path).replace(/\(/g, '%28').replace(/\)/g, '%29') + '))';
           break;
         case 'feature_group':
           query = '?&in(feature_id,FeatureGroup(' + encodeURIComponent(obj.path) + '))';

@@ -316,7 +316,7 @@ define([
       if (sequence.charAt(0) === '>') {
         var split_seq = sequence.split('\n');
         if (this.removeNucleotides(split_seq[0]).length > 1) {
-          return String(split_seq[0]).replace('>', '');
+          return String(split_seq[0]).replace(/>/g, '');
         }
         // var header = sequence.split('\n').filter(function (line) { return line.match(/^>.*/) !== null; });
         // return String(header).replace('>','');

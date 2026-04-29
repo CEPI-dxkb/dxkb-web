@@ -230,6 +230,23 @@ const load_scripts = [
     // Only load the iframe if it's not already loaded
     if ($iframe.length && !$iframe.attr('src')) {
       const dataSrc = $iframe.attr('data-src');
+      let safeSrc = '';
+
+      // Validate iframe URL from data attribute before assigning to src.
+      if (dataSrc) {
+        try {
+          const parsedUrl = new URL(dataSrc);
+          if (
+            parsedUrl.protocol === 'https:'
+            && parsedUrl.hostname === 'www.linkedin.com'
+            && parsedUrl.pathname.indexOf('/embed/feed/update/') === 0
+          ) {
+            safeSrc = parsedUrl.toString();
+          }
+        } catch (e) {
+          safeSrc = '';
+        }
+      }
 
       // Bind the load event before setting the src
       $iframe.on('load', function () {
@@ -238,8 +255,10 @@ const load_scripts = [
         });
       });
 
-      $iframe.attr('src', dataSrc);
-      $iframe.css('opacity', 0); // Start hidden
+      if (safeSrc) {
+        $iframe.attr('src', safeSrc);
+        $iframe.css('opacity', 0); // Start hidden
+      }
     }
   }
 </script>

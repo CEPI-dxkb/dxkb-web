@@ -119,7 +119,7 @@ define([
         model_name: values.model_name,
         ca_only: values.ca_only,
         use_soluble_model: values.use_soluble_model,
-        omit_amino_acids: values.omit_amino_acids,
+        omit_AAs: values.omit_AAs,
         backbone_noise: values.backbone_noise,
         num_seq_per_target: values.num_seq_per_target,
         sampling_temp: values.sampling_temp,

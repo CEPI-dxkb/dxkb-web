@@ -37,8 +37,8 @@ define([
 
       rcsbList.getEntryIds().then(function(ids) {
           var validPDBIDs = ids;
-          this.pdb_list = validPDBIDs;
-          _self.initDropdown(this.pdb_list);
+          this.pdb_list_pddb = validPDBIDs;
+          _self.initDropdown(this.pdb_list_pddb);
         }, function(err) {
           console.error("Error fetching PDB IDs:", err);
         });
@@ -67,22 +67,41 @@ define([
 
     onProteinInputChange: function (evt) {
       this.protein_databank_selection
+      this.protein_databank_selection_bvbrc
+      this.protein_databank_selection_pddb
 
-      if (typeof this.protein_databank_selection != "undefined"){
+      if (typeof this.protein_databank_selection_pddb != "undefined" && typeof this.protein_databank_selection_bvbrc != "undefined" && typeof this.user_pdb_file != "undefined"){
         // protein radio buttons
-        if (this.protein_databank_selection.checked) {
+        if (this.protein_databank_selection_pddb.checked) {
           // set display logic
-          dojo.style(this.block_pdb_list, "display", "block");
+          console.log("PDBB selected");
+          dojo.style(this.block_pdb_list_pddb, "display", "block");
+          dojo.style(this.block_pdb_list_bvbrc, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "none");
+          this.protein_databank_selection.value = "input_pdb_pddb";
+        }
+        else if (this.protein_databank_selection_bvbrc.checked) {
+          // set display logic
+          console.log("BV-BRC selected");
+          dojo.style(this.block_pdb_list_bvbrc, "display", "block");
+          dojo.style(this.block_pdb_list_pddb, "display", "none");
+          dojo.style(this.block_pdb_upload, "display", "none");
+          this.protein_databank_selection.value = "input_pdb_bvbrc";
         }
         else if (this.user_pdb_file.checked) {
-          dojo.style(this.block_pdb_list, "display", "none");
+          console.log("User PDB file selected");
+          dojo.style(this.block_pdb_list_pddb, "display", "none");
+          dojo.style(this.block_pdb_list_bvbrc, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "block");
+          this.protein_databank_selection.value = "user_pdb_file";
         }
       }
 
-      if (this.protein_databank_selection.checked) {
-        this.protein_databank_selection.value = "input_pdb";
+      if (this.protein_databank_selection_bvbrc.checked) {
+        this.protein_databank_selection.value = "input_pdb_bvbrc";
+      }
+      if (this.protein_databank_selection_pddb.checked) {
+        this.protein_databank_selection.value = "input_pdb_pddb";
       }
       else if (this.user_pdb_file.checked) {
         this.protein_databank_selection.value = "user_pdb_file";
@@ -91,19 +110,36 @@ define([
     },
 
     onInputChange: function (evt) {
-      if (typeof this.protein_databank_selection != "undefined"){
+      if (typeof this.protein_databank_selection_bvbrc != "undefined" && typeof this.protein_databank_selection_pddb != "undefined"){
         // protein radio buttons
-        if (this.protein_databank_selection.checked) {
+        if (this.protein_databank_selection_bvbrc.checked) {
           // set display logic
-          dojo.style(this.block_pdb_list, "display", "block");
+          dojo.style(this.block_pdb_list_bvbrc, "display", "block");
+          dojo.style(this.block_pdb_list_pddb, "display", "none");
+          dojo.style(this.block_pdb_upload, "display", "none");
+        }
+        else if (this.protein_databank_selection_pddb.checked) {
+          // set display logic
+          dojo.style(this.block_pdb_list_pddb, "display", "block");
+          dojo.style(this.block_pdb_list_bvbrc, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "none");
         }
         else if (this.user_pdb_file.checked) {
-          dojo.style(this.block_pdb_list, "display", "none");
+          dojo.style(this.block_pdb_list_pddb, "display", "none");
+          dojo.style(this.block_pdb_list_bvbrc, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "block");
         }
       }
       },
+
+    onPdbPreview: function (evt) {
+      var pdb_id = this.pdb_list.get('displayedValue');
+      Topic.publish('/navigate', { href: '/view/ProteinStructure#accession=' + pdb_id, target: 'blank' })
+    },
+
+    onPdbIdChange: function (evt) {
+      this.pdb_preview.set('disabled', !this.pdb_list.get('displayedValue'));
+    },
 
     openJobsList: function () {
       Topic.publish('/navigate', { href: '/job/' });
@@ -115,7 +151,7 @@ define([
         output_path: values.output_path,
         output_file: values.output_file,
         analysis_type: values.analysis_type,
-        hidden_dim: values.hidden_dim,
+        hidden_dim: 32,
 //        accelerator: values.accelerator,
 //        dry_run: values.dry_run
       }
@@ -142,8 +178,16 @@ define([
       var validPdb;
 
       setTimeout(() => {
-        if (pdb_choice === 'input_pdb'){
+        if (pdb_choice === 'input_pdb_pddb') {
             if (this.value.pdbDropdownList && validPDBCode) {
+              validPdb = true;
+            }
+            else {
+              validPdb = false;
+            }
+        }
+        else if (pdb_choice === 'input_pdb_bvbrc') {
+            if (this.value.pdbDropdownList_bvbrc && validPDBCode) {
               validPdb = true;
             }
             else {
@@ -187,7 +231,8 @@ define([
     addRerunFields: function (job_params) {
       // Protein Input
       if (job_params.protein_input_type === 'user_pdb_file'){
-        this.protein_databank_selection.set('checked', false);
+        this.protein_databank_selection_pddb.set('checked', false);
+        this.protein_databank_selection_bvbrc.set('checked', false);
         this.user_pdb.set('value', job_params["user_pdb_file"])
         this.user_pdb_file.set('checked', true);
       }
@@ -307,6 +352,7 @@ define([
                 prevLi.style.fontStyle = "italic";
                 prevLi.addEventListener("mousedown", function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     currentPage--;
                     renderOptions();
                     highlightedIndex = 0;
@@ -341,6 +387,7 @@ define([
                 nextLi.style.fontStyle = "italic";
                 nextLi.addEventListener("mousedown", function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     currentPage++;
                     renderOptions();
                     highlightedIndex = 0;

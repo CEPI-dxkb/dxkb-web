@@ -1,0 +1,21 @@
+package.json
+  s_53b1433b3fdae1::t_6d936aa6fa4c61 14-16
+.nvmrc
+  s_53b1433b3fdae1::t_ccd2a9284d8f6f 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "169aa51fefd6d365fa50db122140697c5ac59e55",
+  "prompts": {},
+  "sessions": {
+    "s_53b1433b3fdae1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "abe4b5eb-0a1b-4050-82e0-cd21b1bf7f0d",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

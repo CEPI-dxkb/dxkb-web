@@ -11,6 +11,9 @@
     "xxxtest:intern": "./node_modules/.bin/intern",
     "postinstall": "./post_install.sh"
   },
+  "engines": {
+    "node": "20.20.2"
+  },
   "dependencies": {
     "axios": "^1.16.1",
     "body-parser": "^1.20.2",

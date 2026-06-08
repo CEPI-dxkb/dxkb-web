@@ -133,12 +133,16 @@ define([
       },
 
     onPdbPreview: function (evt) {
-      var pdb_id = this.pdb_list.get('displayedValue');
+      var pdb_id = this.pdbDropdownList_bvbrc.value;
       Topic.publish('/navigate', { href: '/view/ProteinStructure#accession=' + pdb_id, target: 'blank' })
     },
 
     onPdbIdChange: function (evt) {
-      this.pdb_preview.set('disabled', !this.pdb_list.get('displayedValue'));
+        if(this.protein_databank_selection.value === 'input_pdb_bvbrc') {
+          this.pdb_preview.set('disabled', !this.pdbDropdownList_bvbrc.value);
+//          console.log("bvbrc:",this.pdbDropdownList_bvbrc.value, "pdb:", this.protein_databank_selection_bvbrc);
+        }
+//      this.pdb_preview.set('disabled', !this.pdb_list.get('displayedValue'));
     },
 
     openJobsList: function () {

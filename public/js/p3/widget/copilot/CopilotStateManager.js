@@ -15,6 +15,23 @@ define([
     // Store the latest JobResult data published by JobResult viewer
     var jobResultData = null;
 
+    /**
+     * Sanitizes potentially HTML-containing text for safe prompt inclusion.
+     * Neutralizes HTML-significant characters and normalizes whitespace.
+     * @param {string} text - raw text to sanitize
+     * @returns {string} sanitized plain text
+     */
+    function sanitizePromptText(text) {
+        return String(text || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
     // Subscribe to JobResult broadcasts so this module always has access
     topic.subscribe('Copilot/JobResultReady', function (data) {
         jobResultData = data;
@@ -555,10 +572,7 @@ define([
 
         // Add mechanism of action (clean up HTML and truncate if very long)
         if (antibioticData.mechanism_of_action && Array.isArray(antibioticData.mechanism_of_action) && antibioticData.mechanism_of_action.length > 0) {
-            const mechanism = antibioticData.mechanism_of_action[0]
-                .replace(/<[^>]*>/g, '') // Remove HTML tags
-                .replace(/\s+/g, ' ') // Normalize whitespace
-                .trim();
+            const mechanism = sanitizePromptText(antibioticData.mechanism_of_action[0]);
 
             if (mechanism.length > 300) {
                 prompt += ` Mechanism of action: ${mechanism.substring(0, 300)}...`;
@@ -570,10 +584,7 @@ define([
 
         // Add pharmacology summary (clean up HTML and truncate if very long)
         if (antibioticData.pharmacology && Array.isArray(antibioticData.pharmacology) && antibioticData.pharmacology.length > 0) {
-            const pharmacology = antibioticData.pharmacology[0]
-                .replace(/<[^>]*>/g, '') // Remove HTML tags
-                .replace(/\s+/g, ' ') // Normalize whitespace
-                .trim();
+            const pharmacology = sanitizePromptText(antibioticData.pharmacology[0]);
 
             if (pharmacology.length > 300) {
                 prompt += ` Pharmacology: ${pharmacology.substring(0, 300)}...`;
@@ -585,10 +596,7 @@ define([
 
         // Add description summary (clean up HTML and truncate if very long)
         if (antibioticData.description && Array.isArray(antibioticData.description) && antibioticData.description.length > 0) {
-            const description = antibioticData.description[0]
-                .replace(/<[^>]*>/g, '') // Remove HTML tags
-                .replace(/\s+/g, ' ') // Normalize whitespace
-                .trim();
+            const description = sanitizePromptText(antibioticData.description[0]);
 
             if (description.length > 400) {
                 prompt += ` Description: ${description.substring(0, 400)}...`;

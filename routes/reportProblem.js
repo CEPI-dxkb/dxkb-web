@@ -1,11 +1,13 @@
 var config = require('../config');
 var email = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
 var when = require('promised-io/promise').when;
 var defer = require('promised-io/promise').defer;
 const axios = require("axios");
 var formidable = require('express-formidable');
 var fs = require('fs');
+var os = require('os');
+var path = require('path');
+const { sanitizeEmail, sanitizeEmailHeader, sanitizeEmailSubject } = require('../lib/securityUtils');
 
 function mail(message, subject, from, files, options) {
   if (!message) {
@@ -17,23 +19,6 @@ function mail(message, subject, from, files, options) {
 
   var mailconf = config.get('email');
   var destMail = config.get('reportProblemEmailAddress');
-
-  if (mailconf.localSendmail) {
-    // transport = email.createTransport();
-    // email.sendmail=true;
-  } else {
-    // email.sendmail=false;
-    email.SMTP = {
-      host: mailconf.host || 'localhost',
-      port: mailconf.port || 25
-    };
-  }
-
-  if (mailconf.username) {
-    email.SMTP.use_authentication = true;
-    email.SMTP.user = mailconf.username;
-    email.SMTP.pass = mailconf.password;
-  }
 
   if (!transport) {
     var transportOpts = {
@@ -47,8 +32,8 @@ function mail(message, subject, from, files, options) {
         pass: mailconf.password
       };
     }
-    transportOpts.tls = { rejectUnauthorized: false };
-    transport = email.createTransport(smtpTransport(transportOpts));
+    transportOpts.tls = { rejectUnauthorized: true };
+    transport = email.createTransport(transportOpts);
   }
 
   var mailmsg = {
@@ -61,11 +46,30 @@ function mail(message, subject, from, files, options) {
   };
 
   var attachments = [];
+  var uploadRoot = path.resolve(config.get('reportProblemUploadDir') || os.tmpdir());
   if (files && files.length > 0) {
     files.forEach(function (f) {
+      var attachmentPath = f && (f.path || f.filepath);
+      if (!attachmentPath || typeof attachmentPath !== 'string') {
+        return;
+      }
+
+      // Restrict the attachment to a file directly inside uploadRoot.
+      // path.basename strips any directory components from the user-influenced
+      // input, and path.join with the trusted root prevents path traversal.
+      var safeBasename = path.basename(attachmentPath);
+      if (!safeBasename || safeBasename === '.' || safeBasename === '..') {
+        return;
+      }
+      var safeAttachmentPath = path.join(uploadRoot, safeBasename);
+
+      if (!fs.existsSync(safeAttachmentPath)) {
+        return;
+      }
+
       var attach = {};
-      attach.filename = f.name;
-      attach.content = fs.createReadStream(f.path);
+      attach.filename = path.basename(f.name || f.originalFilename || 'attachment');
+      attach.content = fs.createReadStream(safeAttachmentPath);
       attachments.push(attach);
     });
     mailmsg.attachments = attachments;
@@ -88,11 +92,10 @@ function mail(message, subject, from, files, options) {
 }
 
 function buildSubject(formBody) {
-  var content = [];
-
-  // eslint-disable-next-line no-useless-concat
-  content.push('[' + formBody.jiraLabel + ']' + ' ' + formBody.subject);
-  return content.join(' ');
+  // Sanitize user inputs to prevent email header injection (CRLF attacks)
+  var safeLabel = sanitizeEmailHeader(formBody.jiraLabel || '');
+  var safeSubject = sanitizeEmailSubject(formBody.subject || '');
+  return '[' + safeLabel + '] ' + safeSubject;
 }
 function buildMessage(formBody) {
   var content = [];
@@ -128,12 +131,17 @@ module.exports = [
     if (req.headers && req.headers.authorization) {
       when(getUserDetails(req.headers.authorization, req.fields.userId), function (repl) {
 	user = repl.data;
-	if (user.first_name && user.last_name) {
-	    req.from = '"' + user.first_name + ' ' + user.last_name + '" ' + user.email;
+	// Sanitize user data to prevent email header injection
+	var safeEmail = sanitizeEmail(user.email);
+	if (user.first_name && user.last_name && safeEmail) {
+	    var safeName = sanitizeEmailHeader(user.first_name + ' ' + user.last_name);
+	    req.from = '"' + safeName + '" <' + safeEmail + '>';
+	} else if (safeEmail) {
+	  req.from = safeEmail;
 	} else {
-	  req.from = user.email;
+	  req.from = '';
 	}
-        req.fields.email = user.email;
+        req.fields.email = safeEmail;
         next();
       }, function (err) {
         console.log('Unable to retrieve user profile: ', err);
@@ -141,7 +149,8 @@ module.exports = [
       });
 
     } else if (req.fields && req.fields.email) {
-      req.from = req.fields.email;
+      // Sanitize user-provided email to prevent header injection
+      req.from = sanitizeEmail(req.fields.email);
       next();
     } else {
       next();

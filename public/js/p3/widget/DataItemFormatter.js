@@ -26,23 +26,38 @@ define([
   }
 
   function evaluateLink(link, value, item) {
-    return (link && value !== '-' && value !== '0') ? (
-      (typeof (link) == 'function') ?
-        link.apply(this, [item]) :
-        '<a href="' + link + value + '" target="_blank">' + String(value).split(',').join(', ') + '</a>'
-    ) : value;
+    if (link && value !== '-' && value !== '0') {
+      if (typeof (link) == 'function') {
+        // Function-style link handlers return HTML strings from developer-controlled templates.
+        return { __html: link.apply(this, [item]) };
+      } else {
+        var a = domConstruct.create('a', {
+          href: link + value,
+          target: '_blank',
+          textContent: String(value).split(',').join(', ')
+        });
+        return { __html: a.outerHTML };
+      }
+    }
+    return value;
   }
 
   function renderRow(property, value) {
     var tr = domConstruct.create('tr', {});
     domConstruct.create('td', {
       'class': 'DataItemProperty',
-      innerHTML: property
+      innerHTML: property  // Property labels are developer-controlled, safe
     }, tr);
-    domConstruct.create('td', {
-      'class': 'DataItemValue',
-      innerHTML: value
-    }, tr);
+
+    // Only render as HTML when the value is explicitly tagged by evaluateLink.
+    // Raw data values — including ones that happen to contain '<' — go through textContent.
+    var valueCellProps = { 'class': 'DataItemValue' };
+    if (value && typeof value === 'object' && typeof value.__html === 'string') {
+      valueCellProps.innerHTML = value.__html;
+    } else {
+      valueCellProps.textContent = (value == null) ? '' : String(value);
+    }
+    domConstruct.create('td', valueCellProps, tr);
 
     return tr;
   }
@@ -54,8 +69,8 @@ define([
         v = data[i].split(':')[1];
 
       var tr = domConstruct.create('tr', {}, table);
-      domConstruct.create('td', { 'class': 'DataItemProperty', innerHTML: k }, tr);
-      domConstruct.create('td', { 'class': 'DataItemValue', innerHTML: v }, tr);
+      domConstruct.create('td', { 'class': 'DataItemProperty', textContent: k }, tr);
+      domConstruct.create('td', { 'class': 'DataItemValue', textContent: v }, tr);
     }
     return table;
   }
@@ -69,10 +84,10 @@ define([
     if (typeof data == 'object') {
       for (var i = 0, len = data.length; i < len; i++) {
         var val = data[i];
-        domConstruct.create('li', { 'class': 'DataItemValue', innerHTML: val }, ul);
+        domConstruct.create('li', { 'class': 'DataItemValue', textContent: val }, ul);
       }
     } else if (typeof data == 'string') {
-      domConstruct.create('li', { 'class': 'DataItemValue', innerHTML: data }, ul);
+      domConstruct.create('li', { 'class': 'DataItemValue', textContent: data }, ul);
     }
 
     return table;
@@ -140,9 +155,19 @@ define([
     domConstruct.create('span', { 'class': iconClass }, titleDiv);
 
     // span label
-    domConstruct.create('span', {
-      innerHTML: (linkTitle) ? lang.replace('<a href="{url}">{label}</a>', { url: url, label: label }) : label
-    }, titleDiv);
+    if (linkTitle) {
+      var a = domConstruct.create('a', {
+        href: url,
+        textContent: label
+      });
+      domConstruct.create('span', {
+        innerHTML: a.outerHTML
+      }, titleDiv);
+    } else {
+      domConstruct.create('span', {
+        textContent: label
+      }, titleDiv);
+    }
   }
 
   function displayDetailBySections(item, sections, meta_data, parent, options) {
@@ -269,6 +294,26 @@ define([
     });
   }
 
+  function buildRoleNameRow(label, role_items) {
+    // Build the row DOM directly so role names (untrusted data) go through
+    // textContent while bullets/bold/line-breaks stay as real DOM nodes.
+    var tr = domConstruct.create('tr', {});
+    domConstruct.create('td', {
+      'class': 'DataItemProperty',
+      innerHTML: label  // labels are developer-controlled
+    }, tr);
+    var td = domConstruct.create('td', { 'class': 'DataItemValue' }, tr);
+    for (var i = 0; i < role_items.length; i += 2) {
+      td.appendChild(document.createTextNode('• ' + role_items[i] + ' '));
+      domConstruct.create('span', {
+        style: 'font-weight: bold;',
+        textContent: '(' + role_items[i + 1] + ')'
+      }, td);
+      domConstruct.create('br', {}, td);
+    }
+    return tr;
+  }
+
   function displayDetailSubsystems(item, columns, parent, options) {
     var table = domConstruct.create('table', {}, parent);
     var tbody = domConstruct.create('tbody', {}, table);
@@ -280,66 +325,29 @@ define([
         // 2. this is a wrong taxon id to use (e.g. 1763 -> 1765)
         // 3. need to de-duplicate fecet query
 
+        var genomeClause;
         if (item.genome_count > 1) {
-
-          var query = 'q=genome_id:(' + options.genome_ids.join(' OR ') + ') AND subsystem_id:("' + item.subsystem_id + '")&facet=true&facet.field=role_name&facet.mincount=1&facet.limit-1&rows=25000';
-          when(request.post(PathJoin(window.App.dataAPI, '/subsystem/'), {
-            handleAs: 'json',
-            headers: {
-              Accept: 'application/solr+json',
-              'Content-Type': 'application/solrquery+x-www-form-urlencoded',
-              'X-Requested-With': null,
-              Authorization: (window.App.authorizationToken || '')
-            },
-            data: query
-          }), function (response) {
-
-            var role_list = '';
-            var role_items = response.facet_counts.facet_fields.role_name;
-
-            for (var i = 0; i < role_items.length; i += 2) {
-              var role = '&#8226 ' + role_items[i] + ' <span style="font-weight: bold;">(' + role_items[i + 1] + ')</span><br>';
-              role_list += role;
-            }
-
-            item.role_name = role_list;
-
-            var row = renderProperty(column, item, options);
-            if (row) {
-              domConstruct.place(row, tbody);
-            }
-          });
+          genomeClause = 'genome_id:(' + options.genome_ids.join(' OR ') + ')';
         } else if (item.genome_id !== undefined) {
-          var query = 'q=genome_id:(' + item.genome_id + ') AND subsystem_id:("' + item.subsystem_id + '")&facet=true&facet.field=role_name&facet.mincount=1&facet.limit-1&rows=25000';
-
-          when(request.post(PathJoin(window.App.dataAPI, '/subsystem/'), {
-            handleAs: 'json',
-            headers: {
-              Accept: 'application/solr+json',
-              'Content-Type': 'application/solrquery+x-www-form-urlencoded',
-              'X-Requested-With': null,
-              Authorization: (window.App.authorizationToken || '')
-            },
-            data: query
-          }), function (response) {
-
-            var role_list = '';
-            var role_items = response.facet_counts.facet_fields.role_name;
-
-            for (var i = 0; i < role_items.length; i += 2) {
-              var role = '&#8226 ' + role_items[i] + ' <span style="font-weight: bold;">(' + role_items[i + 1] + ')</span><br>';
-              role_list += role;
-            }
-
-            // var role_list = role_names.join("<br>");
-            item.role_name = role_list;
-
-            var row = renderProperty(column, item, options);
-            if (row) {
-              domConstruct.place(row, tbody);
-            }
-          });
+          genomeClause = 'genome_id:(' + item.genome_id + ')';
+        } else {
+          return;
         }
+
+        var query = 'q=' + genomeClause + ' AND subsystem_id:("' + item.subsystem_id + '")&facet=true&facet.field=role_name&facet.mincount=1&facet.limit=-1&rows=25000';
+        when(request.post(PathJoin(window.App.dataAPI, '/subsystem/'), {
+          handleAs: 'json',
+          headers: {
+            Accept: 'application/solr+json',
+            'Content-Type': 'application/solrquery+x-www-form-urlencoded',
+            'X-Requested-With': null,
+            Authorization: (window.App.authorizationToken || '')
+          },
+          data: query
+        }), function (response) {
+          var role_items = response.facet_counts.facet_fields.role_name;
+          domConstruct.place(buildRoleNameRow(column.name, role_items), tbody);
+        });
       } else {
         var row = renderProperty(column, item, options);
         if (row) {
@@ -358,8 +366,8 @@ define([
 
       Object.keys(item).sort().forEach(function (key) {
         var tr = domConstruct.create('tr', {}, tbody);
-        domConstruct.create('td', { innerHTML: key }, tr);
-        domConstruct.create('td', { innerHTML: item[key] }, tr);
+        domConstruct.create('td', { textContent: key }, tr);
+        domConstruct.create('td', { textContent: item[key] }, tr);
       }, this);
 
       return table;

@@ -67,14 +67,14 @@ define([
     onProteinInputChange: function (evt) {
       this.protein_databank_selection
       this.protein_databank_selection_bvbrc
-      this.protein_databank_selection_pddb
+      this.protein_databank_selection_pdbb
 
-      if (typeof this.protein_databank_selection_pddb != "undefined" && typeof this.protein_databank_selection_bvbrc != "undefined" && typeof this.user_pdb_file != "undefined"){
+      if (typeof this.protein_databank_selection_pdbb != "undefined" && typeof this.protein_databank_selection_bvbrc != "undefined" && typeof this.user_pdb_file != "undefined"){
         // protein radio buttons
-        if (this.protein_databank_selection_pddb.checked) {
+        if (this.protein_databank_selection_pdbb.checked) {
           // set display logic
           console.log("PDBB selected");
-          dojo.style(this.block_pdb_list_pddb, "display", "block");
+          dojo.style(this.block_pdb_list_pdbb, "display", "block");
           dojo.style(this.block_pdb_list_bvbrc, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "none");
           this.protein_databank_selection.value = "input_pdb_pddb";
@@ -83,13 +83,13 @@ define([
           // set display logic
           console.log("BV-BRC selected");
           dojo.style(this.block_pdb_list_bvbrc, "display", "block");
-          dojo.style(this.block_pdb_list_pddb, "display", "none");
+          dojo.style(this.block_pdb_list_pdbb, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "none");
           this.protein_databank_selection.value = "input_pdb_bvbrc";
         }
         else if (this.user_pdb_file.checked) {
           console.log("User PDB file selected");
-          dojo.style(this.block_pdb_list_pddb, "display", "none");
+          dojo.style(this.block_pdb_list_pdbb, "display", "none");
           dojo.style(this.block_pdb_list_bvbrc, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "block");
           this.protein_databank_selection.value = "user_pdb_file";
@@ -99,7 +99,7 @@ define([
       if (this.protein_databank_selection_bvbrc.checked) {
         this.protein_databank_selection.value = "input_pdb_bvbrc";
       }
-      if (this.protein_databank_selection_pddb.checked) {
+      if (this.protein_databank_selection_pdbb.checked) {
         this.protein_databank_selection.value = "input_pdb_pddb";
       }
       else if (this.user_pdb_file.checked) {
@@ -109,22 +109,22 @@ define([
     },
 
     onInputChange: function (evt) {
-      if (typeof this.protein_databank_selection_bvbrc != "undefined" && typeof this.protein_databank_selection_pddb != "undefined"){
+      if (typeof this.protein_databank_selection_bvbrc != "undefined" && typeof this.protein_databank_selection_pdbb != "undefined"){
         // protein radio buttons
         if (this.protein_databank_selection_bvbrc.checked) {
           // set display logic
           dojo.style(this.block_pdb_list_bvbrc, "display", "block");
-          dojo.style(this.block_pdb_list_pddb, "display", "none");
+          dojo.style(this.block_pdb_list_pdbb, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "none");
         }
-        else if (this.protein_databank_selection_pddb.checked) {
+        else if (this.protein_databank_selection_pdbb.checked) {
           // set display logic
-          dojo.style(this.block_pdb_list_pddb, "display", "block");
+          dojo.style(this.block_pdb_list_pdbb, "display", "block");
           dojo.style(this.block_pdb_list_bvbrc, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "none");
         }
         else if (this.user_pdb_file.checked) {
-          dojo.style(this.block_pdb_list_pddb, "display", "none");
+          dojo.style(this.block_pdb_list_pdbb, "display", "none");
           dojo.style(this.block_pdb_list_bvbrc, "display", "none");
           dojo.style(this.block_pdb_upload, "display", "block");
         }
@@ -234,7 +234,7 @@ define([
     addRerunFields: function (job_params) {
       // Protein Input
       if (job_params.protein_input_type === 'user_pdb_file'){
-        this.protein_databank_selection_pddb.set('checked', false);
+        this.protein_databank_selection_pdbb.set('checked', false);
         this.protein_databank_selection_bvbrc.set('checked', false);
         this.user_pdb.set('value', job_params["user_pdb_file"])
         this.user_pdb_file.set('checked', true);

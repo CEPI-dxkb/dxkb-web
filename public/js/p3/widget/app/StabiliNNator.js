@@ -140,9 +140,7 @@ define([
     onPdbIdChange: function (evt) {
         if(this.protein_databank_selection.value === 'input_pdb_bvbrc') {
           this.pdb_preview.set('disabled', !this.pdbDropdownList_bvbrc.value);
-//          console.log("bvbrc:",this.pdbDropdownList_bvbrc.value, "pdb:", this.protein_databank_selection_bvbrc);
         }
-//      this.pdb_preview.set('disabled', !this.pdb_list.get('displayedValue'));
     },
 
     openJobsList: function () {
@@ -156,19 +154,26 @@ define([
         output_file: values.output_file,
         analysis_type: values.analysis_type,
         hidden_dim: 32,
-//        accelerator: values.accelerator,
-//        dry_run: values.dry_run
+        pdb_source: ''
       }
+      console.log("Values being submitted: ", values);
+
       if (values.protein_input === "input_pdb")
       {
-//        submit_values.protein_input_type = values.protein_input
-        submit_values.pdb_id = values.pdbDropdownList
+        submit_values.pdb_source = "pdbb";
+        submit_values.pdb_id = values.pdbDropdownList;
+        submit_values.pdb_url = "https://files.rcsb.org/download/" + values.pdbDropdownList + ".cif";
       }
       // repeat for pdb files
       else if (values.protein_input === "user_pdb_file")
       {
-//        submit_values.protein_input_type = values.protein_input
+        submit_values.pdb_source = "workspace";
         submit_values.pdb = values.user_pdb;
+        submit_values.pdb_path = "ws://" + values.user_pdb;
+      }
+      else if (values.protein_input === "input_pdb_bvbrc"){
+        submit_values.pdb_source = "bvbrc";
+        submit_values.pdb_id = values.pdbDropdownList_bvbrc;
       }
 
       return submit_values;

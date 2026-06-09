@@ -36,9 +36,8 @@ define([
       var _self = this;
 
       rcsbList.getEntryIds().then(function(ids) {
-          var validPDBIDs = ids;
-          this.pdb_list_pddb = validPDBIDs;
-          _self.initDropdown(this.pdb_list_pddb);
+          _self.pdb_list_pddb = ids;
+          _self.initDropdown(ids);
         }, function(err) {
           console.error("Error fetching PDB IDs:", err);
         });

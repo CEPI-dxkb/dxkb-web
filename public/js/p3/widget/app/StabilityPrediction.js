@@ -18,7 +18,7 @@ define([
     applicationName: 'StabilityPrediction',
     requireAuth: true,
     applicationLabel: 'ThermoMPNN',
-    applicationDescription: 'The Stability Prediction Service predicts Stability Prediction using tools like ThermoMPNN-D.',
+    applicationDescription: 'The ThermoMPNN Service predicts Stability Prediction using ThermoMPNN-D.',
     applicationHelp: 'quick_references/services/stability_prediction_service.html',
     tutorialLink: 'tutorial/stability_prediction/stability_prediction.html',
     videoLink: '',

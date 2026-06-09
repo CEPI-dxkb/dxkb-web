@@ -18,7 +18,7 @@ define([
     applicationName: 'StructureSequencePrediction',
     requireAuth: true,
     applicationLabel: 'ProteinMPNN',
-    applicationDescription: 'The Structure Sequence Service predicts possible backbone sequences given a structure using a ProteinMPNN.',
+    applicationDescription: 'The ProteinMPNN Service predicts possible backbone sequences given a structure using ProteinMPNN.',
     applicationHelp: 'quick_references/services/structure_sequence_prediction_service.html',
     tutorialLink: 'tutorial/structure_sequence_prediction/structure_sequence_prediction.html',
     videoLink: '',

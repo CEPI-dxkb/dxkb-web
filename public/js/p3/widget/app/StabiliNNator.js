@@ -195,12 +195,7 @@ define([
             }
         }
         else if (pdb_choice === 'input_pdb_bvbrc') {
-            if (this.value.pdbDropdownList_bvbrc && validPDBCode) {
-              validPdb = true;
-            }
-            else {
-              validPdb = false;
-            }
+            validPdb = !!this.value.pdbDropdownList_bvbrc;
         }
         else if (pdb_choice === 'user_pdb_file'){
           if (this.user_pdb.value) {
@@ -211,7 +206,7 @@ define([
           }
         }
         if (validPdb &&
-          this.value.mode &&
+          this.value.analysis_type &&
           this.output_path.get('value') &&
           this.output_file.get('displayedValue')
         ) {
@@ -249,32 +244,6 @@ define([
       }
       else {
         console.log( 'Invalid protein input');
-      }
-      // ligand library is not working just yet
-      var ligand_library_type = job_params['ligand_library_type'];
-      if (ligand_library_type === "ws_file"){
-        this.ws_file.checked
-        this.ws_file.set('value', ligand_library_type);
-        this.ligand_ws_file.set('value', job_params['ligand_ws_file']);
-      }
-      else if (ligand_library_type === "smiles_list"){
-        this.input_sequence.checked;
-        this.input_sequence.set('value', ligand_library_type);
-        let user_input = job_params['ligand_smiles_list'];
-        let combined_string = '';
-        user_input.forEach(subArray => {
-          console.log(subArray);
-          combined_string += subArray[0] + ' ' + subArray[1] + '\n'
-        });
-        this.smiles_text.set('value', combined_string);
-      }
-      else if (ligand_library_type === "named_library"){
-        this.ligand_named_library.checked;
-        this.ligand_named_library.set('value', ligand_library_type);
-        this.smiles_dropdown_attach_point.set('value', job_params['ligand_named_library']);
-      }
-      else {
-        console.log("Improper ligand library type passed.")
       }
       this.output_path.set('value', job_params['output_path']);
       },

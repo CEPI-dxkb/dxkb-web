@@ -132,6 +132,26 @@ define([
       return submit_values;
     },
 
+    validate: function () {
+      if (!this.inherited(arguments)) { return false; }
+
+      var pdb_choice = this.protein_databank_selection.value;
+      var validPdb = false;
+
+      if (pdb_choice === 'input_pdb') {
+        var inputWidget = registry.byId('pdbDropdownList');
+        validPdb = !!(inputWidget && inputWidget.get('value') && this._validPDBCode);
+      } else if (pdb_choice === 'user_pdb_file') {
+        validPdb = !!(this.user_pdb && this.user_pdb.get('value'));
+      }
+
+      if (!validPdb) {
+        if (this.submitButton) { this.submitButton.set('disabled', true); }
+        return false;
+      }
+      return true;
+    },
+
     checkParameterRequiredFields: function () {
 
       if (this._pagingDropdown) return;

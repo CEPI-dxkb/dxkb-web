@@ -3,17 +3,16 @@ define([
   'dojo/fx/Toggler',
   'dojo/dom-class', 'dijit/_TemplatedMixin', 'dijit/_WidgetsInTemplateMixin',
   'dojo/text!./templates/FrustraMPNN.html', './AppBase',
-  'dojo/_base/lang', '../../WorkspaceManager', './rcsbList',"dojo/domReady!"
+  'dojo/_base/lang', '../../WorkspaceManager', './rcsbList', 'dijit/registry', "dojo/domReady!"
 ], function (
   declare, array, Topic, WidgetBase, on, dom, domStyle,
   Toggler,
   domClass, Templated, WidgetsInTemplate,
-  Template, AppBase, lang, WorkspaceManager, rcsbList
+  Template, AppBase, lang, WorkspaceManager, rcsbList, registry
 ) {
-    var validPDBCode = false;
-
     return declare([AppBase], {
     baseClass: 'FrustraMPNN',
+    _validPDBCode: false,
     templateString: Template,
     applicationName: 'FrustraMPNN',
     requireAuth: true,
@@ -35,13 +34,6 @@ define([
     startup: function () {
       var _self = this;
 
-      rcsbList.getEntryIds().then(function(ids) {
-          var validPDBIDs = ids;
-          _self._validPdbIds = validPDBIDs;
-          _self.initDropdown(validPDBIDs);
-        }, function(err) {
-          console.error("Error fetching PDB IDs:", err);
-        });
       if (this._started) { return; }
       this.inherited(arguments);
       if (this.requireAuth && (window.App.authorizationToken === null || window.App.authorizationToken === undefined)) {
@@ -50,6 +42,15 @@ define([
       _self.defaultPath = WorkspaceManager.getDefaultFolder() || _self.activeWorkspacePath;
       _self.output_path.set('value', _self.defaultPath);
       this.form_flag = false;
+
+      rcsbList.getEntryIds().then(function(ids) {
+          if (_self._destroyed) { return; }
+          _self._validPdbIds = ids;
+          _self.initDropdown(ids);
+        }, function(err) {
+          console.error("Error fetching PDB IDs:", err);
+        });
+
       try {
         this.intakeRerunForm();
       } catch (error) {
@@ -119,24 +120,19 @@ define([
       }
       if (values.protein_input === "input_pdb")
       {
-//        submit_values.protein_input_type = values.protein_input
-        submit_values.pdb_id = values.pdbDropdownList
+        submit_values.protein_input_type = "input_pdb";
+        submit_values.input_pdb = values.pdbDropdownList;
       }
-      // repeat for pdb files
       else if (values.protein_input === "user_pdb_file")
       {
-//        submit_values.protein_input_type = values.protein_input
-        submit_values.pdb = values.user_pdb;
+        submit_values.protein_input_type = "user_pdb_file";
+        submit_values.user_pdb_file = values.user_pdb;
       }
 
       return submit_values;
     },
 
     checkParameterRequiredFields: function () {
-
-      if (document.activeElement === dom.byId('pdbDropdownList')) {
-        return;
-      }
 
       if (this._pagingDropdown) return;
 
@@ -147,7 +143,7 @@ define([
 
       setTimeout(() => {
         if (pdb_choice === 'input_pdb'){
-            if (this.value.pdbDropdownList && validPDBCode) {
+            if (this.value.pdbDropdownList && this._validPDBCode) {
               validPdb = true;
             }
             else {
@@ -198,7 +194,7 @@ define([
         var inputEl = dom.byId('pdbDropdownList');
         if (inputEl) {
           inputEl.value = job_params['input_pdb'];
-          validPDBCode = true;
+          this._validPDBCode = true;
         }
       }
       else {
@@ -217,9 +213,6 @@ define([
         var sessionStorage = window.sessionStorage;
         if (sessionStorage.hasOwnProperty(rerun_key)) {
           try {
-            var param_dict = { 'output_folder': 'output_path', 'strategy': 'recipe' };
-            AppBase.prototype.intakeRerunFormBase.call(this, param_dict);
-            // This grabs the job parameters according to the rerun key (from the brower memory)
             this.addRerunFields(JSON.parse(sessionStorage.getItem(rerun_key)));
             this.form_flag = true;
           } catch (error) {
@@ -236,6 +229,7 @@ define([
         const self = this;
 
         var input = dom.byId("pdbDropdownList");
+        var inputWidget = registry.byId("pdbDropdownList");
         var dropdown = dom.byId("pdbOptions");
         var errorNode = dom.byId("pdbError");
 
@@ -317,13 +311,15 @@ define([
                 li.style.cursor = "pointer";
                 li.addEventListener("mousedown", function() {
                 input._suppressValidation = true;
-                input.value = opt;
+                inputWidget.set('value', opt);
                 setTimeout(() => {
                   input._suppressValidation = false;
                 }, 0);
-                    input.placeholder = ""; // clear placeholder when selecting
+                    input.placeholder = "";
                     domStyle.set(dropdown, "display", "none");
+                    self._validPDBCode = true;
                     hideError();
+                    self.checkParameterRequiredFields();
                 });
                 dropdown.appendChild(li);
                 allLiItems.push(li);
@@ -389,10 +385,10 @@ define([
             var val = value.toUpperCase();
             if (val && !validIds.includes(val)) {
                 showError("Invalid PDB ID");
-                validPDBCode = false;
+                self._validPDBCode = false;
             } else {
                 hideError();
-                validPDBCode = true;
+                self._validPDBCode = true;
             }
 
             self.checkParameterRequiredFields();
@@ -428,10 +424,10 @@ define([
                         highlightedIndex = 0;
                         highlightItem(highlightedIndex);
                     } else {
-                        input.value = selectedLi.textContent;
-                        input.placeholder = ""; // clear placeholder
+                        inputWidget.set('value', selectedLi.textContent);
+                        input.placeholder = "";
                         domStyle.set(dropdown, "display", "none");
-                        validPDBCode = true;
+                        self._validPDBCode = true;
                         hideError();
                     }
                 }
@@ -446,10 +442,10 @@ define([
           var val = input.value.toUpperCase();
           if (val && !validIds.includes(val)) {
               showError("Invalid PDB ID");
-              validPDBCode = false;
+              self._validPDBCode = false;
           } else {
               hideError();
-              validPDBCode = true;
+              self._validPDBCode = true;
           }
           self.checkParameterRequiredFields();
         });

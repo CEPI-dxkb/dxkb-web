@@ -72,7 +72,7 @@
         </div>
 
         <!-- PDB File Upload Block -->
-        <div data-dojo-attach-point="block_pdb_upload" style="display: block;">
+        <div data-dojo-attach-point="block_pdb_upload" style="display: none;">
           <div style="display: flex; align-items: center;">
             <!-- WorkspaceObjectSelector -->
             <div data-dojo-type="p3/widget/WorkspaceObjectSelector" name="user_pdb" id="user_pdb" style="width:65%;"
@@ -103,7 +103,7 @@
         <div class="appRow">
           <label>Chains</label><br>
           <div data-dojo-attach-point="chainsWidget" style="width:380px; background-color:#F0F1F3"
-            data-dojo-type="p3/widget/WorkspaceFilenameValidationTextBox" name="chains" required="false"></div>
+            data-dojo-type="dijit/form/TextBox" name="chains" required="false"></div>
         </div>
         <br clear="all" />
       </div>

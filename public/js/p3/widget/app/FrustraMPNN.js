@@ -191,9 +191,9 @@ define([
         this.user_pdb_file.set('checked', true);
       }
       else if (job_params.protein_input_type === 'input_pdb'){
-        var inputEl = dom.byId('pdbDropdownList');
-        if (inputEl) {
-          inputEl.value = job_params['input_pdb'];
+        var inputWidget = registry.byId('pdbDropdownList');
+        if (inputWidget) {
+          inputWidget.set('value', job_params['input_pdb']);
           this._validPDBCode = true;
         }
       }
@@ -201,6 +201,13 @@ define([
         console.log( 'Invalid protein input');
       }
       this.output_path.set('value', job_params['output_path']);
+      this.output_file.set('value', job_params['output_file']);
+      if (job_params['weights']) {
+        this.weightsWidget.set('value', job_params['weights']);
+      }
+      if (job_params['chains']) {
+        this.chainsWidget.set('value', job_params['chains']);
+      }
       },
 
     intakeRerunForm: function () {

@@ -37,8 +37,8 @@ define([
 
       rcsbList.getEntryIds().then(function(ids) {
           var validPDBIDs = ids;
-          this.pdb_list = validPDBIDs;
-          _self.initDropdown(this.pdb_list);
+          _self._validPdbIds = validPDBIDs;
+          _self.initDropdown(validPDBIDs);
         }, function(err) {
           console.error("Error fetching PDB IDs:", err);
         });
@@ -134,7 +134,7 @@ define([
 
     checkParameterRequiredFields: function () {
 
-      if (document.activeElement === input) {
+      if (document.activeElement === dom.byId('pdbDropdownList')) {
         return;
       }
 
@@ -163,7 +163,6 @@ define([
           }
         }
         if (validPdb &&
-          this.value.mode &&
           this.output_path.get('value') &&
           this.output_file.get('displayedValue')
         ) {
@@ -196,7 +195,11 @@ define([
         this.user_pdb_file.set('checked', true);
       }
       else if (job_params.protein_input_type === 'input_pdb'){
-        this.pdb_list.set('value', job_params["input_pdb"]);
+        var inputEl = dom.byId('pdbDropdownList');
+        if (inputEl) {
+          inputEl.value = job_params['input_pdb'];
+          validPDBCode = true;
+        }
       }
       else {
         console.log( 'Invalid protein input');

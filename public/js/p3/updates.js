@@ -11,6 +11,12 @@ const updateList = [
         image: "/patric/images/cepi/hantaviruses.jpg",
         description: "New World hantaviruses cause severe infections in humans, with case fatality rates approaching 40%. Previous structural studies have advanced our understanding of hantavirus glycoprotein architecture and function, however, the lack of high-resolution in situ structures of the glycoprotein tetramer and its lattice organization has limited mechanistic insights into viral assembly, entry, and antigenicity"
     },
+    {
+        title: "Scalable Agentic Reasoning for Designing Biologics Targeting Intrinsically Disordered Proteins",
+        link: "https://dl.acm.org/doi/10.1145/3815572.3815764",
+        image: "/patric/images/cepi/21.png",
+        description: "Intrinsically disordered proteins (IDPs) represent crucial therapeutic targets due to their significant role in disease-approximately 80% of cancer-related proteins contain long disordered regions -but their lack of stable secondary/tertiary structures makes them \"undruggable.\""
+    },
     /*
     {
         title: "Temp Title 1",

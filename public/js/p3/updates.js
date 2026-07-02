@@ -14,8 +14,8 @@ const updateList = [
     {
         title: "Scalable Agentic Reasoning for Designing Biologics Targeting Intrinsically Disordered Proteins",
         link: "https://dl.acm.org/doi/10.1145/3815572.3815764",
-        image: "/patric/images/cepi/21.png",
-        description: "Intrinsically disordered proteins (IDPs) represent crucial therapeutic targets due to their significant role in disease-approximately 80% of cancer-related proteins contain long disordered regions -but their lack of stable secondary/tertiary structures makes them \"undruggable.\""
+        image: "/patric/images/cepi/idp-biologics.png",
+        description: "Intrinsically disordered proteins (IDPs) represent crucial therapeutic targets due to their significant role in disease — approximately 80% of cancer-related proteins contain long disordered regions — but their lack of stable secondary/tertiary structures makes them \"undruggable.\""
     },
     /*
     {

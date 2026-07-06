@@ -9,7 +9,11 @@ const router = express.Router();
 // compress all responses from the auspice router, including dataset JSONs
 router.use(compression());
 
-const datasetsPath = process.env.NEXTSTRAIN_DATASET_DIR;
+const path = require('path');
+
+// Fall back to a bundled default when NEXTSTRAIN_DATASET_DIR is unset (e.g. `node ./bin/p3-web`).
+const datasetsPath = process.env.NEXTSTRAIN_DATASET_DIR ||
+  path.join(__dirname, '..', 'lib', 'auspice-datasets');
 
 const getDatasetAuspice = require('auspice/cli/server/getDataset').setUpGetDatasetHandler({
   datasetsPath
@@ -20,7 +24,12 @@ const getDatasetAuspice = require('auspice/cli/server/getDataset').setUpGetDatas
 router.get('/getDataset', (req, res, next) => {
   const rawPrefix = req.query && typeof req.query.prefix === 'string' ? req.query.prefix : '';
   if (rawPrefix) {
-    let p = rawPrefix.replace(/^\/+|\/+$/g, '');
+    // Trim leading/trailing slashes without a backtracking regex (avoids ReDoS)
+    let s = 0;
+    let e = rawPrefix.length;
+    while (s < e && rawPrefix.charCodeAt(s) === 47) s++;
+    while (e > s && rawPrefix.charCodeAt(e - 1) === 47) e--;
+    let p = rawPrefix.slice(s, e);
     const viewerPrefix = 'nextstrain-viewer/';
     if (p.startsWith(viewerPrefix)) {
       p = p.slice(viewerPrefix.length);
@@ -44,7 +53,9 @@ router.get('/getAvailable', (req, res) => {
 });
 
 router.get('*', (req, res) => {
-  res.status(500).type('text/plain').send('Query unhandled -- ' + req.originalUrl);
+  // Do not echo req.originalUrl back (reflected XSS); log it, send a static message
+  console.error('Auspice charon query unhandled:', req.originalUrl);
+  res.status(500).type('text/plain').send('Query unhandled');
 });
 
 module.exports = router;

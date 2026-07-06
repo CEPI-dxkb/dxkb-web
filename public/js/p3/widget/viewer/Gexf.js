@@ -690,39 +690,6 @@ destroy: function(){
             if (GexfJS.oldParams) delete GexfJS.oldParams.zoomLevel; 
         },
 
-        applyColorToGraph: function(color) {
-            if (!window.GexfJS || !GexfJS.params) return;
-            if (!GexfJS.params.userPins) GexfJS.params.userPins = {};
-            
-            var name = GexfJS.params.currentHighlightName || "Custom Selection";
-            var elementsToPin = {};
-            var applied = false;
-
-            if (GexfJS.params.path_active && GexfJS.params.activeEdges) {
-                Object.keys(GexfJS.params.activeEdges).forEach(function(edgeId) {
-                    elementsToPin['e_' + edgeId] = true;
-                    applied = true;
-                });
-            } 
-            if (GexfJS.params.activeNodes && Object.keys(GexfJS.params.activeNodes).length > 0) {
-                Object.keys(GexfJS.params.activeNodes).forEach(function(nodeId) {
-                     elementsToPin['n_' + nodeId] = true;
-                     applied = true;
-                });
-            }
-
-            if (applied) {
-                // Save to persistent user pins, overwriting if the name already exists
-                GexfJS.params.userPins[name] = { color: color, elements: elementsToPin };
-                this.rebuildPinnedElements();
-                
-                // Refresh the summary panel to instantly show the new pin!
-                if (this.itemDetailPanel.customDisplayNode && this.itemDetailPanel.customDisplayNode.innerHTML.indexOf("Graph Summary") !== -1) {
-                    this.showDefaultSummary();
-                }
-            }
-        },
-
         showDefaultSummary: function() {
             if (!this.graphSummary || !this.itemDetailPanel || !this.itemDetailPanel.customDisplayNode) {
                 // If no summary exists, default to clearing the panel

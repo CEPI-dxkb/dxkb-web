@@ -32,11 +32,11 @@ jobs:
           ALPHA_VERSION=$(git show origin/alpha:package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).version")
 
           # Compare versions and use the higher one as the base for bumping
-          HIGHER=$(node -p "
+          HIGHER=$(MV="$MASTER_VERSION" AV="$ALPHA_VERSION" node -p "
             const s = (v) => v.split('.').map(Number);
-            const [a, b] = ['$MASTER_VERSION', '$ALPHA_VERSION'].map(s);
-            for (let i = 0; i < 3; i++) { if (a[i] !== b[i]) { process.stdout.write(a[i] > b[i] ? '$MASTER_VERSION' : '$ALPHA_VERSION'); process.exit(); } }
-            process.stdout.write('$MASTER_VERSION');
+            const [a, b] = [process.env.MV, process.env.AV].map(s);
+            for (let i = 0; i < 3; i++) { if (a[i] !== b[i]) { process.stdout.write(a[i] > b[i] ? process.env.MV : process.env.AV); process.exit(); } }
+            process.stdout.write(process.env.MV);
           ")
 
           # Set package.json to the higher version, then bump patch

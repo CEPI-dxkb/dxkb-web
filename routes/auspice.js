@@ -25,6 +25,9 @@ router.get('/getDataset', (req, res, next) => {
     if (p.startsWith(viewerPrefix)) {
       p = p.slice(viewerPrefix.length);
     }
+    if (p.split('/').some((seg) => seg === '..')) {
+      return res.status(400).type('text/plain').send('Invalid prefix');
+    }
     // Rewrite req.url so interpretRequest() sees the correct prefix (it parses req.url, not req.query)
     const q = req.url.indexOf('?') >= 0 ? req.url.slice(req.url.indexOf('?') + 1) : '';
     // Match prefix=... at start of query or after & (query string has no leading ?)

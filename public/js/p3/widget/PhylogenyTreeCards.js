@@ -579,6 +579,7 @@ define([
 
     _resolvePath: function (path) {
       if (!path) return '';
+      if (/^(javascript|data|vbscript):/i.test(path)) return '';
       return path.charAt(0) === '/' ? (this._baseUrl + path) : path;
     }
   });

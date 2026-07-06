@@ -16,10 +16,12 @@
     "node": "20.20.2"
   },
   "dependencies": {
+    "auspice": "^2.72.0",
     "axios": "^1.16.1",
     "body-parser": "^1.20.2",
     "braces": "^3.0.3",
     "bvbrc_js_client": "github:bv-brc/bvbrc_js_client",
+    "compression": "^1.8.1",
     "cookie-parser": "~1.4.6",
     "cytoscape": "^3.2.4",
     "cytoscape-cola": "^1.6.0",

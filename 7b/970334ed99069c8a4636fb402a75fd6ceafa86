@@ -1,0 +1,22 @@
+public/js/p3/widget/app/templates/PredictStructure.html
+  s_706297c5417555::t_b84c87881689a8 3,5-6,10,15-28
+views/bv-brc-header.ejs
+  s_706297c5417555::t_88942f7764a3c7 181
+  s_706297c5417555::t_e37d3814e63968 470
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "7b970334ed99069c8a4636fb402a75fd6ceafa86",
+  "prompts": {},
+  "sessions": {
+    "s_706297c5417555": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5802ecc9-8dc8-488a-a5d6-dd676a8c05c3",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

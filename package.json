@@ -1,6 +1,6 @@
 {
   "name": "p3-web",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "private": true,
   "scripts": {
     "start": "NEXTSTRAIN_DATASET_DIR=./lib/auspice-datasets node ./bin/p3-web",
@@ -52,7 +52,7 @@
     "morgan": "^1.10.0",
     "MultiBigWig": "github:BV-BRC/multibigwig#master",
     "nconf": "^0.12.1",
-    "nodemailer": "^8.0.5",
+    "nodemailer": "^9.0.3",
     "nodemailer-smtp-transport": "^2.4.2",
     "phyloxml": "^1.0.0",
     "promised-io": "^0.3.6",

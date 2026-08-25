@@ -172,7 +172,7 @@ define([
             iframe.onload = function () {
               try {
                 var responseText = iframe.contentDocument.body.textContent.trim();
-                if (/^(Invalid Session|Unauthorized|Forbidden|Service Unavailable)/i.test(responseText)) {
+                if (/^(Invalid Session|Unauthorized|Forbidden|Service Unavailable|Workspace download service (?:unavailable|timed out))/i.test(responseText)) {
                   showError('Unable to preview file: your session may have expired or the download service is unavailable.');
                   return;
                 }

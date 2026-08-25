@@ -84,10 +84,14 @@ app.use(helmet({
   }
 }));
 
-app.use(workspaceDownloadProxy.MOUNT_PATH,
+var workspaceDownloadServiceURL = config.get('workspaceDownloadServiceURL');
+app.use(workspaceDownloadServiceURL,
   workspaceDownloadProxy.createWorkspaceDownloadProxy(
     config.get('workspaceDownloadServiceTarget'),
-    { timeout: config.get('workspaceDownloadServiceTimeout') }
+    {
+      timeout: config.get('workspaceDownloadServiceTimeout'),
+      mountPath: workspaceDownloadServiceURL
+    }
   ));
 
 // Block access to demo directories with legacy/vulnerable jQuery versions

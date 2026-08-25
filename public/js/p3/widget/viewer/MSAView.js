@@ -624,7 +624,7 @@ define([
             var keys = Object.keys(seqIds);
             // console.log('in when response keys', keys);
 
-            if (keys.some(k => /^\d+\.\d+$/.test(k))) {
+            if (Object.prototype.hasOwnProperty.call(seqIds, genome.genome_id)) {
               seqIdIndex = seqIds[genome.genome_id] - 1;
             } else {
               for (var i = 0; i < keys.length; i++) {

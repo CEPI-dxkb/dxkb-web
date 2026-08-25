@@ -1,0 +1,64 @@
+public/js/p3/widget/WorkspaceBrowser.js
+  s_f27ca4cf017d81::t_9a0ef9aeea21f3 2832
+public/js/p3/util/LeafletSupport.js
+  s_c76dd51f851ce0::t_a6bd8b97146a52 6,9,12-15
+routes/queryLog.js
+  s_4212a9c00df980::t_3e373ddbaae82f 23
+  s_4212a9c00df980::t_bde2f67c545520 1-2
+  s_4212a9c00df980::t_63ceec4aebeeed 29,38,42,44
+  s_4212a9c00df980::t_6ffdbe0b3dbfd1 30-37,39-41
+  s_4212a9c00df980::t_db4df6072676c7 4-5
+  s_4212a9c00df980::t_48a115f65741bf 47-57
+package.json
+  s_c76dd51f851ce0::t_33e12b629fabb0 49-50
+lib/queryLogger.js
+  s_4212a9c00df980::t_f7aa33ccadcd51 21
+  s_4212a9c00df980::t_2f80301bb3f870 1-2
+  s_4212a9c00df980::t_95a877b621ef75 22-26
+.github/workflows/node.yml
+  s_9f964cefcaba68::t_49df4c61953d88 15,17
+app.js
+  s_c76dd51f851ce0::t_784a13b6872f81 285-286
+package-lock.json
+  s_c76dd51f851ce0::t_db63f9e7d8afd1 45-46,8669-8674,15127-15129,15138-15146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "9c4b786f0fc9e80c9c0ffb422fef4adf5e3873f6",
+  "prompts": {},
+  "sessions": {
+    "s_4212a9c00df980": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc6039d33ffeNWuJ0tBvcbu6xq",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    },
+    "s_9f964cefcaba68": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc5f469d9ffez7Z0HIQ2g6YHHs",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    },
+    "s_c76dd51f851ce0": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc5f64d3dffeW7owGztmJc798g",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    },
+    "s_f27ca4cf017d81": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc5f98135ffepTcivnzHAdZjIA",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

@@ -1,3 +1,4 @@
+/* eslint strict: 0 */
 define([
   'dojo/_base/declare',
   'dojo/topic', 'dojo/on', 'dojo/dom', 'dojo/dom-class', 'dojo/dom-attr', 'dojo/dom-construct', 'dojo/dom-style', 'dojo/query',
@@ -86,15 +87,15 @@ define([
           }
 
           // Add click handler for the rectangle button
-          on(showChatRectButton, 'click', function(evt) {
+          on(showChatRectButton, 'click', function (evt) {
             Topic.publish('showChatButton', true);
           });
 
-          Topic.subscribe('hideChatButton', lang.hitch(this, function(checked) {
+          Topic.subscribe('hideChatButton', lang.hitch(this, function (checked) {
             domStyle.set(showChatRectButton, 'display', 'block');
           }));
 
-          Topic.subscribe('showChatButton', lang.hitch(this, function(checked) {
+          Topic.subscribe('showChatButton', lang.hitch(this, function (checked) {
             domStyle.set(showChatRectButton, 'display', 'none');
           }));
         })
@@ -245,7 +246,7 @@ define([
         // console.log("Workspace URL Callback", params.newPath);
         var newState = populateState(params);
         // console.log("newState /register", params)
-        console.log("newState", newState);
+        console.log('newState', newState);
         /* istanbul ignore next */
         // var path = params.params[0] || '/';
         newState.widgetClass = 'p3/widget/UserProfileForm';
@@ -382,7 +383,6 @@ define([
         _self.navigate(newState);
       });
 
-
       Router.register('/workspace(/.*)', function (params, oldPath, newPath, state) {
         // console.log("Workspace URL Callback", params.newPath);
         var newState = populateState(params);
@@ -406,16 +406,16 @@ define([
       });
 
       Router.register('/view(/.*)', function (params, path) {
-        console.log("Register Viewer Route: ", params, path);
+        console.log('Register Viewer Route: ', params, path);
         var newState = getState(params, path);
         var parts = newState.pathname.split('/');
         parts.shift();
         var type = parts.shift();
 
         newState.widgetClass = 'p3/widget/viewer/' + type;
-        console.log("window.App:", window.App,window.App.production)
-        newState.layers = ['p3/layer/grids','p3/layer/jbrowse','p3/layer/viewers'];
-        console.log("new state)")
+        console.log('window.App:', window.App, window.App.production)
+        newState.layers = ['p3/layer/grids', 'p3/layer/jbrowse', 'p3/layer/viewers'];
+        console.log('new state)')
         _self.navigate(newState);
       });
 
@@ -489,7 +489,7 @@ define([
 
         // console.log("Parts:", parts, type, path)
         newState.widgetClass = 'p3/widget/app/' + type;
-        newState.layers = ['p3/layer/grids','p3/layer/viewers','p3/layer/jbrowse','p3/layer/apps'];
+        newState.layers = ['p3/layer/grids', 'p3/layer/viewers', 'p3/layer/jbrowse', 'p3/layer/apps'];
 
         newState.value = viewerParams;
         newState.set = 'params';
@@ -518,7 +518,7 @@ define([
       if (this.dataAPI) {
         /* istanbul ignore else */
         if (this.dataAPI.charAt(-1) !== '/') {
-          this.dataAPI = this.dataAPI + '/';
+          this.dataAPI += '/';
         }
         DataAPI.init(this.dataAPI, this.authorizationToken || '');
         this.api.client = DataAPI;
@@ -571,6 +571,37 @@ define([
       Topic.subscribe('/FavoriteFolders/changed', lang.hitch(this, function () {
         this.updateFavoriteFoldersList();
       }));
+
+      // Query logging indicator
+      if (this.queryLoggingEnabled && this.user && this.user.id) {
+        var _self = this;
+        xhr('/_querylog/status', {
+          method: 'get',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': window.App.authorizationToken
+          }
+        }).then(function (data) {
+          var result = JSON.parse(data);
+          if (result.active) {
+            _self._showQueryLogIndicator();
+          }
+        }, function () {});
+
+        this.stopQueryLogging = function () {
+          xhr('/_querylog/stop', {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': window.App.authorizationToken
+            }
+          }).then(function () {
+            _self._hideQueryLogIndicator();
+            Topic.publish('/Notification', { message: 'Query logging stopped' });
+          });
+        };
+      }
 
       // update "My Data" > "Completed Jobs" count on homepage
       if (this.user && this.user.id) {
@@ -851,7 +882,7 @@ define([
     // },
     chatButtonWidget: function (action) {
       if (action === 'show') {
-        var chatButton = new ChatButton({
+        new ChatButton({
           region: 'center',
           width: '60px',
           height: '60px',
@@ -864,6 +895,16 @@ define([
         console.log('I should not see the chat button');
       }
     },
+    _showQueryLogIndicator: function () {
+      var el = dom.byId('querylog-indicator');
+      if (el) { domClass.remove(el, 'dijitHidden'); }
+    },
+
+    _hideQueryLogIndicator: function () {
+      var el = dom.byId('querylog-indicator');
+      if (el) { domClass.add(el, 'dijitHidden'); }
+    },
+
     refreshUser: function () {
       // Check if userServiceURL is configured
       if (!this.userServiceURL) {

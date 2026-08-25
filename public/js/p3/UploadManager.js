@@ -94,6 +94,9 @@ define(['dojo/request', 'dojo/_base/declare', 'dojo/_base/lang',
       fd.append('upload', file);
       this.inProgress[file.name] = { name: file.name, size: file.size, workspacePath: workspacePath };
       var _self = this;
+      // A network failure during upload fires 'error' on BOTH req and req.upload.
+      // Guard so counters/cleanup run once per upload.
+      var errorHandled = false;
       var req = new XMLHttpRequest();
       req.upload.addEventListener('progress', function (evt) {
         // console.log("evt: ", evt);
@@ -169,6 +172,8 @@ define(['dojo/request', 'dojo/_base/declare', 'dojo/_base/lang',
 
       // Network-level failure (connection dropped, DNS failure, etc.)
       req.addEventListener('error', lang.hitch(this, function () {
+        if (errorHandled) return;
+        errorHandled = true;
         console.error('Upload network error for ' + file.name);
         _self.activeCount--;
         _self.errorCount++;
@@ -191,6 +196,8 @@ define(['dojo/request', 'dojo/_base/declare', 'dojo/_base/lang',
 
       // Upload send-side error (less common, but handle it)
       req.upload.addEventListener('error', function (error) {
+        if (errorHandled) return;
+        errorHandled = true;
         console.error('Upload send error for ' + file.name);
         _self.activeCount--;
         _self.errorCount++;

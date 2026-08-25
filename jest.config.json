@@ -1,6 +1,7 @@
 {
   "testEnvironment": "node",
   "roots": [
+    "<rootDir>/lib",
     "<rootDir>/public/js/p3/widget/copilot"
   ],
   "testMatch": [

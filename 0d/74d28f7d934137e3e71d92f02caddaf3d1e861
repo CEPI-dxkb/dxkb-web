@@ -1,0 +1,23 @@
+lib/tests/queryLogger.test.js
+  s_fe0608ce937f7d::t_06a12accf6fa77 11-12,20
+  s_fe0608ce937f7d::t_580b27e34f3d86 76-109
+lib/queryLogger.js
+  s_fe0608ce937f7d::t_c8030aec5c9430 81-98
+  s_fe0608ce937f7d::t_24264f178275b2 144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "0d74d28f7d934137e3e71d92f02caddaf3d1e861",
+  "prompts": {},
+  "sessions": {
+    "s_fe0608ce937f7d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc5b20a1affeS1DYXjR2jcweD1",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

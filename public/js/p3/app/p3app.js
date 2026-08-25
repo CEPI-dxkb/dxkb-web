@@ -572,6 +572,34 @@ define([
         this.updateFavoriteFoldersList();
       }));
 
+      // Query logging indicator
+      if (this.queryLoggingEnabled && this.user && this.user.id) {
+        var _self = this;
+        xhr('/_querylog/status', {
+          method: 'get',
+          headers: { 'Accept': 'application/json' }
+        }).then(function (data) {
+          var result = JSON.parse(data);
+          if (result.active) {
+            _self._showQueryLogIndicator();
+          }
+        }, function () {});
+
+        this.stopQueryLogging = function () {
+          xhr('/_querylog/stop', {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': window.App.authorizationToken
+            }
+          }).then(function () {
+            _self._hideQueryLogIndicator();
+            Topic.publish('/Notification', { message: 'Query logging stopped' });
+          });
+        };
+      }
+
       // update "My Data" > "Completed Jobs" count on homepage
       if (this.user && this.user.id) {
         this.api.service('AppService.query_task_summary', []).then(function (status) {
@@ -864,6 +892,16 @@ define([
         console.log('I should not see the chat button');
       }
     },
+    _showQueryLogIndicator: function () {
+      var el = dom.byId('querylog-indicator');
+      if (el) { domClass.remove(el, 'dijitHidden'); }
+    },
+
+    _hideQueryLogIndicator: function () {
+      var el = dom.byId('querylog-indicator');
+      if (el) { domClass.add(el, 'dijitHidden'); }
+    },
+
     refreshUser: function () {
       // Check if userServiceURL is configured
       if (!this.userServiceURL) {

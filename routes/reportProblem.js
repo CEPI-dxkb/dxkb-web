@@ -49,27 +49,14 @@ function mail(message, subject, from, files, options) {
   var uploadRoot = path.resolve(config.get('reportProblemUploadDir') || os.tmpdir());
   if (files && files.length > 0) {
     files.forEach(function (f) {
-      var attachmentPath = f && (f.path || f.filepath);
-      if (!attachmentPath || typeof attachmentPath !== 'string') {
-        return;
-      }
-
-      // Restrict the attachment to a file directly inside uploadRoot.
-      // path.basename strips any directory components from the user-influenced
-      // input, and path.join with the trusted root prevents path traversal.
-      var safeBasename = path.basename(attachmentPath);
-      if (!safeBasename || safeBasename === '.' || safeBasename === '..') {
-        return;
-      }
-      var safeAttachmentPath = path.join(uploadRoot, safeBasename);
-
-      if (!fs.existsSync(safeAttachmentPath)) {
-        return;
-      }
-
+      // formidable v2+ renamed the parsed-file properties: name->originalFilename,
+      // path->filepath (the v1 names are undefined under the installed v2, which
+      // silently broke attachments -> fs.createReadStream(undefined)). Read the
+      // v2 names, falling back to v1 so this works regardless of which formidable
+      // version express-formidable resolves.
       var attach = {};
-      attach.filename = path.basename(f.name || f.originalFilename || 'attachment');
-      attach.content = fs.createReadStream(safeAttachmentPath);
+      attach.filename = f.originalFilename || f.name;
+      attach.content = fs.createReadStream(f.filepath || f.path);
       attachments.push(attach);
     });
     mailmsg.attachments = attachments;

@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "NEXTSTRAIN_DATASET_DIR=./lib/auspice-datasets node ./bin/p3-web",
-    "test": "cross-env NODE_ENV=test gulp srcfiles && npm run move-src && eslint . && jest --config jest.config.json --notify",
-    "move-src": "cp gulpified/app/app.js src/app/ && cp gulpified/app/p3app.js src/app/ && cp gulpified/widget/LoginForm.js src/widget",
+    "test": "cross-env NODE_ENV=test jest --config jest.config.json",
+    "lint": "eslint public/js/p3",
     "xxxeslint:fix": "./node_modules/eslint/bin/eslint.js --fix public/js/p3",
     "xxxeslint:test": "./node_modules/eslint/bin/eslint.js public/js/p3",
     "xxxtest:intern": "./node_modules/.bin/intern",
@@ -33,7 +33,7 @@
     "debug": "^4.3.4",
     "decompress": "^4.2.1",
     "ejs": "^3.1.10",
-    "express": "^4.19.2",
+    "express": "^4.22.2",
     "express-formidable": "^1.2.0",
     "express-http-proxy": "^2.1.1",
     "express-rate-limit": "^7.5.1",
@@ -42,7 +42,7 @@
     "flatted": "^3.4.2",
     "form-data": "^4.0.6",
     "formidable": "^2.1.2",
-    "gexf-js": "github:aswarren/gexf-js#patric_links",
+    "gexf-js": "github:aswarren/gexf-js#fd236e9f5faf190cd8926bca9c0e8ec0f9cd24a9",
     "helmet": "^7.2.0",
     "html2canvas": "^1.4.1",
     "http-proxy": "^1.18.1",
@@ -51,7 +51,7 @@
     "jquery": "^3.7.1",
     "markdown-it": "^14.1.0",
     "markdown-it-link-attributes": "^4.0.1",
-    "morgan": "^1.10.0",
+    "morgan": "^1.11.0",
     "MultiBigWig": "github:BV-BRC/multibigwig#master",
     "nconf": "^0.12.1",
     "nodemailer": "^9.0.3",
@@ -71,11 +71,17 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.1",
     "gulp-replace": "^1.1.4",
+    "jest": "^29.7.0",
     "minimatch": "^9.0.9",
-    "stylelint": "^17.12.0",
-    "stylelint-config-standard": "^40.0.0"
+    "stylelint": "^16.5.0",
+    "stylelint-config-standard": "^36.0.0"
   },
   "overrides": {
-    "qs": ">=6.15.2"
+    "qs": ">=6.15.2",
+    "path-to-regexp": "0.1.13",
+    "underscore": "$underscore"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

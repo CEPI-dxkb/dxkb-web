@@ -1,3 +1,5 @@
+'use strict';
+
 define([
   'dojo/_base/declare', 'dijit/layout/BorderContainer', 'dojo/on', 'dojo/query',
   'dojo/dom-class', 'dojo/dom-construct', 'dojo/dom-attr',
@@ -81,7 +83,7 @@ define([
         layoutPriority: 3
       });
 
-       this.addSearchToHeader(this.browserHeader);
+      this.addSearchToHeader(this.browserHeader);
 
       this.actionPanel.addAction('ToggleItemDetail', 'fa icon-chevron-circle-right fa-2x', {
         label: 'HIDE',
@@ -572,10 +574,10 @@ define([
         //
       }, false);
 
-      var dfc = '<div>Download Table As...</div>' +
-        '<div class="wsActionTooltip" rel="text/tsv">Text</div>' +
-        '<div class="wsActionTooltip" rel="text/csv">CSV</div>' +
-        '<div class="wsActionTooltip" rel="application/vnd.openxmlformats">Excel</div>';
+      var dfc = '<div>Download Table As...</div>'
+        + '<div class="wsActionTooltip" rel="text/tsv">Text</div>'
+        + '<div class="wsActionTooltip" rel="text/csv">CSV</div>'
+        + '<div class="wsActionTooltip" rel="application/vnd.openxmlformats">Excel</div>';
       var downloadTT = new TooltipDialog({
         content: dfc,
         onMouseLeave: function () {
@@ -623,8 +625,8 @@ define([
         var dataType = type === 'genome_group' ? 'genome' : 'genome_feature';
         var currentQuery = self.getQuery(selection[0]);
 
-        var urlStr = window.App.dataServiceURL + '/' + dataType + '/' + currentQuery + '&http_authorization=' +
-          encodeURIComponent(window.App.authorizationToken) + '&http_accept=' + rel + '&limit(25000)&http_download=true';
+        var urlStr = window.App.dataServiceURL + '/' + dataType + '/' + currentQuery + '&http_authorization='
+          + encodeURIComponent(window.App.authorizationToken) + '&http_accept=' + rel + '&limit(25000)&http_download=true';
 
         // cursorMark requires a sort on an unique key
         urlStr += type === 'genome_group' ? '&sort(+genome_id)' : '&sort(+feature_id)';
@@ -650,10 +652,10 @@ define([
 
       }, false);
 
-      var dtsfc = '<div>Download Job Results:</div>' +
-        '<div class="wsActionTooltip" rel="circos.svg">SVG Image</div>' +
-        '<div class="wsActionTooltip" rel="genome_comparison.txt">Genome Comparison Table (txt)</div>' +
-        '<div class="wsActionTooltip" rel="genome_comparison.xls">Genome Comparison Table (xls)</div>';
+      var dtsfc = '<div>Download Job Results:</div>'
+        + '<div class="wsActionTooltip" rel="circos.svg">SVG Image</div>'
+        + '<div class="wsActionTooltip" rel="genome_comparison.txt">Genome Comparison Table (txt)</div>'
+        + '<div class="wsActionTooltip" rel="genome_comparison.xls">Genome Comparison Table (xls)</div>';
       var downloadTTSelectFile = new TooltipDialog({
         content: dtsfc,
         onMouseLeave: function () {
@@ -830,9 +832,8 @@ define([
       }, function (selection) {
         // console.log("Current Container Widget: ", self.actionPanel.currentContainerWidget, "Slection: ", selection)
         var modPath = self.actionPanel.currentContainerWidget.path.replace(/^\/public/, '');
-        Topic.publish('/navigate', { href: '/view/Homology' + modPath });
+        Topic.publish('/navigate', { href: '/view/Homology' + encodePath(modPath) });
       }, false);
-
 
       this.browserHeader.addAction('Upload', 'fa icon-upload fa-2x', {
         label: 'UPLOAD',
@@ -954,106 +955,165 @@ define([
         }
       });
       this.browserHeader.addAction(
-        "ViewCoreGenomeMLSTReport",
-        "fa icon-eye fa-2x",
+        'ViewCoreGenomeMLSTReport',
+        'fa icon-eye fa-2x',
         {
-          label: "REPORT",
+          label: 'REPORT',
           multiple: false,
-          validTypes: ["CoreGenomeMLST"],
-          tooltip: "View Whole Core Genome MLST Report",
+          validTypes: ['CoreGenomeMLST'],
+          tooltip: 'View Whole Core Genome MLST Report',
         },
         function (selection) {
           var path;
           selection[0].autoMeta.output_files.forEach(
             lang.hitch(this, function (file_data) {
-              var filepath = file_data[0].split("/");
-              if (filepath[filepath.length - 1] === "cgMLST_Report.html") {
-                path = filepath.join("/");
+              var filepath = file_data[0].split('/');
+              if (filepath[filepath.length - 1] === 'cgMLST_Report.html') {
+                path = filepath.join('/');
               }
             })
           );
           if (path) {
-            Topic.publish("/navigate", { href: "/workspace" + encodePath(path) });
+            Topic.publish('/navigate', { href: '/workspace' + encodePath(path) });
           } else {
-            console.log("Error: could not find cgMLST_Report.html");
+            console.log('Error: could not find cgMLST_Report.html');
           }
         }
       );
       this.browserHeader.addAction(
-        "ViewSARS2WastewaterReport",
-        "fa icon-eye fa-2x",
+        'ViewSARS2WastewaterReport',
+        'fa icon-eye fa-2x',
         {
-          label: "REPORT",
+          label: 'REPORT',
           multiple: false,
-          validTypes: ["SARS2Wastewater"],
-          tooltip: "View SARS2 Wastewater  Analysis Report",
+          validTypes: ['SARS2Wastewater'],
+          tooltip: 'View SARS2 Wastewater  Analysis Report',
         },
         function (selection) {
           var path;
           selection[0].autoMeta.output_files.forEach(
             lang.hitch(this, function (file_data) {
-              var filepath = file_data[0].split("/");
-              if (filepath[filepath.length - 1] === "SARS2Wastewater_report.html") {
-                path = filepath.join("/");
+              var filepath = file_data[0].split('/');
+              if (filepath[filepath.length - 1] === 'SARS2Wastewater_report.html') {
+                path = filepath.join('/');
               }
             })
           );
           if (path) {
-            Topic.publish("/navigate", { href: "/workspace" + encodePath(path) });
+            Topic.publish('/navigate', { href: '/workspace' + encodePath(path) });
           } else {
-            console.log("Error: could not find SARS2Wastewater_report.html");
+            console.log('Error: could not find SARS2Wastewater_report.html');
           }
         }
       );
       this.browserHeader.addAction(
-        "ViewWholeGenomeSNPAnalysisReport",
-        "fa icon-eye fa-2x",
+        'ViewWholeGenomeSNPAnalysisReport',
+        'fa icon-eye fa-2x',
         {
-          label: "REPORT",
+          label: 'REPORT',
           multiple: false,
-          validTypes: ["WholeGenomeSNPAnalysis"],
-          tooltip: "View Whole Genome SNP Analysis Report",
+          validTypes: ['WholeGenomeSNPAnalysis'],
+          tooltip: 'View Whole Genome SNP Analysis Report',
         },
         function (selection) {
           var path;
           selection[0].autoMeta.output_files.forEach(
             lang.hitch(this, function (file_data) {
-              var filepath = file_data[0].split("/");
-              if (filepath[filepath.length - 1] === "WholeGenomeSNP_Report.html") {
-                path = filepath.join("/");
+              var filepath = file_data[0].split('/');
+              if (filepath[filepath.length - 1] === 'WholeGenomeSNP_Report.html') {
+                path = filepath.join('/');
               }
             })
           );
           if (path) {
-            Topic.publish("/navigate", { href: "/workspace" + encodePath(path) });
+            Topic.publish('/navigate', { href: '/workspace' + encodePath(path) });
           } else {
-            console.log("Error: could not find WholeGenomeSNP_Report.html");
+            console.log('Error: could not find WholeGenomeSNP_Report.html');
           }
         }
       );
       this.browserHeader.addAction(
-        "ViewDockingReport",
-        "fa icon-eye fa-2x",
+        'ViewDockingReport',
+        'fa icon-eye fa-2x',
         {
-          label: "REPORT",
+          label: 'REPORT',
           multiple: false,
-          validTypes: ["Docking"],
-          tooltip: "View Docking Report",
+          validTypes: ['Docking'],
+          tooltip: 'View Docking Report',
         },
         function (selection) {
           var path;
           selection[0].autoMeta.output_files.forEach(
             lang.hitch(this, function (file_data) {
-              var filepath = file_data[0].split("/");
-              if (filepath[filepath.length - 1] === "small_molecule_docking_report.html") {
-                path = filepath.join("/");
+              var filepath = file_data[0].split('/');
+              if (filepath[filepath.length - 1] === 'small_molecule_docking_report.html') {
+                path = filepath.join('/');
               }
             })
           );
           if (path) {
-            Topic.publish("/navigate", { href: "/workspace" + encodePath(path) });
+            Topic.publish('/navigate', { href: '/workspace' + encodePath(path) });
           } else {
-            console.log("Error: could not find small_molecule_docking_report.html");
+            console.log('Error: could not find small_molecule_docking_report.html');
+          }
+        }
+      );
+      this.browserHeader.addAction(
+        'ViewPredictStructureReport',
+        'fa icon-eye fa-2x',
+        {
+          label: 'REPORT',
+          multiple: false,
+          validTypes: ['PredictStructure'],
+          tooltip: 'View Structure Prediction Report',
+        },
+        function (selection) {
+          var path;
+          selection[0].autoMeta.output_files.forEach(
+            lang.hitch(this, function (file_data) {
+              var filepath = file_data[0].split('/');
+              if (filepath[filepath.length - 1] === 'report.html') {
+                path = filepath.join('/');
+              }
+            })
+          );
+          if (path) {
+            // Open in a new tab so the user keeps their place in the
+            // workspace listing; the report is a destination, not a step.
+            window.open('/workspace' + encodePath(path), '_blank');
+          } else {
+            console.log('Error: could not find report.html');
+          }
+        }
+      );
+      this.browserHeader.addAction(
+        'ViewStabiliNNatorReport',
+        'fa icon-eye fa-2x',
+        {
+          label: 'REPORT',
+          multiple: false,
+          validTypes: ['StabiliNNator'],
+          tooltip: 'View Protein Stability Report',
+        },
+        function (selection) {
+          var path;
+          // StabiliNNator names its report after the input structure
+          // (<basename>_report.html), so match the suffix rather than a
+          // fixed filename as the other report actions do.
+          selection[0].autoMeta.output_files.forEach(
+            lang.hitch(this, function (file_data) {
+              var filepath = file_data[0].split('/');
+              var filename = filepath[filepath.length - 1];
+              if (filename.length > '_report.html'.length
+                  && filename.slice(-'_report.html'.length) === '_report.html') {
+                path = filepath.join('/');
+              }
+            })
+          );
+          if (path) {
+            window.open('/workspace' + encodePath(path), '_blank');
+          } else {
+            console.log('Error: could not find <basename>_report.html');
           }
         }
       );
@@ -1288,12 +1348,12 @@ define([
       this.actionPanel.addAction('ViewGEXF', 'fa icon-alignment fa-2x', { // Using 'sitemap' as a graph-like icon
         label: 'VIEW GRAPH',
         multiple: false, // This action works on a single file
-       // validTypes: ['gexf'], // This action only appears when a 'gexf' file is selected
+        // validTypes: ['gexf'], // This action only appears when a 'gexf' file is selected
         validTypes: ['gexf'],
 
         tooltip: 'View Synteny Graph'
       }, function (selection) {
-          Topic.publish('/navigate', { href: '/view/GEXF/?' + '&path=' + encodePath(selection[0].path) });
+        Topic.publish('/navigate', { href: '/view/Gexf/?&path=' + encodePath(selection[0].path) });
       }, true);
 
       this.browserHeader.addAction('ViewNwkXml', 'fa icon-eye fa-2x', {
@@ -1380,8 +1440,7 @@ define([
         validTypes: ['ViralAssembly'],
         tooltip: 'View Viral Assembly Report'
       }, function (selection) {
-        const path = selection[0].autoMeta.output_files.find(meta_file_data =>
-          meta_file_data[0].includes('AssemblyReport.html')
+        const path = selection[0].autoMeta.output_files.find(meta_file_data => meta_file_data[0].includes('AssemblyReport.html')
         );
         if (path && path[0]) {
           Topic.publish('/navigate', { href: '/workspace' + encodePath(path[0]) });
@@ -1536,9 +1595,9 @@ define([
               alignType = 'dna';
             }
             if (exist_nwk == 1) {
-              Topic.publish('/navigate', { href: '/view/MSATree/&alignType=' + alignType + '&path=' + afa_file, target: 'blank' });
+              Topic.publish('/navigate', { href: '/view/MSATree/&alignType=' + alignType + '&path=' + encodeURIComponent(afa_file), target: 'blank' });
             } else {
-              Topic.publish('/navigate', { href: '/view/MSAView/&alignType=' + alignType + '&path=' + afa_file, target: 'blank' });
+              Topic.publish('/navigate', { href: '/view/MSAView/&alignType=' + alignType + '&path=' + encodeURIComponent(afa_file), target: 'blank' });
             }
           });
         }
@@ -1663,7 +1722,6 @@ define([
         Topic.publish('/navigate', { href: url });
       }, false);
 
-
       this.actionPanel.addAction('SplitItems', 'fa icon-split fa-2x', {
         label: 'SPLIT',
         ignoreDataType: true,
@@ -1721,8 +1779,7 @@ define([
           bc.addChild(stg);
           dlg.startup();
           dlg.show();
-        },
-        false
+        }, false
       );
 
       /* Assuming we want to allow deletion of all types for now
@@ -1783,11 +1840,11 @@ define([
         }
 
         var isWorkspace = self.path.split('/').length < 3;
-        var conf = 'Are you sure you want to delete ' +
-          (objs.length > 1 ? 'these' : 'this') +
-          (isWorkspace ? ' workspace' : ' folder') +
-          (objs.length > 1 ? 's' : '') +
-          ' and its contents?';
+        var conf = 'Are you sure you want to delete '
+          + (objs.length > 1 ? 'these' : 'this')
+          + (isWorkspace ? ' workspace' : ' folder')
+          + (objs.length > 1 ? 's' : '')
+          + ' and its contents?';
 
         var dlg = new Confirmation({
           content: conf,
@@ -1802,7 +1859,6 @@ define([
         dlg.show();
 
       }, false);
-
 
       this.actionPanel.addAction('Rename', 'fa icon-pencil-square-o fa-2x', {
         label: 'RENAME',
@@ -1858,9 +1914,9 @@ define([
           disableDropdownSelector: true
         });
         objSelector.set('type', ['folder']);
-        objSelector.title = 'Copy contents of ' + selection.length +
-          (selection.length ? ' items' : ' item') +
-          ' to...';
+        objSelector.title = 'Copy contents of ' + selection.length
+          + (selection.length ? ' items' : ' item')
+          + ' to...';
 
         // always set to user's root
         objSelector.set('path', '/' + window.App.user.id);
@@ -1903,7 +1959,6 @@ define([
         objSelector.openChooser();
       }, false);
 
-
       this.actionPanel.addAction('Move', 'fa icon-arrow-right fa-2x', {
         label: 'MOVE',
         allowMultiTypes: true,
@@ -1936,9 +1991,9 @@ define([
           disableDropdownSelector: true
         });
         objSelector.set('type', ['folder']);
-        objSelector.title = 'Move contents of ' + selection.length +
-          (selection.length ? ' items' : ' item') +
-          ' to...';
+        objSelector.title = 'Move contents of ' + selection.length
+          + (selection.length ? ' items' : ' item')
+          + ' to...';
 
         // always set to user's root
         objSelector.set('path', '/' + window.App.user.id);
@@ -2055,11 +2110,9 @@ define([
         var item = selection[0];
         var parentPath = item.path.split('/').slice(0, -1).join('/');
         if (parentPath) {
-          Topic.publish('/navigate', { href: '/workspace' + parentPath, target: 'blank' });
+          Topic.publish('/navigate', { href: '/workspace' + encodePath(parentPath), target: 'blank' });
         }
       }, true); // The 'enabled' flag should be true so it can be controlled by logic
-
-
 
       // listen for opening user permisssion dialog
       Topic.subscribe('/openUserPerms', function (selection) {
@@ -2082,10 +2135,8 @@ define([
       this.addChild(this.browserHeader);
 
       this.inherited(arguments);
-      Topic.subscribe("/dojo/hashchange", lang.hitch(this, this.onHashChange));
+      Topic.subscribe('/dojo/hashchange', lang.hitch(this, this.onHashChange));
       this.onHashChange(hash());
-
-
 
       // Hide the panel on a small screen
       if (window.innerWidth <= 768 && this.actionPanel) {
@@ -2096,37 +2147,35 @@ define([
       // Force resize after startup to ensure proper layout calculation
       // This handles cases where header content affects layout
       var _self = this;
-      setTimeout(function() {
+      setTimeout(function () {
         _self.resize();
       }, 100);
     },
 
-    onHashChange: function(newHash) {
-        var params = ioQuery.queryToObject(newHash);
-        var searchTerm = params.search_term || "";
-        var searchType = params.search_type || "all";
+    onHashChange: function (newHash) {
+      var params = ioQuery.queryToObject(newHash);
+      var searchTerm = params.search_term || '';
+      var searchType = params.search_type || 'all';
 
-        // If a search is defined in the URL and it's different from the current search
-        if (searchTerm && (searchTerm !== this.currentSearchTerm || searchType !== this.currentSearchType)) {
-            // Update the UI to reflect the URL state
-            if (this.searchBox) this.searchBox.set('value', searchTerm);
-            if (this.typeSelect) this.typeSelect.set('value', searchType);
+      // If a search is defined in the URL and it's different from the current search
+      if (searchTerm && (searchTerm !== this.currentSearchTerm || searchType !== this.currentSearchType)) {
+        // Update the UI to reflect the URL state
+        if (this.searchBox) this.searchBox.set('value', searchTerm);
+        if (this.typeSelect) this.typeSelect.set('value', searchType);
 
-            // Trigger the search
-            Topic.publish('/workspace/search', {
-                term: searchTerm,
-                type: searchType
-            });
-        }
-        // If the URL hash has no search term but a search is currently active, clear it.
-        else if (!searchTerm && this.originalPathBeforeSearch) {
-            Topic.publish('/workspace/clearSearch');
-        }
+        // Trigger the search
+        Topic.publish('/workspace/search', {
+          term: searchTerm,
+          type: searchType
+        });
+      }
+      // If the URL hash has no search term but a search is currently active, clear it.
+      else if (!searchTerm && this.originalPathBeforeSearch) {
+        Topic.publish('/workspace/clearSearch');
+      }
     },
 
-    addSearchToHeader: function(headerWidget) {
-      var self = this;
-
+    addSearchToHeader: function (headerWidget) {
       // Container for all search elements
       var searchSectionContainer = domConstruct.create('div', {
         'class': 'wsSearchSectionContainer',
@@ -2144,19 +2193,18 @@ define([
         }
       }
       if (typeOptions.length === 1) { // Fallback to changeableTypes
-          for (const typeKey in WorkspaceManager.changeableTypes) {
-              if (WorkspaceManager.changeableTypes.hasOwnProperty(typeKey) && typeKey !== "unspecified") {
-                  typeOptions.push({
-                      label: WorkspaceManager.changeableTypes[typeKey].label,
-                      value: typeKey
-                  });
-              }
+        for (const typeKey in WorkspaceManager.changeableTypes) {
+          if (WorkspaceManager.changeableTypes.hasOwnProperty(typeKey) && typeKey !== 'unspecified') {
+            typeOptions.push({
+              label: WorkspaceManager.changeableTypes[typeKey].label,
+              value: typeKey
+            });
           }
+        }
       }
 
       var typeSelectWidth = '120px'; // Example: Shortened from 150px
       var searchInputWidth = '180px'; // Example: Shortened from 220px
-
 
       this._wsSearchTypeSelectWidget = new Select({
         name: 'wsSearchTypeSelect',
@@ -2188,7 +2236,7 @@ define([
       }, searchSectionContainer); // Placed last in the search section
 
       // --- Helper function to perform the search ---
-      var doSearch = lang.hitch(this, function() {
+      var doSearch = lang.hitch(this, function () {
         var searchTerm = this._wsSearchInputWidget.get('value').trim();
         var searchType = this._wsSearchTypeSelectWidget.get('value');
         var focusNode = this._wsSearchInputWidget.focusNode || this._wsSearchInputWidget.textbox;
@@ -2202,25 +2250,25 @@ define([
           Topic.publish('/workspace/clearSearch');
         } else if (searchTerm && searchTerm.length < 3) {
           if (focusNode) {
-            dijit.registry.showTooltip("Search term must be at least 3 characters.", focusNode, ['below'], !this.isLeftToRight());
-            setTimeout(function(){ dijit.registry.hideTooltip(focusNode); }, 2500);
+            dijit.registry.showTooltip('Search term must be at least 3 characters.', focusNode, ['below'], !this.isLeftToRight());
+            setTimeout(function () { dijit.registry.hideTooltip(focusNode); }, 2500);
           }
         }
       });
 
       // --- Event Handlers ---
-      on(this._wsSearchInputWidget, 'keydown', function(evt) {
+      on(this._wsSearchInputWidget, 'keydown', function (evt) {
         if (evt.keyCode === keys.ENTER) {
           evt.preventDefault();
           doSearch();
         }
       });
 
-      on(this._wsSearchIconNode, 'click', function() {
+      on(this._wsSearchIconNode, 'click', function () {
         doSearch();
       });
 
-      on(this._wsSearchTypeSelectWidget, 'change', function(newType) {
+      on(this._wsSearchTypeSelectWidget, 'change', function (newType) {
         var currentSearchTerm = this._wsSearchInputWidget.get('value').trim();
         if (currentSearchTerm && currentSearchTerm.length >= 3) {
           Topic.publish('/workspace/search', {
@@ -2235,7 +2283,7 @@ define([
       var self = this;
       this.actionPanel.set('inSearch', true);
       if (this._searchInProgress) {
-        console.log("Search already in progress, ignoring new request.");
+        console.log('Search already in progress, ignoring new request.');
         return; // Prevent multiple concurrent searches from this UI
       }
       this._searchInProgress = true;
@@ -2251,7 +2299,7 @@ define([
       domStyle.set(this._wsSearchInputWidget.domNode, 'display', 'none');
       domStyle.set(this._wsSearchTypeSelectWidget.domNode, 'display', 'none');
       if (this._wsSearchIconNode) { // Also hide the search icon
-          domStyle.set(this._wsSearchIconNode, 'display', 'none');
+        domStyle.set(this._wsSearchIconNode, 'display', 'none');
       }
 
       var currentHash = hash();
@@ -2262,7 +2310,7 @@ define([
 
       // Update the URL hash without triggering onHashChange again if hash is already correct
       if (newHash !== currentHash) {
-          hash(newHash, true); // The 'true' prevents adding a new history entry if we're just replacing the state
+        hash(newHash, true); // The 'true' prevents adding a new history entry if we're just replacing the state
       }
 
       // Update and show search term indicator with spinner
@@ -2292,28 +2340,28 @@ define([
       // Attach click to the X only once or ensure it's managed correctly
       var clearButton = query('.wsClearSearchX', this.searchTermIndicator)[0];
       if (clearButton) {
-          if (clearButton._clickHandler) { // If a handler exists, remove it first
-              clearButton._clickHandler.remove();
+        if (clearButton._clickHandler) { // If a handler exists, remove it first
+          clearButton._clickHandler.remove();
+        }
+        clearButton._clickHandler = on(clearButton, 'click', function (evt) {
+          evt.stopPropagation(); // Prevent event from bubbling up
+          // If a search is cleared while in progress, ensure the flag is reset
+          if (self._searchInProgress) {
+            self._searchInProgress = false;
+            // Optionally, you might want to try and cancel the ongoing WorkspaceManager.searchObjects call
+            // This is complex and depends on how WorkspaceManager.searchObjects is implemented (e.g., if it returns a cancelable Deferred).
+            // For now, we just reset the UI flag.
           }
-          clearButton._clickHandler = on(clearButton, 'click', function(evt) {
-              evt.stopPropagation(); // Prevent event from bubbling up
-              // If a search is cleared while in progress, ensure the flag is reset
-              if(self._searchInProgress){
-                  self._searchInProgress = false;
-                  // Optionally, you might want to try and cancel the ongoing WorkspaceManager.searchObjects call
-                  // This is complex and depends on how WorkspaceManager.searchObjects is implemented (e.g., if it returns a cancelable Deferred).
-                  // For now, we just reset the UI flag.
-              }
-              Topic.publish('/workspace/clearSearch');
-          });
+          Topic.publish('/workspace/clearSearch');
+        });
       }
 
       // Use the *original* path as the base for the search, or current path if not nested search
       var searchBasePath = this.originalPathBeforeSearch || this.path;
 
-      //Client side
-      //WorkspaceManager.searchObjects(searchParams.term, searchParams.type, searchBasePath, true) // true for recursive
-      //Server side
+      // Client side
+      // WorkspaceManager.searchObjects(searchParams.term, searchParams.type, searchBasePath, true) // true for recursive
+      // Server side
       WorkspaceManager.searchServerObjects(searchParams.term, searchParams.type, searchBasePath, true) // true for recursive
         .then(lang.hitch(this, function (results) {
           // Search successful
@@ -2324,15 +2372,15 @@ define([
           }
         }), lang.hitch(this, function (err) {
           // Search failed
-          console.error("Search failed:", err);
-          Topic.publish('/Notification', { message: "Search failed: " + (err.message || err), type: "error" });
+          console.error('Search failed:', err);
+          Topic.publish('/Notification', { message: 'Search failed: ' + (err.message || err), type: 'error' });
           // Still render empty results in case of error to clear previous state
           if (this.activePanel && typeof this.activePanel.render === 'function') {
             this.activePanel.currentSearchTerm = searchParams.term; // Keep term to indicate what failed
             this.activePanel.render(searchBasePath, []); // Render empty
             this.activePanel.renderCount(0, true); // Show 0 found
           }
-        })).always(lang.hitch(this, function() {
+        })).always(lang.hitch(this, function () {
           // This block executes after success or failure
           this._searchInProgress = false;
           // Remove spinner if still part of an active search display
@@ -2340,7 +2388,7 @@ define([
             // More robustly remove the spinner by targeting its class
             var spinnerNode = query('.wsSearchSpinner', this.searchTermIndicator)[0];
             if (spinnerNode) {
-                domConstruct.destroy(spinnerNode);
+              domConstruct.destroy(spinnerNode);
             }
           }
         }));
@@ -2350,9 +2398,9 @@ define([
       if (this.originalPathBeforeSearch || WorkspaceManager.activeSearchFilter) {
         // If a search was in progress when cleared, reset the flag
         this.actionPanel.set('inSearch', false);
-        if(this._searchInProgress) {
-            this._searchInProgress = false;
-            // As above, true cancellation of the search promise is complex.
+        if (this._searchInProgress) {
+          this._searchInProgress = false;
+          // As above, true cancellation of the search promise is complex.
         }
 
         WorkspaceManager.activeSearchFilter = null;
@@ -2364,50 +2412,50 @@ define([
 
         // Restore visibility of search input and type select
         if (this._wsSearchInputWidget) {
-            domStyle.set(this._wsSearchInputWidget.domNode, 'display', ''); // Reset to default (usually inline-block for dijits)
-            this._wsSearchInputWidget.set('value', ''); // Clear the input field
+          domStyle.set(this._wsSearchInputWidget.domNode, 'display', ''); // Reset to default (usually inline-block for dijits)
+          this._wsSearchInputWidget.set('value', ''); // Clear the input field
         }
         if (this._wsSearchTypeSelectWidget) {
-            domStyle.set(this._wsSearchTypeSelectWidget.domNode, 'display', '');
-            this._wsSearchTypeSelectWidget.set('value', 'all'); // Reset select to 'All Types'
+          domStyle.set(this._wsSearchTypeSelectWidget.domNode, 'display', '');
+          this._wsSearchTypeSelectWidget.set('value', 'all'); // Reset select to 'All Types'
         }
         if (this._wsSearchIconNode) {
-            domStyle.set(this._wsSearchIconNode, 'display', ''); // Show search icon again
+          domStyle.set(this._wsSearchIconNode, 'display', ''); // Show search icon again
         }
         // Clear the search input widget in the header
-        //var searchInputWidgetNode = query('input[name="wsSearchInput"]', this.browserHeader.domNode)[0];
-        //if(searchInputWidgetNode){
+        // var searchInputWidgetNode = query('input[name="wsSearchInput"]', this.browserHeader.domNode)[0];
+        // if(searchInputWidgetNode){
         //    var searchInputWidget = dijit.registry.byNode(searchInputWidgetNode.parentNode); // Get the TextBox widget // RESTORED dijit.registry
         //    if(searchInputWidget) searchInputWidget.set('value', '');
-        //}
+        // }
         // Reset type dropdown to "All Types"
-        ///var typeSelectNode = query('select[name="wsSearchTypeSelect"]', this.browserHeader.domNode)[0];
-        //if(typeSelectNode){
+        /// var typeSelectNode = query('select[name="wsSearchTypeSelect"]', this.browserHeader.domNode)[0];
+        // if(typeSelectNode){
         //    var typeSelectWidget = dijit.registry.byNode(typeSelectNode.parentNode); // Get the Select widget // RESTORED dijit.registry
         //     if(typeSelectWidget) typeSelectWidget.set('value', 'all');
-        //}
+        // }
 
-        //if(this.searchTermIndicator) {
+        // if(this.searchTermIndicator) {
         //    this.searchTermIndicator.style.display = 'none';
         //    this.searchTermIndicator.innerHTML = ''; // Clear all content, including any spinner
-        //}
+        // }
 
         var pathToRestore = this.originalPathBeforeSearch;
         this.originalPathBeforeSearch = null; // Reset before setting path to avoid loops
 
         // Explicitly tell explorer to refresh to the restored path
         if (this.activePanel && typeof this.activePanel.set == 'function' && typeof this.activePanel.refreshWorkspace == 'function') {
-            this.activePanel.currentSearchTerm = null; // Clear search state in explorer
-            this.activePanel.set('path',pathToRestore); // This should trigger its own refresh logic
-            // this.activePanel.refreshWorkspace(); // Or call refresh directly if set('path') doesn't always do it
+          this.activePanel.currentSearchTerm = null; // Clear search state in explorer
+          this.activePanel.set('path', pathToRestore); // This should trigger its own refresh logic
+          // this.activePanel.refreshWorkspace(); // Or call refresh directly if set('path') doesn't always do it
         }
         var currentHash = hash();
         var params = ioQuery.queryToObject(currentHash);
         if (params.search_term) { // Only change hash if search params are present
-            delete params.search_term;
-            delete params.search_type;
-            var newHash = ioQuery.objectToQuery(params);
-            hash(newHash, true); // Update the URL hash to remove search params
+          delete params.search_term;
+          delete params.search_type;
+          var newHash = ioQuery.objectToQuery(params);
+          hash(newHash, true); // Update the URL hash to remove search params
         }
       }
     },
@@ -2587,10 +2635,10 @@ define([
           okLabel: 'OK',
           cancelLabel: null,
           content:
-            '<b>The selected items must be one of the following types:</b> <br>' +
-            validTypes.join('<br>') + '.<br><br>' +
-            '<b>However, your selection contained the type(s):</b> <br>' +
-            unchangeableTypes.join('<br>'),
+            '<b>The selected items must be one of the following types:</b> <br>'
+            + validTypes.join('<br>') + '.<br><br>'
+            + '<b>However, your selection contained the type(s):</b> <br>'
+            + unchangeableTypes.join('<br>'),
           style: 'width: 400px;',
           onConfirm: function (evt) {
             this.hideAndDestroy();
@@ -2627,9 +2675,9 @@ define([
           });
 
           Topic.publish('/Notification', {
-            message: "<span class='default'>Changing " +
-              (paths.length > 1 ? paths.length + ' types...' : ' type...') +
-              '</span>'
+            message: "<span class='default'>Changing "
+              + (paths.length > 1 ? paths.length + ' types...' : ' type...')
+              + '</span>'
           });
 
           WorkspaceManager.updateMetadata(newObjs)
@@ -2681,7 +2729,7 @@ define([
       }
       // console.log("[WorkspaceBrowser] uriParams:",uriParams)
 
-      var pathParts = this.path.split('/').filter(function(part) {
+      var pathParts = this.path.split('/').filter(function (part) {
         return part && part.length > 0;
       });
 
@@ -2692,21 +2740,21 @@ define([
       // If not clearing search, and the new path is different from the original path before search,
       // it implies navigation away from search context, so clear search.
       if (WorkspaceManager.activeSearchFilter && val !== this.originalPathBeforeSearch) {
-         // Check if handleClearSearchRequest is already in progress to avoid recursion
+        // Check if handleClearSearchRequest is already in progress to avoid recursion
         if (!this._clearingSearch) {
-            this._clearingSearch = true; // semaphore
-            this.handleClearSearchRequest();
-            this._clearingSearch = false;
+          this._clearingSearch = true; // semaphore
+          this.handleClearSearchRequest();
+          this._clearingSearch = false;
         }
       }
       this.path = decodeURIComponent(val); // Set path after potential clearSearch
 
       if (WorkspaceManager.activeSearchFilter && this.path !== this.originalPathBeforeSearch && !hashParams.search_term) {
-          if (!this._clearingSearch) { // Prevent recursion
-              this._clearingSearch = true;
-              this.handleClearSearchRequest(); // This will clear UI and flags.
-              this._clearingSearch = false;
-          }
+        if (!this._clearingSearch) { // Prevent recursion
+          this._clearingSearch = true;
+          this.handleClearSearchRequest(); // This will clear UI and flags.
+          this._clearingSearch = false;
+        }
       }
 
       // this.path is already decoded, so just split it - no need to decode again
@@ -2738,260 +2786,260 @@ define([
       // console.log('in WorkspaceBrowser obj', obj);
       // Only proceed with panel updates if not in an active search state or if search is being cleared
       if (!WorkspaceManager.activeSearchFilter || this._clearingSearch) {
-      Deferred.when(obj, lang.hitch(this, function (obj) {
-        if (this.browserHeader) {
-          this.browserHeader.set('selection', [obj]);
-          // Trigger resize after selection changes to ensure proper layout
-          // when action buttons become visible/hidden
-          var _self = this;
-          setTimeout(function() {
-            _self.resize();
-          }, 0);
-        }
-        var currentPathParts = this.path.split('/').filter(function(part) {
-          return part && part.length > 0;
-        });
-        var isCurrentlyRootLevel = (currentPathParts.length <= 1);
-        var isJobResult = (obj && obj.type === 'job_result');
-
-        this._setSearchDisabled(isCurrentlyRootLevel || isJobResult);
-        var panelCtor;
-        var params = { path: this.path, region: 'center' };
-
-        console.log('in WorkspaceBrowser obj', obj);
-        // console.log('in WorkspaceBrowser obj.autoMeta', obj.autoMeta);
-        // console.log('in WorkspaceBrowser browserHeader', this.browserHeader);
-
-        var tempType=obj.type;
-        if (obj.name && obj.name.endsWith('.gexf')) {
-          tempType = 'gexf';
-        }
-
-        switch (tempType) {
-          case 'folder':
-            panelCtor = WorkspaceExplorerView;
-            // Track folder access for recent folders
-            if (window.App.user && window.App.user.id && this.path) {
-              // this.path is already decoded, no need to decode again
-              var folderName = obj.name || this.path.split('/').filter(Boolean).pop() || 'home';
-              RecentFolders.add(this.path, folderName);
-              if (window.App.updateRecentFoldersList) {
-                window.App.updateRecentFoldersList();
-              }
-            }
-            break;
-          case 'gexf':
-            Topic.publish('/navigate', { href: '/view/Gexf/?&path=' + encodePath(obj.path + obj.name), target: 'blank' });
-            return;
-          case 'genome_group':
-            panelCtor = window.App.getConstructor('p3/widget/viewer/WSGenomeGroup');
-            params.query = '?&in(genome_id,GenomeGroup(' + encodeURIComponent(this.path).replace(/\(/g, '%28').replace(/\)/g, '%29') + '))';
-            break;
-          case 'feature_group':
-            panelCtor = window.App.getConstructor('p3/widget/viewer/WSFeatureList');
-            params.query = '?&in(feature_id,FeatureGroup(' + encodeURIComponent(this.path) + '))';
-            break;
-          case 'model':
-            panelCtor = window.App.getConstructor('p3/widget/viewer/Model');
-            params.data = obj;
-            break;
-          case 'job_result':
-            var d = 'p3/widget/viewer/JobResult';
-            if (obj && obj.autoMeta && obj.autoMeta.app) {
-              var id = obj.autoMeta.app.id || obj.autoMeta.app;
-              switch (id) {
-                case 'DifferentialExpression':
-                  if (uriParams === 'summary') {
-                    d = 'p3/widget/viewer/Experiment';
-                  } else {
-                    d = 'p3/widget/viewer/DifferentialExpression';
-                  }
-                  break;
-                case 'GenomeComparison':
-                  if (uriParams === 'summary') {
-                    d = 'p3/widget/viewer/SeqComparison';
-                  } else {
-                    d = 'p3/widget/viewer/GenomeComparison';
-                  }
-                  break;
-                case 'GenomeAnnotation':
-                case 'GenomeAnnotationGenbank':
-                  d = 'p3/widget/viewer/GenomeAnnotation';
-                  break;
-                case 'Variation':
-                case 'RNASeq':
-                case 'TnSeq':
-                case 'FastqUtils':
-                  d = 'p3/widget/viewer/Seq';
-                  break;
-                case 'ComprehensiveGenomeAnalysis':
-                  d = 'p3/widget/viewer/ComprehensiveGenomeAnalysis';
-                  break;
-                case 'Homology':
-                  d = 'p3/widget/viewer/BlastJobResult';
-                  break;
-                //case 'SyntenyGraph':
-                //  d = 'p3/widget/viewer/GEXF';
-                //  break;
-                default:
-                  console.log('Using the default JobResult viewer. A viewer could not be found for id: ' + id);
-              }
-            }
-            panelCtor = window.App.getConstructor(d);
-            params.data = obj;
-            // params.query="?&in(feature_id,FeatureGroup("+encodeURIComponent(this.path)+"))";
-            break;
-          case 'experiment_group':
-            panelCtor = window.App.getConstructor('p3/widget/viewer/ExperimentGroup');
-            params.data = obj;
-            break;
-          case 'csv':
-          case 'tsv':
-            var tsvCsvFilename = this.tsvCsvFilename = obj.name;
-            panelCtor = window.App.getConstructor('p3/widget/viewer/TSV_CSV');
-            params.file = { metadata: obj };
-            break;
-          case 'nwk':
-          case 'phyloxml':
-            var labelSearch = 'false';
-            var idType = 'genome_id';
-            var labelType = 'genome_name';
-            var filepath = obj.path + obj.name;
-            Topic.publish('/navigate', { href: '/view/PhylogeneticTree2/?&labelSearch=' + labelSearch + '&idType=' + idType + '&labelType=' + labelType + '&wsTreeFile=' + encodePath(filepath) + '&fileType=' + obj.type });
-            break;
-
-          default:
-            var tsvCsvFilename = this.tsvCsvFilename = obj.name;
-            var isTsv = false;
-            var keyList = Object.keys(tsvCsvFeatures);    // for older tsv files typed as txt
-            keyList.forEach(function (keyName) {
-              if (tsvCsvFilename.indexOf(keyName) >= 0) {
-                // key name is found
-                isTsv = true;
-              }
-            });
-            if (isTsv) {
-              panelCtor = window.App.getConstructor('p3/widget/viewer/TSV_CSV');
-            } else {
-              panelCtor = window.App.getConstructor('p3/widget/viewer/File');
-            }
-            params.file = { metadata: obj };
-        }
-
-        Deferred.when(panelCtor, lang.hitch(this, function (Panel) {
-          if ((!this.activePanel) || !(this.activePanel instanceof Panel)) {
-            if (this.activePanel) {
-              this.removeChild(this.activePanel);
-            }
-
-            var newPanel = new Panel(params);
-            var hideTimer;
-
-            if (newPanel.setActionPanel) { newPanel.setActionPanel(this.actionPanel); }
-
+        Deferred.when(obj, lang.hitch(this, function (obj) {
+          if (this.browserHeader) {
+            this.browserHeader.set('selection', [obj]);
+            // Trigger resize after selection changes to ensure proper layout
+            // when action buttons become visible/hidden
             var _self = this;
-            Topic.subscribe('changeActionPanel', function (actionPanel) {
-              _self.actionPanel.set('selection', []);
-              _self.actionPanel.set('currentContainerWidget', newPanel);
-            });
+            setTimeout(function () {
+              _self.resize();
+            }, 0);
+          }
+          var currentPathParts = this.path.split('/').filter(function (part) {
+            return part && part.length > 0;
+          });
+          var isCurrentlyRootLevel = (currentPathParts.length <= 1);
+          var isJobResult = (obj && obj.type === 'job_result');
 
-            if (this.actionPanel) {
-              this.actionPanel.set('currentContainerWidget', newPanel);
-              if (this.itemDetailPanel) {
-                this.itemDetailPanel.set('containerWidget', newPanel);
+          this._setSearchDisabled(isCurrentlyRootLevel || isJobResult);
+          var panelCtor;
+          var params = { path: this.path, region: 'center' };
+
+          console.log('in WorkspaceBrowser obj', obj);
+          // console.log('in WorkspaceBrowser obj.autoMeta', obj.autoMeta);
+          // console.log('in WorkspaceBrowser browserHeader', this.browserHeader);
+
+          var tempType = obj.type;
+          if (obj.name && obj.name.endsWith('.gexf')) {
+            tempType = 'gexf';
+          }
+
+          switch (tempType) {
+            case 'folder':
+              panelCtor = WorkspaceExplorerView;
+              // Track folder access for recent folders
+              if (window.App.user && window.App.user.id && this.path) {
+              // this.path is already decoded, no need to decode again
+                var folderName = obj.name || this.path.split('/').filter(Boolean).pop() || 'home';
+                RecentFolders.add(this.path, folderName);
+                if (window.App.updateRecentFoldersList) {
+                  window.App.updateRecentFoldersList();
+                }
               }
-            }
-
-            if (newPanel.on) {
-              newPanel.on('select', lang.hitch(this, function (evt) {
-                var sel = Object.keys(evt.selected).map(lang.hitch(this, function (rownum) {
-                  return evt.grid.row(rownum).data;
-                }));
-                sel.forEach(function(item){
-                    if (item && (item.type === 'unspecified' || item.type === 'txt') && item.name && item.name.endsWith('.gexf')) {
-                        // Temporarily override the type for the ActionBar's logic
-                        item.type = 'gexf';
+              break;
+            case 'gexf':
+              Topic.publish('/navigate', { href: '/view/Gexf&path=' + encodeURIComponent(this.file), target: 'blank' });
+              return;
+            case 'genome_group':
+              panelCtor = window.App.getConstructor('p3/widget/viewer/WSGenomeGroup');
+              params.query = '?&in(genome_id,GenomeGroup(' + encodeURIComponent(this.path).replace(/\(/g, '%28').replace(/\)/g, '%29') + '))';
+              break;
+            case 'feature_group':
+              panelCtor = window.App.getConstructor('p3/widget/viewer/WSFeatureList');
+              params.query = '?&in(feature_id,FeatureGroup(' + encodeURIComponent(this.path) + '))';
+              break;
+            case 'model':
+              panelCtor = window.App.getConstructor('p3/widget/viewer/Model');
+              params.data = obj;
+              break;
+            case 'job_result':
+              var d = 'p3/widget/viewer/JobResult';
+              if (obj && obj.autoMeta && obj.autoMeta.app) {
+                var id = obj.autoMeta.app.id || obj.autoMeta.app;
+                switch (id) {
+                  case 'DifferentialExpression':
+                    if (uriParams === 'summary') {
+                      d = 'p3/widget/viewer/Experiment';
+                    } else {
+                      d = 'p3/widget/viewer/DifferentialExpression';
                     }
-                });
-                if (hideTimer) {
-                  clearTimeout(hideTimer);
+                    break;
+                  case 'GenomeComparison':
+                    if (uriParams === 'summary') {
+                      d = 'p3/widget/viewer/SeqComparison';
+                    } else {
+                      d = 'p3/widget/viewer/GenomeComparison';
+                    }
+                    break;
+                  case 'GenomeAnnotation':
+                  case 'GenomeAnnotationGenbank':
+                    d = 'p3/widget/viewer/GenomeAnnotation';
+                    break;
+                  case 'Variation':
+                  case 'RNASeq':
+                  case 'TnSeq':
+                  case 'FastqUtils':
+                    d = 'p3/widget/viewer/Seq';
+                    break;
+                  case 'ComprehensiveGenomeAnalysis':
+                    d = 'p3/widget/viewer/ComprehensiveGenomeAnalysis';
+                    break;
+                  case 'Homology':
+                    d = 'p3/widget/viewer/BlastJobResult';
+                    break;
+                    // case 'SyntenyGraph':
+                    //  d = 'p3/widget/viewer/GEXF';
+                    //  break;
+                  default:
+                    console.log('Using the default JobResult viewer. A viewer could not be found for id: ' + id);
                 }
-                if (sel.length > 0) {
-                  this.addChild(this.actionPanel);
+              }
+              panelCtor = window.App.getConstructor(d);
+              params.data = obj;
+              // params.query="?&in(feature_id,FeatureGroup("+encodeURIComponent(this.path)+"))";
+              break;
+            case 'experiment_group':
+              panelCtor = window.App.getConstructor('p3/widget/viewer/ExperimentGroup');
+              params.data = obj;
+              break;
+            case 'csv':
+            case 'tsv':
+              var tsvCsvFilename = this.tsvCsvFilename = obj.name;
+              panelCtor = window.App.getConstructor('p3/widget/viewer/TSV_CSV');
+              params.file = { metadata: obj };
+              break;
+            case 'nwk':
+            case 'phyloxml':
+              var labelSearch = 'false';
+              var idType = 'genome_id';
+              var labelType = 'genome_name';
+              var filepath = obj.path + obj.name;
+              Topic.publish('/navigate', { href: '/view/PhylogeneticTree2/?&labelSearch=' + labelSearch + '&idType=' + idType + '&labelType=' + labelType + '&wsTreeFile=' + encodePath(filepath) + '&fileType=' + obj.type });
+              break;
+
+            default:
+              var tsvCsvFilename = this.tsvCsvFilename = obj.name;
+              var isTsv = false;
+              var keyList = Object.keys(tsvCsvFeatures);    // for older tsv files typed as txt
+              keyList.forEach(function (keyName) {
+                if (tsvCsvFilename.indexOf(keyName) >= 0) {
+                // key name is found
+                  isTsv = true;
                 }
+              });
+              if (isTsv) {
+                panelCtor = window.App.getConstructor('p3/widget/viewer/TSV_CSV');
+              } else {
+                panelCtor = window.App.getConstructor('p3/widget/viewer/File');
+              }
+              params.file = { metadata: obj };
+          }
 
-                this.actionPanel.set('selection', sel);
-                this.itemDetailPanel.set('selection', sel);
+          Deferred.when(panelCtor, lang.hitch(this, function (Panel) {
+            if ((!this.activePanel) || !(this.activePanel instanceof Panel)) {
+              if (this.activePanel) {
+                this.removeChild(this.activePanel);
+              }
 
-                // Update favorite button state when a folder is selected
-                if (sel.length === 1 && sel[0].type === 'folder') {
-                  var self = this;
-                  FavoriteFolders.isFavorite(sel[0].path).then(function (isFav) {
-                    self._updateFavoriteButton(isFav);
-                  });
+              var newPanel = new Panel(params);
+              var hideTimer;
+
+              if (newPanel.setActionPanel) { newPanel.setActionPanel(this.actionPanel); }
+
+              var _self = this;
+              Topic.subscribe('changeActionPanel', function (actionPanel) {
+                _self.actionPanel.set('selection', []);
+                _self.actionPanel.set('currentContainerWidget', newPanel);
+              });
+
+              if (this.actionPanel) {
+                this.actionPanel.set('currentContainerWidget', newPanel);
+                if (this.itemDetailPanel) {
+                  this.itemDetailPanel.set('containerWidget', newPanel);
                 }
-              }));
+              }
 
-              newPanel.on('deselect', lang.hitch(this, function (evt) {
-                if (!evt.selected) {
-                  this.actionPanel.set('selection', []);
-                  this.itemDetailPanel.set('selection', []);
-                } else {
+              if (newPanel.on) {
+                newPanel.on('select', lang.hitch(this, function (evt) {
                   var sel = Object.keys(evt.selected).map(lang.hitch(this, function (rownum) {
                     return evt.grid.row(rownum).data;
                   }));
-                }
-
-                this.actionPanel.set('selection', sel);
-                this.itemDetailPanel.set('selection', sel);
-              }));
-
-              newPanel.on('ItemDblClick', lang.hitch(this, function (evt) {
-                if (evt.item && evt.item.type && (this.navigableTypes.indexOf(evt.item.type) >= 0)) {
-                  Topic.publish('/navigate', { href: '/workspace' + encodePath(evt.item_path) });
-                  this.actionPanel.set('selection', []);
-                  this.itemDetailPanel.set('selection', []);
-                  if ('clearSelection' in newPanel) {
-                    newPanel.clearSelection();
+                  sel.forEach(function (item) {
+                    if (item && (item.type === 'unspecified' || item.type === 'txt') && item.name && item.name.endsWith('.gexf')) {
+                      // Temporarily override the type for the ActionBar's logic
+                      item.type = 'gexf';
+                    }
+                  });
+                  if (hideTimer) {
+                    clearTimeout(hideTimer);
                   }
-                } else {
-                  console.log('non-navigable type, todo: show info panel when dblclick');
-                }
+                  if (sel.length > 0) {
+                    this.addChild(this.actionPanel);
+                  }
 
-              }));
-            }
+                  this.actionPanel.set('selection', sel);
+                  this.itemDetailPanel.set('selection', sel);
 
-            this.addChild(newPanel);
-            this.activePanel = newPanel;
-          } else {
+                  // Update favorite button state when a folder is selected
+                  if (sel.length === 1 && sel[0].type === 'folder') {
+                    var self = this;
+                    FavoriteFolders.isFavorite(sel[0].path).then(function (isFav) {
+                      self._updateFavoriteButton(isFav);
+                    });
+                  }
+                }));
+
+                newPanel.on('deselect', lang.hitch(this, function (evt) {
+                  if (!evt.selected) {
+                    this.actionPanel.set('selection', []);
+                    this.itemDetailPanel.set('selection', []);
+                  } else {
+                    var sel = Object.keys(evt.selected).map(lang.hitch(this, function (rownum) {
+                      return evt.grid.row(rownum).data;
+                    }));
+                  }
+
+                  this.actionPanel.set('selection', sel);
+                  this.itemDetailPanel.set('selection', sel);
+                }));
+
+                newPanel.on('ItemDblClick', lang.hitch(this, function (evt) {
+                  if (evt.item && evt.item.type && (this.navigableTypes.indexOf(evt.item.type) >= 0)) {
+                    Topic.publish('/navigate', { href: '/workspace' + encodePath(evt.item_path) });
+                    this.actionPanel.set('selection', []);
+                    this.itemDetailPanel.set('selection', []);
+                    if ('clearSelection' in newPanel) {
+                      newPanel.clearSelection();
+                    }
+                  } else {
+                    console.log('non-navigable type, todo: show info panel when dblclick');
+                  }
+
+                }));
+              }
+
+              this.addChild(newPanel);
+              this.activePanel = newPanel;
+            } else {
             // For job_result types, we need to set 'data' not 'path'
             // because JobResult viewer uses data to initialize
-            if (obj.type === 'job_result') {
-              this.activePanel.set('data', obj);
-            } else {
-              this.activePanel.set('path', this.path);
+              if (obj.type === 'job_result') {
+                this.activePanel.set('data', obj);
+              } else {
+                this.activePanel.set('path', this.path);
+              }
+              if (this.activePanel && 'clearSelection' in this.activePanel) {
+                this.activePanel.clearSelection();
+              }
             }
-            if (this.activePanel && 'clearSelection' in this.activePanel) {
-              this.activePanel.clearSelection();
+
+            if (this.browserHeader) {
+              this.browserHeader.set('path', this.path);
             }
-          }
 
-          if (this.browserHeader) {
-            this.browserHeader.set('path', this.path);
-          }
+          }));
 
+        }), lang.hitch(this, function (err) {
+          var parts = err.split('_ERROR_');
+          var m = parts[1] || parts[0];
+          var d = new Dialog({
+            content: m,
+            title: 'Error Loading Workspace',
+            style: 'width: 250px !important;'
+          });
+          d.show();
         }));
-
-      }), lang.hitch(this, function (err) {
-        var parts = err.split('_ERROR_');
-        var m = parts[1] || parts[0];
-        var d = new Dialog({
-          content: m,
-          title: 'Error Loading Workspace',
-          style: 'width: 250px !important;'
-        });
-        d.show();
-      }));
       } else if (this.browserHeader) {
         // If search is active, still update the browser header's path display to reflect context
         this.browserHeader.set('path', this.path);

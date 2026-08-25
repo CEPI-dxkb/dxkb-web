@@ -308,69 +308,13 @@
 
                 <div class="showOnLoad ShowWithAuth dijitHidden WorkspaceController desktop-only">
                     <div data-dojo-type="p3/widget/UploadStatus"></div>
-
-                    <div data-dojo-type="p3/widget/TooltipDialog">
-                        <div style="font-weight: bold; font-size: 14px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>">Documentation Website</a></div>
-
-                        <div style="margin-top: 5px; margin-bottom: 5px;" class="menuHeader">Updates and Reports</div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/news/index.html">News and Announcements</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/reports_and_analysis/index.html">Reports and Analysis</a></div>
-
-                        <div style="margin-top: 5px; margin-bottom: 5px;" class="menuHeader">Help Resources</div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/overview.html">Overview</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/quick_start/index.html">Quick Start</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/data_protocols/index.html">Data Sources &amp; Protocols</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/quick_references/index.html">Quick Reference Guides</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/tutorial/index.html">Tutorials</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/common_tasks/index.html">Common Tasks</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/cli_tutorial/index.html">Command Line Interface</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/videos/index.html">Instructional Videos</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/webinar/index.html">Webinars</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/quick_start/data_functionality_overview.html">Information for PATRIC Users</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/quick_start/ird-vipr_bv-brc_mapping.html">Information for IRD/ViPR Users</a></div>
-
-                        <div style="margin-bottom: 5px;" class="menuHeader">System Documentation</div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/system_documentation/system_architecture.html">System Architecture</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/test_procedures/index.html">Test Procedures</a></div>
-                        <div style="margin-left: 10px;"><a class="navigationLinkOut" href="<%- request.applicationOptions.docsServiceURL %>/usage_metrics.html">Usage Metrics</a></div>
-
-                    </div>
+                    <div data-dojo-type="p3/widget/JobStatus"></div>
                 </div>
 
-                <div class="topMenuButton showOnLoad dijitHidden" data-dojo-type="dijit/form/DropDownButton">
-                    <span>ABOUT</span>
-
-                    <div data-dojo-type="p3/widget/TooltipDialog">
-                        <div><a class="TopMenuLink" href="/about">About BV-BRC</a></div>
-                        <div><a class="DialogButton" rel="reportProblem:">Contact Us</a></div>
-                        <div><a class="TopMenuLink" href="/team">Our Team</a></div>
-                        <div><a class="TopMenuLink" href="<%- request.applicationOptions.docsServiceURL %>/news/index.html" target="_blank">Announcements</a></div>
-                        <div><a class="TopMenuLink" href="/brc-calendar">BRC Calendar</a></div>
-                        <hr>
-                        <div><a class="TopMenuLink" href="/publications">Publications</a></div>
-                        <div><a class="TopMenuLink" href="/citation">Citation</a></div>
-                        <div><a class="TopMenuLink" href="/related-resources">Related Resources</a></div>
-                        <div><a class="TopMenuLink navigationLinkOut" href="https://github.com/BV-BRC" target="_blank" rel="noopener">BV-BRC GitHub</a></div>
-                        <div><a class="TopMenuLink" href="/privacy-policy">Privacy Policy</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="p3header-search" style="width: 120px;flex-grow: 0.85;margin-right: 10px;">
-                <input style="width:100%;font-size:1em;" class="showOnLoad dijitHidden"
-                       data-dojo-type="p3/widget/GlobalSearch"/>
-            </div>
-
-            <div id="querylog-indicator" class="dijitHidden" style="display:flex;align-items:center;margin-right:8px;cursor:pointer;"
-                 title="Query logging is active — click to stop"
-                 onclick="window.App.stopQueryLogging && window.App.stopQueryLogging()">
-                <span class="querylog-recording-dot"></span>
-            </div>
-
-            <div id="bv-brc-right-header">
-                <div class="HideWithAuth authLinks showOnLoad dijitHidden">
-                    <a class="auth-button navigationLink" href="/register">Register</a>
-                    <a class="auth-button navigationLink" href="/login">Sign In</a>
+                <div id="querylog-indicator" class="dijitHidden" style="display:flex;align-items:center;margin-right:8px;cursor:pointer;"
+                     title="Query logging is active - click to stop"
+                     onclick="window.App.stopQueryLogging && window.App.stopQueryLogging()">
+                    <span class="querylog-recording-dot"></span>
                 </div>
 
                 <div id="mobile-search-icon">

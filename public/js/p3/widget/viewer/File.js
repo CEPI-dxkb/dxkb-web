@@ -130,57 +130,64 @@ define([
       if (this.file && this.file.metadata) {
         if (this.viewable) {
           this.viewSubHeader.set('content', this.formatFileMetaData(false));
+          var spinner = domConstruct.create('div', {
+            className: 'spinner',
+            innerHTML: 'Loading...'
+          });
+          domStyle.set(spinner, {
+            position: 'absolute',
+            fontSize: '2.5em',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 10,
+            backgroundColor: 'white',
+            padding: '10px',
+            borderRadius: '4px'
+          });
+          domConstruct.empty(this.viewer.containerNode);
+          domStyle.set(this.viewer.containerNode, 'overflow', 'hidden');
+          domConstruct.place(spinner, this.viewer.containerNode);
+
+          var showError = lang.hitch(this, function (message) {
+            domConstruct.empty(this.viewer.containerNode);
+            domConstruct.create('div', {
+              className: 'error',
+              textContent: message
+            }, this.viewer.containerNode);
+          });
+
           // Set cookie for workspace load
           this.authorize().then(lang.hitch(this, function () {
             // Encode filepath to handle special characters like #, ?, &, etc.
-            var encodedPath = this.filepath.split('/').map(function(component, index) {
+            var encodedPath = this.filepath.split('/').map(function (component, index) {
               // Keep first component (empty string before leading /) and username unencoded
               if (index <= 1) return component;
               return encodeURIComponent(component);
             }).join('/');
-            const docURL = window.App.workspaceDownloadAPI + "/view" + encodedPath;
-            // Create a spinner div
-            const spinner = domConstruct.create("div", {
-              className: "spinner",
-              innerHTML: "Loading..."
-            });
-
-            // Style the spinner (you can customize this or use a CSS class)
-            domStyle.set(spinner, {
-              position: "absolute",
-              fontSize: "2.5em",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              zIndex: 10,
-              backgroundColor: "white",
-              padding: "10px",
-              borderRadius: "4px"
-            });
+            const docURL = window.App.workspaceDownloadAPI + '/view' + encodedPath;
             var iframe = domConstruct.create('iframe', { style: 'width:100%;height:100%' });
-            domConstruct.empty(this.viewer.containerNode);
-            domStyle.set(this.viewer.containerNode, 'overflow', 'hidden');
-            domConstruct.place(spinner, this.viewer.containerNode);
             domConstruct.place(iframe, this.viewer.containerNode);
 
             iframe.onload = function () {
-              /*
-              var nodes = iframe.contentWindow.document.getElementsByTagName("a")
-              var i = 0
-              while (i < nodes.length) {
-                var n = nodes.item(i)
-                console.log("modify", n.target, n)
-                //n.target = "_parent";
-                i++
+              try {
+                var responseText = iframe.contentDocument.body.textContent.trim();
+                if (/^(Invalid Session|Unauthorized|Forbidden|Service Unavailable)/i.test(responseText)) {
+                  showError('Unable to preview file: your session may have expired or the download service is unavailable.');
+                  return;
+                }
+              } catch (err) {
+                // The endpoint may be cross-origin when direct-service rollback is configured.
               }
-              */
               domConstruct.destroy(spinner);
-
-            }
+            };
+            iframe.onerror = function () {
+              showError('Unable to preview file: the download service could not be reached.');
+            };
             iframe.src = docURL;
 
-          }), function () {
-            console.log("Cookie auth failure");
+          }), function (err) {
+            showError('Unable to authorize file preview: ' + (err.message || 'unknown error'));
           });
         } else {
           this.viewSubHeader.set('content', this.formatFileMetaData(true));

@@ -4,6 +4,8 @@
   'accountURL': '',
   'authorizationURL': '',
   'dataServiceURL': '/api',
+  'workspaceDownloadServiceURL': '/services/WorkspaceDownload',
+  'workspaceDownloadServiceTarget': 'https://www.bv-brc.org/services/WorkspaceDownload',
   'gaID': '',
   'newrelic_license_key': '',
   'enableDevTools': false

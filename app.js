@@ -29,6 +29,7 @@ var help = require('./routes/help');
 var app = express();
 var httpProxy = require('http-proxy');
 var apiProxy = httpProxy.createProxyServer();
+var workspaceDownloadProxy = require('./lib/workspaceDownloadProxy');
 
 // Trust the first proxy hop (reverse proxy like nginx/Apache)
 // This is required for express-rate-limit to correctly identify client IPs
@@ -82,6 +83,12 @@ app.use(helmet({
     preload: true
   }
 }));
+
+app.use(workspaceDownloadProxy.MOUNT_PATH,
+  workspaceDownloadProxy.createWorkspaceDownloadProxy(
+    config.get('workspaceDownloadServiceTarget'),
+    { timeout: config.get('workspaceDownloadServiceTimeout') }
+  ));
 
 // Block access to demo directories with legacy/vulnerable jQuery versions
 app.use(['/js/jDataView/demo', '/js/phyloview/testTree.html'], function(req, res) {

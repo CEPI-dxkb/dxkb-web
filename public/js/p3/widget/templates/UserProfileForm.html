@@ -82,60 +82,6 @@
       </table>
       <p class="HideWithAuth">Click <a href="https://lists.bv-brc.org/mailman/listinfo/all-users" target="_blank">HERE</a> to sign up for the BV-BRC mailing list.</p>
     </div>
-    <div class="" data-dojo-attach-point="setPasswordForm" style="max-width:580px; display:block; border: 1px solid gray;margin:4px;margin-top: 28px;margin-bottom:28px; padding:4px;padding-top:8px;">
-      <span style="position:relative;top: -17px; border: none; background: #fff;padding: 4px; color: #333;font-weight:600;">Set Password</span>
-      <table>
-        <tbody>
-          <tr><th style="padding:0"><span style="color:red;">*</span>PASSWORD</th></tr>
-          <tr><td style="padding-top:0">
-            <input class="pw1field" type="password" style="display:block" name="password" data-dojo-attach-point="password" data-dojo-type="dijit/form/TextBox" value="" required="true" data-dojo-props="intermediateChanges: true" data-dojo-attach-event="onChange: setPasswordsChanged">
-          </td></tr>
-          <tr><th style="padding:0"><span style="color:red;">*</span>PASSWORD (repeat)</th></tr>
-          <tr><td style="padding-top:0">
-            <input class="pw2field" type="password" style="display:block" name="password_repeat" data-dojo-attach-point="password2" data-dojo-type="dijit/form/TextBox" value="" required="true" data-dojo-props="intermediateChanges: true" data-dojo-attach-event="onChange: setPasswordsChanged">
-          </td></tr>
-        </tbody>
-      </table>
-      <div data-dojo-attach-point="password_error" style="color:red; margin-top:20px;display:none"><p>The passwords must match</p></div>
-    </div>
-    <!-- <div class="" data-dojo-attach-point="notificationsContainer" style="max-width:580px; display:block; border: 1px solid gray;margin:4px;margin-top: 28px;padding:4px;padding-top:8px;">
-      <span style="position:relative;top: -17px; border: none; background: #fff;padding: 4px; color: #333;font-weight:600;">Notifications</span>
-      <div>
-          <span style="margin:8px">
-            <input name="mailingLists" data-dojo-type="dijit/form/CheckBox" value="general"> <span>BV-BVC General Announcements</span>
-          </span>
-          <span style="margin:8px">
-            <input name="mailingLists" data-dojo-type="dijit/form/CheckBox" value="bacteria"> <span>Bacteria</span>
-          </span>
-          <span style="margin:8px">
-            <input name="mailingLists" data-dojo-type="dijit/form/CheckBox" value="virus"> <span>Virus</span>
-          </span>
-          <span style="margin:8px">
-            <input name="mailingLists" data-dojo-type="dijit/form/CheckBox" value="fungi"> <span>Fungi</span>
-          </span>
-          <span style="margin:8px">
-            <input data-dojo-type="dijit/form/CheckBox" value="vector"> <span>Vector</span>
-          </span>
-      </div>
-    </div> -->
-    <div data-dojo-attach-point="notificationsContainer">
-    </div>
-    <div style="max-width: 580px;margin:4px;margin-top: 28px;">
-      <div class="upSubmit" style="" data-dojo-attach-point="udProfButton" type="submit" value="Submit" data-dojo-type="dijit/form/Button">Update Profile</div>
-      <div class="newSubmit" style="display:none" data-dojo-attach-point="submitButton" type="submit" value="Submit" data-dojo-type="dijit/form/Button">Register</div>
-      <div data-dojo-attach-point="regFormErrorsContainer" class="dijitHidden">
-        <p class="regFormErrors" style="color:red"></p>
-      </div>
-    </div>
-    <div class="regMessage dijitHidden" data-dojo-attach-point="regMessage" style="margin:4px;margin-top:16px;padding:4px;font-size:1.1em;">
-      <p style="color: green;font-size:1.1em;margin-bottom: 12px;">
-          Your registration has been received. An email has been sent containing the remainder of the registration process.
-      </p>
-      <div style="margin-bottom: 12px;" data-dojo-attach-point="initialNotificationsContainer">
-      </div>
-    </div>
-  </form>
-
           <div class="RegistrationFormContainer" data-dojo-attach-point="setPasswordForm">
             <h3 class="page-content-subheader">Set Password</h3>
             <div class="page-content-divider"></div>

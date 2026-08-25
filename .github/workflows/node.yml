@@ -12,9 +12,9 @@ name: CI
 
 on:
   push:
-    branches: [ alpha, beta, master ]
+    branches: [ alpha, beta, dev, test, main, master ]
   pull_request:
-    branches: [ alpha, beta, master ]
+    branches: [ alpha, beta, dev, test, main, master ]
 
 permissions:
   contents: read

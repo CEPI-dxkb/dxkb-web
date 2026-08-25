@@ -282,6 +282,8 @@ app.use('/help', help);
 app.use('/uploads', uploads);
 app.use('/users', users);
 app.use('/vendor/gexf-js', express.static(path.join(__dirname, 'node_modules', 'gexf-js')));
+app.use('/vendor/leaflet', express.static(path.join(__dirname, 'node_modules', 'leaflet', 'dist')));
+app.use('/vendor/leaflet.markercluster', express.static(path.join(__dirname, 'node_modules', 'leaflet.markercluster', 'dist')));
 
 
 // Embedded Nextstrain/Auspice viewer

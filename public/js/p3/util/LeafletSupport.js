@@ -3,20 +3,16 @@
  *
  * Centralizes what both maps need: the window.L bridge, one-time CSS injection,
  * the ref-counted AMD shield for loading UMD plugins via <script>, the
- * Leaflet.markercluster loader, and the CartoDB base tile layers. Keeping the
- * pinned Leaflet/markercluster versions and the AMD shield in one place avoids
- * version drift and double-maintenance across the two widgets.
+ * Leaflet.markercluster loader, and the CartoDB base tile layers.
  */
 define([
-  'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+  '/vendor/leaflet/leaflet.js'
 ], function (LeafletExports) {
 
-  var LEAFLET_VERSION = '1.9.4';
-  var MARKERCLUSTER_VERSION = '1.5.3';
-  var LEAFLET_CSS = 'https://unpkg.com/leaflet@' + LEAFLET_VERSION + '/dist/leaflet.css';
-  var MC_JS = 'https://unpkg.com/leaflet.markercluster@' + MARKERCLUSTER_VERSION + '/dist/leaflet.markercluster.js';
-  var MC_CSS = 'https://unpkg.com/leaflet.markercluster@' + MARKERCLUSTER_VERSION + '/dist/MarkerCluster.css';
-  var MC_DEFAULT_CSS = 'https://unpkg.com/leaflet.markercluster@' + MARKERCLUSTER_VERSION + '/dist/MarkerCluster.Default.css';
+  var LEAFLET_CSS = '/vendor/leaflet/leaflet.css';
+  var MC_JS = '/vendor/leaflet.markercluster/leaflet.markercluster.js';
+  var MC_CSS = '/vendor/leaflet.markercluster/MarkerCluster.css';
+  var MC_DEFAULT_CSS = '/vendor/leaflet.markercluster/MarkerCluster.Default.css';
 
   // CartoDB raster tiles built from OpenStreetMap data. Labels render in
   // Latin/English where OSM has `name:en`, avoiding local-script labels.

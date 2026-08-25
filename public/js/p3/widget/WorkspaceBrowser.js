@@ -2829,7 +2829,7 @@ define([
               }
               break;
             case 'gexf':
-              Topic.publish('/navigate', { href: '/view/Gexf&path=' + encodeURIComponent(this.file), target: 'blank' });
+              Topic.publish('/navigate', { href: '/view/Gexf/?&path=' + encodePath(obj.path + obj.name), target: 'blank' });
               return;
             case 'genome_group':
               panelCtor = window.App.getConstructor('p3/widget/viewer/WSGenomeGroup');

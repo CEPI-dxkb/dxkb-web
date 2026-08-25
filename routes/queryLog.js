@@ -1,4 +1,8 @@
+'use strict';
+
 var express = require('express');
+var axios = require('axios');
+var config = require('../config');
 
 function parseUsernameFromToken(token) {
   if (!token) return null;
@@ -16,24 +20,41 @@ module.exports = function (sessionManager) {
 
   router.use(express.json());
 
-  router.post('/start', function (req, res) {
+  router.post('/start', async function (req, res, next) {
     var token = req.headers.authorization;
     if (!token) {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    var username = parseUsernameFromToken(token);
-    if (!username) {
-      return res.status(401).json({ error: 'Could not determine username from token' });
+    var username;
+    try {
+      var accountURL = config.get('accountURL').replace(/\/+$/, '');
+      var response = await axios.get(accountURL + '/authenticate/refresh/', {
+        headers: {
+          authorization: token,
+          accept: 'text/plain'
+        }
+      });
+      username = parseUsernameFromToken(response.data);
+    } catch (err) {
+      return res.status(401).json({ error: 'Invalid authentication token' });
     }
 
-    var result = sessionManager.start(username);
-    res.cookie('_querylog', result.filename, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'lax'
-    });
-    res.json({ status: 'started', filename: result.filename });
+    if (!username) {
+      return res.status(401).json({ error: 'Could not determine authenticated username' });
+    }
+
+    try {
+      var result = sessionManager.start(username);
+      res.cookie('_querylog', result.filename, {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax'
+      });
+      return res.json({ status: 'started', filename: result.filename });
+    } catch (err) {
+      return next(err);
+    }
   });
 
   router.post('/stop', function (req, res) {

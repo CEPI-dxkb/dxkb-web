@@ -46,6 +46,8 @@
     "httpntlm": "^1.4.1",
     "jbrowse": "github:GMOD/jbrowse#759433708fe59e2c0a09e781cf93dc7ec4670461",
     "jquery": "^3.7.1",
+    "leaflet": "1.9.4",
+    "leaflet.markercluster": "1.5.3",
     "markdown-it": "^14.1.0",
     "markdown-it-link-attributes": "^4.0.1",
     "morgan": "^1.11.0",

@@ -1,0 +1,19 @@
+views/bv-brc-header.ejs
+  s_bc3751d23cf84c::t_c97b18c8d2872b 311,314-317
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "6670c9da497ebfa9245cde23863c77ebfd6224dd",
+  "prompts": {},
+  "sessions": {
+    "s_bc3751d23cf84c": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc6484a92ffeUNZxXUoGhEAT0B",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+app.js
+  s_75abb78655665a::t_4f20e225896391 87-88,91-94
+public/js/archaeopteryx/archaeopteryx-dependencies/jquery-ui.js
+  s_75abb78655665a::t_861c882bb189f7 2-3
+lib/tests/workspaceDownloadProxy.test.js
+  s_75abb78655665a::t_b12142da0fdaab 75,83,89,94,111,117-118,128,142,151,164-166
+  s_75abb78655665a::t_5da3227105c1a4 49
+  s_75abb78655665a::t_c5c5db1d1858c5 101,103
+  s_75abb78655665a::t_c6c6295409db80 58,60-61
+public/js/bundle/bundle2.js
+  s_75abb78655665a::t_a136126de5efb9 1582-1583
+public/js/bundle/make_bundle2.sh
+  s_75abb78655665a::t_5c4f1270b68ed9 7-8
+public/js/p3/widget/viewer/MSAView.js
+  s_75abb78655665a::t_bd9cbcdc068c8e 627
+public/js/p3/widget/viewer/File.js
+  s_75abb78655665a::t_756c313a8b3436 175
+lib/workspaceDownloadProxy.js
+  s_75abb78655665a::t_57daae3362cd18 29
+  s_75abb78655665a::t_f076c6313fabae 63
+  s_75abb78655665a::t_007027f85b38e0 80
+  s_75abb78655665a::t_d0d94654b0d3b2 6
+  s_75abb78655665a::t_4fc068f87587d8 16
+  s_75abb78655665a::t_a1d730234cc993 61-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "53326c11d0055aef929b78ac94c971425feebe20",
+  "prompts": {},
+  "sessions": {
+    "s_75abb78655665a": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc55261fdffe01MFiRZi2XNsKM",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint strict: 0 */
 define([
   'dojo/_base/declare', 'dijit/_WidgetBase', 'dojo/on', 'dojo/dom-construct', 'dijit/registry',
   'dojo/dom-class', 'dijit/_TemplatedMixin', 'dijit/_WidgetsInTemplateMixin',

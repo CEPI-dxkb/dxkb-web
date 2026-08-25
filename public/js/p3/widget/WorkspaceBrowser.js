@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint strict: 0 */
 define([
   'dojo/_base/declare', 'dijit/layout/BorderContainer', 'dojo/on', 'dojo/query',
   'dojo/dom-class', 'dojo/dom-construct', 'dojo/dom-attr',

@@ -1,5 +1,4 @@
-'use strict';
-
+/* eslint strict: 0 */
 define([
   'dojo/_base/declare',
   'dojo/topic', 'dojo/on', 'dojo/dom', 'dojo/dom-class', 'dojo/dom-attr', 'dojo/dom-construct', 'dojo/dom-style', 'dojo/query',

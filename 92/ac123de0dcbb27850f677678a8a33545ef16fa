@@ -1,0 +1,25 @@
+public/js/p3/widget/viewer/Gexf.js
+  s_47d6137fedfa87::t_807c9d0711a5d8 1
+public/js/p3/app/p3app.js
+  s_47d6137fedfa87::t_c0dc4c2214ae38 1
+public/js/p3/widget/WorkspaceBrowser.js
+  s_47d6137fedfa87::t_551e6ec727eb1d 1
+public/js/p3/widget/UserProfileForm.js
+  s_47d6137fedfa87::t_f607af04d6ab65 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "92ac123de0dcbb27850f677678a8a33545ef16fa",
+  "prompts": {},
+  "sessions": {
+    "s_47d6137fedfa87": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc5bcea6bffey5p1ow47ZgKltr",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

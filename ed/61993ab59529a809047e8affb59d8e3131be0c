@@ -1,0 +1,46 @@
+public/js/p3/widget/UserProfileForm.js
+  s_4b633e949a8459::t_09685d58e9b316 1-2
+  s_4b633e949a8459::t_7317ec27fb2ed5 4,7,9,12,33,38-41,43-49,52-53,56,62,82-85,98,102-104,106-108,113-115,119,184,186-201,204,294,296-298,306,386-387,397-399,404-406,443,455-460,462-466,468-471,473-474,477-478,495-498
+  s_4b633e949a8459::t_837e4b21a417c8 250-251
+lib/tests/queryLogger.test.js
+  s_4b633e949a8459::t_f5434783734be8 2
+  s_4b633e949a8459::t_e6e4600b790836 1
+  s_4b633e949a8459::t_f261e5f6fe2af2 47-56,61-62,65-68
+  s_4b633e949a8459::t_05bed94aaf2a44 11,13-14,18
+lib/queryLogger.js
+  s_4b633e949a8459::t_cb50e9e9f59fb8 3
+  s_4b633e949a8459::t_dbc71cc96c5a62 55
+  s_4b633e949a8459::t_a4152ac3ee9755 44
+  s_4b633e949a8459::t_5bf8c532abcd74 27-31,41-43,45-46,49-54,56,58-59,61-62,64-68
+  s_4b633e949a8459::t_15aab172ed8c8a 15,19
+  s_4b633e949a8459::t_8120e61ec1b72a 9-12
+  s_4b633e949a8459::t_34e10fb88d9f44 6
+  s_4b633e949a8459::t_4969c0e1ceee8f 81,95-96,99-100,104-105,109
+  s_4b633e949a8459::t_fb67f5f073f273 84,90
+  s_4b633e949a8459::t_ace39aa0af1338 82-83,91-94
+  s_4b633e949a8459::t_e8950e41ec6a7a 85-89
+routes/queryLog.js
+  s_4b633e949a8459::t_5b440afff8f752 48-49
+  s_4b633e949a8459::t_21ea8d6c02c55e 61-62,68-70,75
+public/js/p3/app/p3app.js
+  s_4b633e949a8459::t_0df6b8e25bae92 1-2
+  s_4b633e949a8459::t_6ac54cf4eea1e7 581-584
+  s_4b633e949a8459::t_f5e76e1fe777bc 886
+  s_4b633e949a8459::t_7317ec27fb2ed5 91,95,99,250,410,417-419,493,522
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "ed61993ab59529a809047e8affb59d8e3131be0c",
+  "prompts": {},
+  "sessions": {
+    "s_4b633e949a8459": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc5ecb494ffefMozMh15AnF2iM",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

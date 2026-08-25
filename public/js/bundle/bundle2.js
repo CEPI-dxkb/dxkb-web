@@ -1579,6 +1579,8 @@ if(t==e.dx){for((r||f>e.dy)&&(f=e.dy);++u<o;)i=n[u],i.x=a,i.y=c,i.dy=f,a+=i.dx=M
   }
 })(typeof exports === 'undefined' ? this.sax = {} : exports);
 /*! jQuery UI - v1.12.0 - 2016-07-08
+* Upstream commit: 43e468279cad9a947c09dd46e6d3f61480788f43
+* Local patch: missing checkboxradio labels log instead of throwing.
 * http://jqueryui.com
 * Includes: widget.js, position.js, data.js, disable-selection.js, effect.js, effects/effect-blind.js, effects/effect-bounce.js, effects/effect-clip.js, effects/effect-drop.js, effects/effect-explode.js, effects/effect-fade.js, effects/effect-fold.js, effects/effect-highlight.js, effects/effect-puff.js, effects/effect-pulsate.js, effects/effect-scale.js, effects/effect-shake.js, effects/effect-size.js, effects/effect-slide.js, effects/effect-transfer.js, focusable.js, form-reset-mixin.js, jquery-1-7.js, keycode.js, labels.js, scroll-parent.js, tabbable.js, unique-id.js, widgets/accordion.js, widgets/autocomplete.js, widgets/button.js, widgets/checkboxradio.js, widgets/controlgroup.js, widgets/datepicker.js, widgets/dialog.js, widgets/draggable.js, widgets/droppable.js, widgets/menu.js, widgets/mouse.js, widgets/progressbar.js, widgets/resizable.js, widgets/selectable.js, widgets/selectmenu.js, widgets/slider.js, widgets/sortable.js, widgets/spinner.js, widgets/tabs.js, widgets/tooltip.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
@@ -2458,7 +2460,8 @@ $.fn.position = function( options ) {
 
 	// Make a copy, we don't want to modify arguments
 	options = $.extend( {}, options );
-	if ( typeof options.of === "string" && /\s*</.test( options.of ) ) {
+
+	if ( typeof options.of === "string" && /<[^>]+>/.test( options.of ) ) {
 		return this;
 	}
 
@@ -5725,7 +5728,7 @@ var keycode = $.ui.keyCode = {
 
 // Internal use only
 var escapeSelector = $.ui.escapeSelector = ( function() {
-	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g;
+	var selectorEscape = /([!"#$%&'()*+,./:;<=>?@[\\]^`{|}~])/g;
 	return function( selector ) {
 		return selector.replace( selectorEscape, "\\$1" );
 	};
@@ -8157,7 +8160,7 @@ $.widget( "ui.checkboxradio", [ $.ui.formResetMixin, {
 		// If there are multiple labels, use the last one
 		this.label = $( labels[ labels.length - 1 ] );
 		if ( !this.label.length ) {
-			$.error( "No label found for checkboxradio widget" );
+			console.log( "No label found for checkboxradio widget" );
 		}
 
 		this.originalLabel = "";
@@ -19158,7 +19161,7 @@ $.widget( "ui.tabs", {
 	},
 
 	_sanitizeSelector: function( hash ) {
-		return hash ? hash.replace( /[!"$%&'()*+,.\/:;<=>?@\[\\\]\^`{|}~]/g, "\\$&" ) : "";
+		return hash ? hash.replace( /[!"#$%&'()*+,./:;<=>?@\[\\\]^`{|}~]/g, "\\$&" ) : "";
 	},
 
 	refresh: function() {
@@ -25122,7 +25125,7 @@ function BlurStack()
             for (var i = 0; i < node.childNodes.length; i++) {
                 css += node.childNodes[i].data;
             }
-            css = css.replace(/(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)|(^[\s]*\/\/.*)/gm, ''); // remove comments
+            css = css.replace(/(\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/)|(^[\s]*\/\/.*)/gm, ''); // remove comments
             css = svg.compressSpaces(css); // replace whitespace
             var cssDefs = css.split('}');
             for (var i = 0; i < cssDefs.length; i++) {

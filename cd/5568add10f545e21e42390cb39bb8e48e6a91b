@@ -1,0 +1,35 @@
+public/js/p3/widget/app/AppBase.js
+  s_ddf390ef427851::t_08e4311008caf5 53-54
+.eslintrc.json
+  s_ddf390ef427851::t_18ee16968593f8 33
+config-dev.js
+  s_954a5a78ac74b0::t_d3ea59f581f198 22
+config-test.js
+  s_954a5a78ac74b0::t_46e1dee200ced9 22
+config.js
+  s_954a5a78ac74b0::t_c5a9caf854a722 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "cd5568add10f545e21e42390cb39bb8e48e6a91b",
+  "prompts": {},
+  "sessions": {
+    "s_954a5a78ac74b0": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc5968c62ffeqn2yOTY4z0Njw7",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    },
+    "s_ddf390ef427851": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_fc599dfcfffeUORCuSgUnzwaGJ",
+        "model": "gpt56sol"
+      },
+      "human_author": "Chris Escobar <chrescobar@uchicago.edu>"
+    }
+  }
+}

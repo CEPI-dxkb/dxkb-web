@@ -596,21 +596,14 @@ define([
         console.log('feature fetchedIds ', fetchedIds);
         // console.log('feature genomes ', genomes);
       }
-      else if (ids.some(id => /\d+\.\d+/.test(id))) {
+      else if (ids.some(id => /(?:^|\|)\d+\.\d+(?:\||$)/.test(id))) {
         this.nodeType = 'genome';
         this.containerType = 'genome_data';
-        var genome_ids = [];
+        var genome_ids = ids.map(function (id) {
+          var match = id.match(/(?:^|\|)(\d+\.\d+)(?:\||$)/);
+          return match && match[1];
+        }).filter(function (id) { return id; });
         console.log('ids=', ids);
-
-        if (ids.some(id => /^\d+\.\d+$/.test(id))) {
-          genome_ids = ids;
-        } else {
-          ids.forEach((id) => {
-            var myid = id.match(/.*\|(\d+\.\d+).*/);
-            // console.log('id=', id);
-            // console.log('myid=', myid);
-            genome_ids.push(myid[1]) });
-        }
         // console.log('genome_ids=', genome_ids);
         var q = 'in(genome_id,(' + genome_ids.join(',') + '))&select(genome_id,genome_name,genbank_accessions,species,strain,geographic_group,isolation_country,host_group,host_common_name,collection_year,subtype,lineage,clade,h1_clade_global,h1_clade_us,h3_clade,h5_clade)&limit(25000)';
         // console.log('q =', q);
@@ -631,13 +624,13 @@ define([
             var keys = Object.keys(seqIds);
             // console.log('in when response keys', keys);
 
-            if (keys.some(k => /^\d+\.\d+$/.test(k))) {
+            if (Object.prototype.hasOwnProperty.call(seqIds, genome.genome_id)) {
               seqIdIndex = seqIds[genome.genome_id] - 1;
             } else {
               for (var i = 0; i < keys.length; i++) {
-                var mykey = keys[i].match(/.*\|(\d+\.\d+).*/);
+                var mykey = keys[i].match(/(?:^|\|)(\d+\.\d+)(?:\||$)/);
                 // console.log('in when response genome.genome_id, keys, mykey', genome.genome_id, keys[i], mykey);
-                if (genome.genome_id == mykey[1]) {
+                if (mykey && genome.genome_id == mykey[1]) {
                   // console.log('in when response mykey', mykey[1]);
                   seqIdIndex = seqIds[keys[i]] - 1;
                 }

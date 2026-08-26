@@ -50,6 +50,8 @@ define([
     output_folder: '', // location where the output_name will be placed in the user's workspace. Some services do not have this field
 
     postMixInProperties: function () {
+      this.docsServiceURL = PathJoin(this.docsServiceURL) + '/';
+
       // use AppLogin.html when requireAuth & user is not logged in
       if (this.requireAuth && (window.App.authorizationToken === null || window.App.authorizationToken === undefined)) {
 

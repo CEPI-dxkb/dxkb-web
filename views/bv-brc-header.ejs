@@ -308,8 +308,13 @@
 
                 <div class="showOnLoad ShowWithAuth dijitHidden WorkspaceController desktop-only">
                     <div data-dojo-type="p3/widget/UploadStatus"></div>
-
                     <div data-dojo-type="p3/widget/JobStatus"></div>
+                </div>
+
+                <div id="querylog-indicator" class="dijitHidden" style="display:flex;align-items:center;margin-right:8px;cursor:pointer;"
+                     title="Query logging is active - click to stop"
+                     onclick="window.App.stopQueryLogging && window.App.stopQueryLogging()">
+                    <span class="querylog-recording-dot"></span>
                 </div>
 
                 <div id="mobile-search-icon">

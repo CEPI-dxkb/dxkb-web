@@ -10,6 +10,9 @@ const defaults = {
   'newsFeedRSS': 'https://docs.patricbrc.org/news.rss',
   'sessionTTL': 2628000000,
   'workspaceServiceURL': 'https://p3.theseed.org/services/Workspace',
+  'workspaceDownloadServiceURL': '/services/WorkspaceDownload',
+  'workspaceDownloadServiceTarget': 'https://www.bv-brc.org/services/WorkspaceDownload',
+  'workspaceDownloadServiceTimeout': 30000,
   'appServiceURL': 'https://p3.theseed.org/services/app_service',
   appBaseURL: 'https://www.patricbrc.org',
   'homologyServiceURL': 'https://p3.theseed.org/services/homology_service',
@@ -19,7 +22,7 @@ const defaults = {
   'shockServiceURL': 'https://p3.theseed.org/services/shock_api', // only for status dashboard
   dataServiceURL: 'https://p3.theseed.org/services/data_api',
   accountURL: 'http://user.patric.local:3002/',
-  docsServiceURL: 'https://www.dxkb.org/docs/',
+  docsServiceURL: 'https://www.bv-brc.org/docs/',
   userServiceURL: '',
   'copilotApiURL': 'https://www.bv-brc.org/services/copilot-api/copilot-api/chatbrc',
   'copilotDbURL': 'https://www.bv-brc.org/services/copilot-api/copilot-api/db',

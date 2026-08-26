@@ -29,6 +29,7 @@ var help = require('./routes/help');
 var app = express();
 var httpProxy = require('http-proxy');
 var apiProxy = httpProxy.createProxyServer();
+var workspaceDownloadProxy = require('./lib/workspaceDownloadProxy');
 
 // Trust the first proxy hop (reverse proxy like nginx/Apache)
 // This is required for express-rate-limit to correctly identify client IPs
@@ -83,10 +84,36 @@ app.use(helmet({
   }
 }));
 
+var workspaceDownloadServiceURL = config.get('workspaceDownloadServiceURL');
+if (!workspaceDownloadServiceURL || workspaceDownloadServiceURL.charAt(0) !== '/'
+    || workspaceDownloadServiceURL.indexOf('//') === 0) {
+  workspaceDownloadServiceURL = '/services/WorkspaceDownload';
+}
+app.use(workspaceDownloadServiceURL,
+  workspaceDownloadProxy.createWorkspaceDownloadProxy(
+    config.get('workspaceDownloadServiceTarget'),
+    {
+      timeout: config.get('workspaceDownloadServiceTimeout'),
+      mountPath: workspaceDownloadServiceURL
+    }
+  ));
+
 // Block access to demo directories with legacy/vulnerable jQuery versions
 app.use(['/js/jDataView/demo', '/js/phyloview/testTree.html'], function(req, res) {
   res.status(404).send('Not Found');
 });
+
+var queryLogDir = config.get('queryLogDir');
+if (queryLogDir) {
+  var queryLogger = require('./lib/queryLogger');
+  var queryLogRoutes = require('./routes/queryLog');
+  queryLogger.sessionManager.init(queryLogDir);
+  app.use('/_querylog', queryLogRoutes(queryLogger.sessionManager));
+  app.use(config.get('dataServiceURL'),
+    express.raw({ type: '*/*', limit: '10mb' }),
+    queryLogger.middleware()
+  );
+}
 
 const proxyConfig = config.get('proxyConfig');
 if (proxyConfig) {
@@ -97,7 +124,7 @@ if (proxyConfig) {
     console.log(prox);
     app.use(prox.local, proxy(prox.site, {
       proxyReqPathResolver: req => req.originalUrl.replace(prox.local, ""),
-      https: true
+      https: prox.site.startsWith('https')
     }));
   }
 }
@@ -124,7 +151,7 @@ app.use(function (req, res, next) {
     probModelSeedServiceURL: config.get('probModelSeedServiceURL'), // for dashboard
     shockServiceURL: config.get('shockServiceURL'), // for dashboard
     workspaceServiceURL: config.get('workspaceServiceURL'),
-    workspaceDownloadServiceURL: config.get('workspaceDownloadServiceURL'),
+    workspaceDownloadServiceURL: workspaceDownloadServiceURL,
     appBaseURL: config.get('appBaseURL'),
     appServiceURL: config.get('appServiceURL'),
     dataServiceURL: config.get('dataServiceURL'),
@@ -148,7 +175,8 @@ app.use(function (req, res, next) {
     copilotEnableRagSelector: config.get('copilotEnableRagSelector') || false,
     copilotEnableShowPromptDetails: config.get('copilotEnableShowPromptDetails') || false,
     localStorageCheckInterval: config.get('localStorageCheckInterval'),
-    workspaceSelectorExcludeFolders: config.get('workspaceSelectorExcludeFolders') || []
+    workspaceSelectorExcludeFolders: config.get('workspaceSelectorExcludeFolders') || [],
+    queryLoggingEnabled: !!config.get('queryLogDir')
   };
   // console.log("Application Options: ", req.applicationOptions);
   next();
@@ -269,6 +297,8 @@ app.use('/help', help);
 app.use('/uploads', uploads);
 app.use('/users', users);
 app.use('/vendor/gexf-js', express.static(path.join(__dirname, 'node_modules', 'gexf-js')));
+app.use('/vendor/leaflet', express.static(path.join(__dirname, 'node_modules', 'leaflet', 'dist')));
+app.use('/vendor/leaflet.markercluster', express.static(path.join(__dirname, 'node_modules', 'leaflet.markercluster', 'dist')));
 
 
 // Embedded Nextstrain/Auspice viewer

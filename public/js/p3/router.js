@@ -76,6 +76,28 @@ define(['dojo/_base/declare', 'dojo/router/RouterBase'
       }
     },
 
+    // Returns true if any registered route matches the given path. Used by the
+    // navigationLink click handler to decide whether the client-side router can
+    // handle a link, or whether the browser should perform a normal navigation.
+    //
+    // Must be side-effect free: routes registered as RegExp literals may carry
+    // the /g or /y flag, for which test() advances lastIndex and would make the
+    // subsequent exec() in _handlePathChange miss. Save and restore it so this
+    // stays a pure predicate.
+    hasRoute: function (path) {
+      return this._routes.some(function (routeObj) {
+        var re = routeObj.route;
+        if (!re.global && !re.sticky) {
+          return re.test(path);
+        }
+        var lastIndex = re.lastIndex;
+        re.lastIndex = 0;
+        var matched = re.test(path);
+        re.lastIndex = lastIndex;
+        return matched;
+      });
+    },
+
     replaceState: function (state) {
       // console.log("Router.replaceState()",state)
       window.history.replaceState(state);
@@ -220,13 +242,15 @@ define(['dojo/_base/declare', 'dojo/router/RouterBase'
         _self._handlePathChange(location.pathname + location.search + location.hash, evt.state);
       };
 
-      if (!this._currentPath) {
-        // console.log("No Current Path",location)
-        this.go(location.pathname + location.search + location.hash);
-      } else {
-        // console.log("Call handlePathChange", location.pathname)
-        this._handlePathChange(location.pathname + location.search + location.hash, this.currentState || {});
-      }
+      var initialPath = location.pathname + location.search + location.hash;
+
+      // The browser already created a history entry for this page load. Use
+      // replaceState (not go(), which pushes) to stamp our route state onto that
+      // existing entry -- pushing here duplicates the current URL in the history
+      // stack, so the first Back press lands on an identical entry and appears
+      // to do nothing.
+      window.history.replaceState(this.currentState || {}, 'route', initialPath);
+      this._handlePathChange(initialPath, this.currentState || {});
     }
   })();
 

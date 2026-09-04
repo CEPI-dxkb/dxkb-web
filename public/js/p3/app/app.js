@@ -447,8 +447,11 @@ define([
           return;
         }
 
-        var parts = link.href.split(link.pathname);
-        var href = link.pathname + (parts[1] || '');
+        // Build from the URL parts directly. Splitting href on pathname is
+        // wrong when pathname is '/', because '/' also occurs in the scheme
+        // ('https://'), so the split lands there and the query and hash are
+        // dropped.
+        var href = link.pathname + (link.search || '') + (link.hash || '');
 
         // Only intercept paths the client-side router actually knows about.
         // Server-rendered pages (/tools, /about, ...) carry this class too, and

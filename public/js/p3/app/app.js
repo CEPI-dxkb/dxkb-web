@@ -429,13 +429,40 @@ define([
 
       on(document, '.navigationLink:click', function (evt) {
         // console.log("NavigationLink Click", evt);
+        // `this` is the matched .navigationLink node; evt.target may be a child
+        // element (e.g. a <b> or <span> inside the anchor).
+        var link = this || evt.target;
+
+        // Let the browser handle anything that isn't a plain left-click on a
+        // same-origin link: modified clicks (new tab/window), non-primary
+        // buttons, target="_blank", and external hrefs.
+        if (evt.ctrlKey || evt.metaKey || evt.shiftKey || evt.altKey
+            || (evt.button !== undefined && evt.button !== 0)) {
+          return;
+        }
+        if (link.target && link.target !== '_self') {
+          return;
+        }
+        if (link.origin && link.origin !== window.location.origin) {
+          return;
+        }
+
+        var parts = link.href.split(link.pathname);
+        var href = link.pathname + (parts[1] || '');
+
+        // Only intercept paths the client-side router actually knows about.
+        // Server-rendered pages (/tools, /about, ...) carry this class too, and
+        // must fall through to a normal browser navigation -- otherwise the URL
+        // changes but no content loads.
+        if (!Router.hasRoute(link.pathname)) {
+          return;
+        }
+
         evt.preventDefault();
         // evt.stopPropagation();
-        // console.log("APP Link Target: ", evt.target.pathname, evt.target.href, evt.target);
-        var parts = evt.target.href.split(evt.target.pathname);
-        // console.log("navigationLink:click - " + evt.target.pathname + (parts[1]||"") )
+        // console.log("navigationLink:click - " + href)
         /* istanbul ignore next */
-        Router.go(evt.target.pathname + (parts[1] || ''));
+        Router.go(href);
       });
 
       on(document, '.navigationLinkOut:click', function (evt) {

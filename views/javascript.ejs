@@ -393,13 +393,11 @@ const load_scripts = [
         });
       }
 
-      query("a.navigationLink").forEach(function(link) {
-        on(link, "click", function(event) {
-          timeoutId = setTimeout(function() {
-            location.reload();
-            }, 10); //
-        });
-      });
+      // NOTE: a previous version reloaded the whole page 10ms after every
+      // .navigationLink click. That defeated the client-side router (which had
+      // already pushed a history entry), so each navigation produced two entries
+      // for the same URL and Back appeared to do nothing on the first press.
+      // The router handles these links; no reload is needed.
 
 
     });

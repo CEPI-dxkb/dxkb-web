@@ -149,5 +149,6 @@ src/
 .claude/settings.local.json
 # Auspice dist files
 /public/js/auspice-custom/dist/
+public/docs
 
 /plans

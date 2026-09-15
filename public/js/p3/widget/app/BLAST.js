@@ -81,7 +81,7 @@ define([
   return declare([AppBase], {
     baseClass: 'BLAST',
     templateString: Template,
-    applicationHelp: 'user_guides/services/blast.html',
+    applicationHelp: 'quick_references/services/blast.html',
     tutorialLink: 'tutorial/blast/blast.html',
     addedGenomes: 0,
     maxGenomes: 20,

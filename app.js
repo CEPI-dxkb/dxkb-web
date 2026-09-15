@@ -262,6 +262,22 @@ app.use('/patric/', express.static(path.join(__dirname, 'public/patric/'), {
     res.setHeader('Expires', d.toGMTString());
   }
 }));
+// Local docs test copy (public/docs/, git-ignored) used to preview the service info (ⓘ)
+// dialogs before the docs site is published. Must be registered ahead of the '/public/'
+// handler below, whose 1-year cache would otherwise pin a stale copy in the browser:
+// AppBase.gethelp() pulls these pages over XHR, and a hard refresh does not revalidate
+// sub-resource requests. Dev only -- in production docsServiceURL points at dxkb.org/docs/.
+if (!config.get('production')) {
+  app.use('/public/docs/', express.static(path.join(__dirname, 'public/docs/'), {
+    etag: false,
+    lastModified: false,
+    maxage: 0,
+    setHeaders: function (res, path) {
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('Expires', '0');
+    }
+  }));
+}
 app.use('/public/', express.static(path.join(__dirname, 'public/'), {
   maxage: '365d',
   setHeaders: function (res, path) {

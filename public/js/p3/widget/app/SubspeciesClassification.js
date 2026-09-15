@@ -56,7 +56,6 @@ define([
     pageTitle: 'Subspecies Classification Service | DXKB',
     appBaseURL: 'Subspecies Classification',
     templateString: Template,
-    applicationHelp: '',
     applicationName: 'SubspeciesClassification',
     applicationLabel: 'Subspecies Classification',
     applicationHelp: 'quick_references/services/subspecies_classification_service.html',

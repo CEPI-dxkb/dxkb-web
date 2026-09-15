@@ -20,7 +20,7 @@ define([
     requireAuth: true,
     applicationLabel: 'Functional Classification',
     applicationDescription: 'The Functional Classification Service computes Functional classification for read data.',
-    applicationHelp: 'user_guides/services/comprehensive_genome_analysis_service.html',
+    applicationHelp: 'quick_references/services/comprehensive_genome_analysis_service.html',
     tutorialLink: 'tutorial/comprehensive-genome-analysis/comprehensive-genome-analysis.html',
     libraryData: null,
     defaultPath: '',

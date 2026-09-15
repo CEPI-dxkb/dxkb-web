@@ -92,69 +92,132 @@ define([
 
     gethelp: function () {
 
-      if (this.applicationHelp) {
-        var helprequest = xhr.get(PathJoin(this.docsServiceURL, this.applicationHelp), {
-          handleAs: 'text'
-        });
-        helprequest.then(function (data) {
-          data = data.replace('<img src="../../_static/patric_logo.png" class="logo" />', '');
-          this.help_doc = domConstruct.toDom(data);
-          var ibuttons = query('.infobutton');
-          ibuttons.forEach(function (item) {
-            // var help_text= help_doc.getElementById(item.attributes.name.value) || "Help text missing";
-            // basic flat child workaround for getting help in safari. will break if nested.
-            var help_text = null;
-            for (var i = 0; i < this.help_doc.childNodes.length; i++) {
-              if (this.help_doc.childNodes[i].id == item.attributes.name.value) {
-                help_text = this.help_doc.childNodes[i];
-              }
-            }
-            help_text = help_text || dom.byId(item.attributes.name.value, this.help_doc) || domConstruct.toDom('<div>Help text missing</div>');
-            help_text.style.overflowY = 'auto';
-            help_text.style.maxHeight = '400px';
-
-            if (domClass.contains(item, 'dialoginfo')) {
-              item.info_dialog = new Dialog({
-                content: help_text,
-                'class': 'helpModal',
-                draggable: true,
-                style: 'max-width: 350px;'
-              });
-              item.open = false;
-              on(item, 'click', function () {
-                if (!item.open) {
-                  item.open = true;
-                  item.info_dialog.show();
-                }
-                else {
-                  item.open = false;
-                  item.info_dialog.hide();
-                }
-              });
-            }
-            else if (domClass.contains(item, 'tooltipinfo')) {
-              item.info_dialog = new TooltipDialog({
-                content: help_text,
-                'class': 'helpTooltip',
-                style: 'overflow-y: auto; max-width: 350px; max-height: 400px',
-                onMouseLeave: function () {
-                  popup.close(item.info_dialog);
-                }
-              });
-              on(item, 'mouseover', function () {
-                popup.open({
-                  popup: item.info_dialog,
-                  around: item
-                });
-              });
-              on(item, 'mouseout', function () {
-                popup.close(item.info_dialog);
-              });
-            }
-          });
-        });
+      if (!this.applicationHelp) {
+        return;
       }
 
+      // Wire this widget's .infobutton nodes to a Dialog/TooltipDialog. getHelpText(item)
+      // returns the DOM fragment to show for a given button; it is used for both the
+      // success path (content pulled from the fetched help doc) and the failure path
+      // (a graceful fallback message so icons are never silently dead).
+      //
+      // The query is scoped to this.domNode, and prior handlers/dialogs are torn down
+      // first. Both matter: the fetch is async, so a second panel (or a re-entrant
+      // gethelp on the same one) can resolve while an earlier one is still attached.
+      // An unscoped document-wide query would wire another panel's buttons too, and
+      // the duplicate click handlers would share item.open -- one showing the dialog
+      // and the next immediately hiding it, leaving the icon apparently dead.
+      var wireButtons = lang.hitch(this, function (getHelpText) {
+        query('.infobutton', this.domNode).forEach(lang.hitch(this, function (item) {
+          // Tear down any wiring left by a previous gethelp() on this same node.
+          this._teardownHelpButton(item);
+          item.info_handles = [];
+
+          var help_text = getHelpText(item);
+          help_text.style.overflowY = 'auto';
+          help_text.style.maxHeight = '400px';
+
+          if (domClass.contains(item, 'dialoginfo')) {
+            item.info_dialog = new Dialog({
+              content: help_text,
+              'class': 'helpModal',
+              draggable: true,
+              style: 'max-width: 350px;'
+            });
+            item.open = false;
+            item.info_handles.push(on(item, 'click', function () {
+              if (!item.open) {
+                item.open = true;
+                item.info_dialog.show();
+              }
+              else {
+                item.open = false;
+                item.info_dialog.hide();
+              }
+            }));
+          }
+          else if (domClass.contains(item, 'tooltipinfo')) {
+            item.info_dialog = new TooltipDialog({
+              content: help_text,
+              'class': 'helpTooltip',
+              style: 'overflow-y: auto; max-width: 350px; max-height: 400px',
+              onMouseLeave: function () {
+                popup.close(item.info_dialog);
+              }
+            });
+            item.info_handles.push(on(item, 'mouseover', function () {
+              popup.open({
+                popup: item.info_dialog,
+                around: item
+              });
+            }));
+            item.info_handles.push(on(item, 'mouseout', function () {
+              popup.close(item.info_dialog);
+            }));
+          }
+        }));
+      });
+
+      xhr.get(PathJoin(this.docsServiceURL, this.applicationHelp), {
+        handleAs: 'text'
+      }).then(lang.hitch(this, function (data) {
+        data = data.replace('<img src="../../_static/patric_logo.png" class="logo" />', '');
+        this.help_doc = domConstruct.toDom(data);
+        wireButtons(lang.hitch(this, function (item) {
+          // basic flat child workaround for getting help in safari. will break if nested.
+          var help_text = null;
+          for (var i = 0; i < this.help_doc.childNodes.length; i++) {
+            if (this.help_doc.childNodes[i].id == item.attributes.name.value) {
+              help_text = this.help_doc.childNodes[i];
+            }
+          }
+          help_text = help_text || dom.byId(item.attributes.name.value, this.help_doc);
+          // Clone: handing the live node to a Dialog/TooltipDialog MOVES it out of
+          // help_doc. Several templates point more than one button at the same id
+          // (e.g. the read-input-file boxes for the Read File vs Assembled Contigs
+          // paths), and the second lookup would then miss and render "Help text
+          // missing". Destroying a dialog also destroys the node it holds, so without
+          // a copy a rewire would lose the section for good.
+          return help_text ? help_text.cloneNode(true) : domConstruct.toDom('<div>Help text missing</div>');
+        }));
+      }), function (err) {
+        // Help doc could not be fetched (e.g. docs site unreachable). Wire the icons
+        // with a graceful fallback so they still respond instead of appearing broken.
+        console.warn('Could not load help documentation:', err && err.message ? err.message : err);
+        wireButtons(function () {
+          return domConstruct.toDom('<div>Help information is currently unavailable.</div>');
+        });
+      });
+
+    },
+
+    // Release the dialog and click/hover handlers attached to one .infobutton node.
+    _teardownHelpButton: function (item) {
+      if (item.info_handles) {
+        item.info_handles.forEach(function (h) { h.remove(); });
+        item.info_handles = null;
+      }
+      if (item.info_dialog) {
+        popup.close(item.info_dialog);
+        item.info_dialog.destroyRecursive();
+        item.info_dialog = null;
+      }
+    },
+
+    destroy: function () {
+      // Help dialogs are NOT part of this widget's subtree -- dijit/Dialog appends
+      // itself to document.body and TooltipDialog is shown through dijit/popup -- so
+      // the normal destroy chain never reaches them. Without this they outlive the
+      // panel as orphaned registry entries holding detached DOM.
+      //
+      // Panels are swapped by App._doNavigation via appContainer.removeChild(cur),
+      // which detaches without destroying, so in practice this runs on explicit
+      // teardown rather than on every navigation. It is still the correct owner-side
+      // cleanup, and it makes the leak bounded wherever destroy() is reached.
+      if (this.domNode) {
+        query('.infobutton', this.domNode).forEach(lang.hitch(this, '_teardownHelpButton'));
+      }
+      this.inherited(arguments);
     },
 
     onOutputPathChange: function (val) {

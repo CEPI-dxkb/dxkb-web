@@ -1,21 +1,19 @@
 <form dojoAttachPoint="containerNode" class="PanelForm App ${baseClass}"
       dojoAttachEvent="onreset:_onReset,onsubmit:_onSubmit">
-    <div class="appTemplate">
+    <div class="appTemplate page-content" style="margin-top: 40px;">
         <div class="appTitle">
-            <span class="breadcrumb">Services</span>
-            <h3>${applicationLabel}
-                <!--?<div name="overview" class="infobox iconbox infobutton dialoginfo">
-                    <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
-                </div>-->
+            <h1 class="page-content-header">Services</h1>
+            <h2 class="page-content-subheader">${applicationLabel}
                 <div class="infobox iconbox tutorialButton tutorialInfo">
                     <a href="${docsServiceURL}${tutorialLink}" target="_blank"><i class="fa icon-books fa-1x"
                                                                                   title="click to open tutorial"></i></a>
                 </div>
-            </h3>
-            <p>${applicationDescription} For further explanation, please see the ${applicationLabel} Service <a
+            </h2>
+            <hr class="page-content-divider" />
+            <p style="font-size: 14px; font-weight: 500;">${applicationDescription} For further explanation, please see the ${applicationLabel} Service <a
                     href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.</p>
         </div>
-        <div class="formFieldsContainer" style="max-width: 500px; margin: auto">
+        <div class="formFieldsContainer" style="max-width: 500px; margin: auto; margin-top: 20px;">
             <div id="${id}_startWithBox" class="appBox appShadow">
                 <div class="headerrow">
                     <label class="appBoxLabel">Input File</label>

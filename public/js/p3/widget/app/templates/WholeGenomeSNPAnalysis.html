@@ -1,21 +1,20 @@
 <form dojoAttachPoint="containerNode" class="PanelForm App ${baseClass}"
   dojoAttachEvent="onreset:_onReset,onsubmit:_onSubmit,onchange:validate">
-  <div class="appTemplate">
+  <div class="appTemplate page-content" style="margin-top: 40px;">
     <div class="appTitle">
-      <span class="breadcrumb">Services</span>
-      <h3>${applicationLabel}
+      <h1 class="page-content-header">Services</h1>
+      <h2 class="page-content-subheader">${applicationLabel}
         <div name="overview" class="infobox iconbox infobutton dialoginfo">
           <i class="fa icon-info-circle fa" title="click to open info dialog"></i>
         </div>
         <div class="infobox iconbox tutorialButton tutorialInfo">
           <a href="${docsServiceURL}${tutorialLink}" target="_blank" ><i class="fa icon-books fa-1x" title="click to open tutorial"></i></a>
         </div>
-      </h3>
-      <p>
-        ${applicationDescription} For further explanation, please see the ${applicationLabel} Service <a href="${docsServiceURL}${applicationHelp}" target="_blank">Quick Reference Guide</a> and <a href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.
-      </p>
+      </h2>
+      <hr class="page-content-divider" />
+      <p style="font-size: 14px; font-weight: 500;">${applicationDescription} For further explanation, please see the ${applicationLabel} Service <a href="${docsServiceURL}${applicationHelp}" target="_blank">Quick Reference Guide</a> and <a href="${docsServiceURL}${tutorialLink}" target="_blank">Tutorial</a>.</p>
     </div>
-    <div class="formFieldsContainer">
+    <div class="formFieldsContainer" style="margin-top: 20px;">
       <div style="width:97%;" class="appBox appShadow">
         <div class="headerrow">
           <label class="appBoxLabel">Select a Genome Group</label>
@@ -83,7 +82,6 @@
       </div>
     </div>
   </div>
-  </div>
   <div class="appSubmissionArea">
     <div data-dojo-attach-point="workingMessage" class="messageContainer workingMessage"
       style="margin-top:10px; text-align:center;">
@@ -104,5 +102,6 @@
       <div data-dojo-attach-point="resetButton" type="reset" data-dojo-type="dijit/form/Button">Reset</div>
       <div data-dojo-attach-point="submitButton" type="submit" data-dojo-type="dijit/form/Button">Submit</div>
     </div>
+  </div>
   </div>
 </form>
